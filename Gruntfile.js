@@ -23,8 +23,8 @@ module.exports = function (grunt) {
             pivotal: {
               src: 'app/scripts/*.js',
               options: {
-                specs: 'test/spec/*.js'
-                //helpers: 'test/spec/*Helper.js'
+                specs: 'test/spec/*.js',
+                vendor: 'app/libs/quintus-all.js'
               }
             }
           },
