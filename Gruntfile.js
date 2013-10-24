@@ -293,6 +293,7 @@ module.exports = function (grunt) {
         }
     });
     grunt.loadNpmTasks('grunt-contrib-jasmine');
+    grunt.loadNpmTasks('grunt-contrib-compass');
 
     grunt.registerTask('server', function (target) {
         if (target === 'dist') {
