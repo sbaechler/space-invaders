@@ -43,9 +43,9 @@ Quintus.GunControls = function(Q) {
       p.diffX = 0;
       p.diffY = 0;
 
-      if(Q.inputs['left']) {
+      if(Q.inputs['left'] && p.x > p.w) {
         p.diffX = -p.stepDistance;
-      } else if(Q.inputs['right']) {
+      } else if(Q.inputs['right'] && p.x < Q.width - p.w) {
         p.diffX = p.stepDistance;
       }
 

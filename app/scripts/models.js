@@ -1,7 +1,8 @@
 'use-strict';
 
 Quintus.SpaceInvadersModels = function(Q) {
-
+  Q.gravityY = 0;
+  Q.gravityX = 0;
 /**
  * Add the score Class
  */
@@ -35,8 +36,7 @@ Q.Sprite.extend("Cannon", {
             type: Q.SPRITE_DEFAULT | Q.SPRITE_FRIENDLY, // reacts to sprites mask
             y: 680,                 // position
             x: 512,
-            stepDistance: 50,       // moving speed
-            gravity: 0              // gravity factor
+            stepDistance: 50       // moving speed
         }, p);
         this.add('GunControls, gunControls');
         Q.input.on('fire', this, "fireGun");
@@ -49,6 +49,7 @@ Q.Sprite.extend("Cannon", {
 //            });
 
     },
+
     fireGun: function(){
         console.log("firing...");
         Q.audio.play("fire2.mp3");
