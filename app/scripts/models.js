@@ -38,7 +38,7 @@ Q.Sprite.extend("Cannon", {
             stepDistance: 50,       // moving speed
             gravity: 0              // gravity factor
         }, p);
-        this.add('2d, stepControls');
+        this.add('GunControls, gunControls');
         Q.input.on('fire', this, "fireGun");
 
 //        this.on("hit.sprite",function(collision) {

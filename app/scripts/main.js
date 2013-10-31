@@ -9,7 +9,7 @@ window.addEventListener('load',function() {
                     audioSupported: ['mp3']   // We only have mp3 samples for now.
            })       // Create a new engine instance
           .include("Sprites, Scenes, Input, 2D, Touch, UI, Audio") // Load any needed modules
-          .include("SpaceInvadersScenes, SpaceInvadersModels")
+          .include("SpaceInvadersScenes, SpaceInvadersModels, GunControls")
           .setup({ width: 1024, height: 768, downsampleWidth: 640, downsampleHeight: 480 })
           .controls()                        // Add in default controls (keyboard, buttons)
           .enableSound();
