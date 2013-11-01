@@ -8,6 +8,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
      */
     Q.scene("level1",function(stage) {
         var cannon = stage.insert(new Q.Cannon());
+        var alien=stage.insert(new Q.Alien())
 
 
 
@@ -15,6 +16,8 @@ Quintus.SpaceInvadersScenes = function(Q) {
         // cleanup
         stage.on("destroy",function() {
             cannon.destroy();
+            alien.destroy();
         });
     });
+
 }

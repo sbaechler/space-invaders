@@ -55,4 +55,37 @@ Q.Sprite.extend("Cannon", {
         Q.audio.play("fire2.mp3");
     }
 });
+
+
+
+    Q.TileLayer.extend("Alien", {
+        init: function(p){
+            this._super({
+
+                tileW: 32,  // Default tile width
+                tileH: 32,  // Default tile height
+                blockTileW: 10,  // Default pre-render size
+                blockTileH: 10,
+                type: Q.SPRITE_DEFAULT, // Default type (for collisions)
+
+
+                   // gravity factor
+            }, p);
+            //this.add('2d, stepControls');
+            Q.input.on('fire', this, "fireGun");
+
+            this.on("hit",this,"collision");
+
+        },
+        step: function(dt) {
+            this.p.vy += dt * 2.8;
+
+            this.p.x += this.p.vx * dt;
+            this.p.y += this.p.vy * dt;
+        },
+        fireGun: function(){
+            console.log("firing...");
+            Q.audio.play("fire2.mp3");
+        }
+    });
 }

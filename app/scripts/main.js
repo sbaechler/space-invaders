@@ -18,11 +18,20 @@ window.addEventListener('load',function() {
 
     Q.state.reset({ score: 0, lives: 3 });
 
+
+
+
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
     Q.load([ "cannon.png", "invaders.png", "fire2.mp3"], function() {
 
         // Start level 1
         Q.stageScene("level1");
+
+
+
     });
+
+
+
 
 });
