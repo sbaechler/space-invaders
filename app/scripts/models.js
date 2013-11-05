@@ -10,28 +10,28 @@ Quintus.SpaceInvadersModels = function(Q) {
       SPRITE_NONE = 8;
 
 /**
- * Add the score Class
- */
+* Add the score Class
+*/
 //Q.UI.Text.extend("Score",{
-//    init: function(p){
-//    this._super({
-//      label: "score: 0",
-//      x: 0,
-//      y: 0
-//    });
+// init: function(p){
+// this._super({
+// label: "score: 0",
+// x: 0,
+// y: 0
+// });
 //
-//    Q.state.on("change.score",this,"score");
-//    },
+// Q.state.on("change.score",this,"score");
+// },
 //
-//    score: function(score) {
-//    this.p.label = "score: " + score;
-//    }
+// score: function(score) {
+// this.p.label = "score: " + score;
+// }
 //});
 
 Q.Sprite.extend("CannonShot",{
     init: function(p) {
         this._super(p,{
-           asset: 'shoot.png',    // image
+           asset: 'shoot.png', // image
             w: 20,
             h: 20,
             sprite: 'shot',
@@ -49,38 +49,38 @@ Q.Sprite.extend("CannonShot",{
 
     collide: function(col) {
         if(col.obj.isA("ShieldElement")|| col.obj.isA("Alien")) {
-            col.obj.destroy();  // destroy the element
-            this.destroy();  // destroy the shot
+            col.obj.destroy(); // destroy the element
+            this.destroy(); // destroy the shot
         }
     }
 });
 
 
 /**
- * The Cannon class which is at the bottom of the page.
- */
+* The Cannon class which is at the bottom of the page.
+*/
 Q.Sprite.extend("Cannon", {
     init: function(p){
         this._super(p, {
-            asset: 'cannon.png',    // image
-            w: 110,                 // width
-            h: 68,                  // height
-            y: 680,                 // position
+            asset: 'cannon.png', // image
+            w: 110, // width
+            h: 68, // height
+            y: 680, // position
             x: 512,
             sprite: 'cannon',
-            stepDistance: 50,       // moving speed
+            stepDistance: 50, // moving speed
             type: SPRITE_FRIENDLY,
             collisionMask: SPRITE_ENEMY
         });
         this.add('GunControls, gunControls');
         Q.input.on('fire', this, "fireGun");
 
-//        this.on("hit.sprite",function(collision) {
-//            if(collision.obj.isA("AlienShot")) {
-//                Q.stageScene("CannonHit", 1);
-//                this.destroy();
-//              }
-//            });
+// this.on("hit.sprite",function(collision) {
+// if(collision.obj.isA("AlienShot")) {
+// Q.stageScene("CannonHit", 1);
+// this.destroy();
+// }
+// });
 
     },
 
@@ -99,7 +99,7 @@ Q.Sprite.extend("Cannon", {
         init: function(p){
             this._super({
                 sprite: 'alienTracker',
-                w: 2,  //habe das mal so klein gemacht, da wenn man links vorbeischoss, das ganze verschwunden war....
+                w: 2, //habe das mal so klein gemacht, da wenn man links vorbeischoss, das ganze verschwunden war....
                 h: 100,
                 x: 120,
                 y: p.y + 40,
@@ -115,7 +115,7 @@ Q.Sprite.extend("Cannon", {
        step: function(dt){
            // this.p.y = this.p.y+1;
            if(this.p.y < 0) this.destroy();
-           if(this.p.y>600)  this.destroy();
+           if(this.p.y>600) this.destroy();
         },
         setupAlien: function(){
             Q._each(this.p.data, function(row,y) {
@@ -196,5 +196,3 @@ Q.Sprite.extend("Shield", {
     }
 });
 }
-
-
