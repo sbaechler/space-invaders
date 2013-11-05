@@ -1,11 +1,11 @@
-//     Quintus Game Engine
-//     (c) 2012 Pascal Rettig, Cykod LLC
-//     Quintus may be freely distributed under the MIT license or GPLv2 License.
-//     For all details and documentation:
-//     http://html5quintus.com
+// Quintus Game Engine
+// (c) 2012 Pascal Rettig, Cykod LLC
+// Quintus may be freely distributed under the MIT license or GPLv2 License.
+// For all details and documentation:
+// http://html5quintus.com
 //
 /**
-Quintus HTML5 Game Engine 
+Quintus HTML5 Game Engine
 
 The code in `quintus.js` defines the base `Quintus()` method
 which create an instance of the engine. The basic engine doesn't
@@ -14,7 +14,7 @@ game loop, and a method for creating or binding to an exsiting
 canvas context. The engine has dependencies on Underscore.js and jQuery,
 although the jQuery dependency will be removed in the future.
 
-Most of the game-specific functionality is in the 
+Most of the game-specific functionality is in the
 various other modules:
 
 * `quintus_input.js` - `Input` module, which allows for user input via keyboard and touchscreen
@@ -26,59 +26,56 @@ various other modules:
 */
 
 /**
- Top-level Quintus engine factory wrapper, 
- creates new instances of the engine by calling:
+Top-level Quintus engine factory wrapper,
+creates new instances of the engine by calling:
 
-      var Q = Quintus({  ...  });
+var Q = Quintus({ ... });
 
- Any initial setup methods also all return the `Q` object, allowing any initial 
- setup calls to be chained together.
+Any initial setup methods also all return the `Q` object, allowing any initial
+setup calls to be chained together.
 
-      var Q = Quintus()
-              .include("Input, Sprites, Scenes")
-              .setup('quintus', { maximize: true })
-              .controls();
-                       
- `Q` is used internally as the object name, and is used in most of the examples, 
- but multiple instances of the engine on the same page can have different names.
+var Q = Quintus()
+.include("Input, Sprites, Scenes")
+.setup('quintus', { maximize: true })
+.controls();
+`Q` is used internally as the object name, and is used in most of the examples,
+but multiple instances of the engine on the same page can have different names.
 
-     var Game1 = Quintus(), Game2 = Quintus();
+var Game1 = Quintus(), Game2 = Quintus();
 
 @class Quintus
 **/
 var Quintus = function Quintus(opts) {
 
   /**
-   A la jQuery - the returned `Q` object is actually
-   a method that calls `Q.select`. `Q.select` doesn't do anything
-   initially, but can be overridden by a module to allow
-   selection of game objects. The `Scenes` module adds in 
-   the select method which selects from the default stage.
-  
-       var Q = Quintus().include("Sprites, Scenes");
-       ... Game Code ...
-       // Set the angry property on all Enemy1 class objects to true
-       Q("Enemy1").p({ angry: true });
-    
-    @method Q
-    @for Quintus
-  */  
-  var Q = function(selector,scope,options) {   
+A la jQuery - the returned `Q` object is actually
+a method that calls `Q.select`. `Q.select` doesn't do anything
+initially, but can be overridden by a module to allow
+selection of game objects. The `Scenes` module adds in
+the select method which selects from the default stage.
+var Q = Quintus().include("Sprites, Scenes");
+... Game Code ...
+// Set the angry property on all Enemy1 class objects to true
+Q("Enemy1").p({ angry: true });
+@method Q
+@for Quintus
+*/
+  var Q = function(selector,scope,options) {
     return Q.select(selector,scope,options);
   };
 
   /**
-   Default no-op select method. Replaced with the Quintus.Scene class
+Default no-op select method. Replaced with the Quintus.Scene class
 
-   @method Q.select
-   @for Quintus
-  */
+@method Q.select
+@for Quintus
+*/
   Q.select = function() { /* No-op */ };
 
   // Syntax for including other modules into quintus, can accept a comma-separated
   // list of strings, an array of strings, or an array of actual objects. Example:
   //
-  //     Q.include("Input, Sprites, Scenes")
+  // Q.include("Input, Sprites, Scenes")
   //
   Q.include = function(mod) {
     Q._each(Q._normalizeArg(mod),function(name) {
@@ -103,8 +100,8 @@ var Quintus = function Quintus(opts) {
   // It's used to take a string of comma separated names and turn it into an `Array`
   // of names. If an array of names is passed in, it's left as is. Example usage:
   //
-  //     Q._normalizeArg("Sprites, Scenes, Physics   ");
-  //     // returns [ "Sprites", "Scenes", "Physics" ]
+  // Q._normalizeArg("Sprites, Scenes, Physics ");
+  // // returns [ "Sprites", "Scenes", "Physics" ]
   //
   // Used by `Q.include` and `Q.Sprite.add` to add modules and components, respectively.
   Q._normalizeArg = function(arg) {
@@ -218,7 +215,7 @@ var Quintus = function Quintus(opts) {
 
 
   // Basic detection method, returns the first instance where the
-  // iterator returns truthy. 
+  // iterator returns truthy.
   Q._detect = function(obj,iterator,context,arg1,arg2) {
     var result;
     if (obj == null) { return; }
@@ -280,7 +277,7 @@ var Quintus = function Quintus(opts) {
   Q._keys = Object.keys || function(obj) {
     if(Q._isObject(obj)) { throw new TypeError('Invalid object'); }
     var keys = [];
-    for (var key in obj) { if (Q._has(obj, key)) { keys[keys.length] = key; } } 
+    for (var key in obj) { if (Q._has(obj, key)) { keys[keys.length] = key; } }
     return keys;
   };
 
@@ -311,23 +308,23 @@ var Quintus = function Quintus(opts) {
   // Options
   // ========
   
-  // Default engine options defining the paths 
+  // Default engine options defining the paths
   // where images, audio and other data files should be found
   // relative to the base HTML file. As well as a couple of other
   // options.
   //
-  // These can be overriden by passing in options to the `Quintus()` 
+  // These can be overriden by passing in options to the `Quintus()`
   // factory method, for example:
   //
-  //     // Override the imagePath to default to /assets/images/
-  //     var Q = Quintus({ imagePath: "/assets/images/" });
+  // // Override the imagePath to default to /assets/images/
+  // var Q = Quintus({ imagePath: "/assets/images/" });
   //
   // If you follow the default convention from the examples, however,
   // you should be able to call `Quintus()` without any options.
   Q.options = {
     imagePath: "images/",
     audioPath: "audio/",
-    dataPath:  "data/",
+    dataPath: "data/",
     audioSupported: [ 'mp3','ogg' ],
     sound: true,
     frameTimeLimit: 100
@@ -341,35 +338,35 @@ var Quintus = function Quintus(opts) {
 
 
   // By default the engine doesn't start a game loop until you actually tell it to.
-  // Usually the loop is started the first time you call `Q.stageScene`, but if you 
+  // Usually the loop is started the first time you call `Q.stageScene`, but if you
   // aren't using the `Scenes` module you can explicitly start the game loop yourself
   // and control **exactly** what the engine does each cycle. For example:
   //
-  //     var Q = Quintus().setup();
+  // var Q = Quintus().setup();
   //
-  //     var ball = new Q.Sprite({ .. });
+  // var ball = new Q.Sprite({ .. });
   //
-  //     Q.gameLoop(function(dt) {
-  //       Q.clear(); 
-  //       ball.step(dt);
-  //       ball.draw(Q.ctx);
-  //     });
+  // Q.gameLoop(function(dt) {
+  // Q.clear();
+  // ball.step(dt);
+  // ball.draw(Q.ctx);
+  // });
   //
-  // The callback will be called with fraction of a second that has elapsed since 
+  // The callback will be called with fraction of a second that has elapsed since
   // the last call to the loop method.
   Q.gameLoop = function(callback) {
     Q.lastGameLoopFrame = new Date().getTime();
 
     // Short circuit the loop check in case multiple scenes
     // are staged immediately
-    Q.loop = true; 
+    Q.loop = true;
 
     // Keep track of the frame we are on (so that animations can be synced
     // to the next frame)
     Q._loopFrame = 0;
 
     // Wrap the callback to save it and standardize the passed
-    // in time. 
+    // in time.
     Q.gameLoopCallbackWrapper = function() {
       var now = new Date().getTime();
       Q._loopFrame++;
@@ -377,7 +374,7 @@ var Quintus = function Quintus(opts) {
       var dt = now - Q.lastGameLoopFrame;
       /* Prevent fast-forwarding by limiting the length of a single frame. */
       if(dt > Q.options.frameTimeLimit) { dt = Q.options.frameTimeLimit; }
-      callback.apply(Q,[dt / 1000]);  
+      callback.apply(Q,[dt / 1000]);
       Q.lastGameLoopFrame = now;
     };
 
@@ -389,7 +386,7 @@ var Quintus = function Quintus(opts) {
   // setInterval in your game, those will, of course, keep on rolling...
   Q.pauseGame = function() {
     if(Q.loop) {
-      window.cancelAnimationFrame(Q.loop); 
+      window.cancelAnimationFrame(Q.loop);
     }
     Q.loop = null;
   };
@@ -404,93 +401,78 @@ var Quintus = function Quintus(opts) {
 
 
   /**
-   The base Class object
-  
-   Quintus uses the Simple JavaScript inheritance Class object, created by
-   John Resig and described on his blog: 
-  
-   [http://ejohn.org/blog/simple-javascript-inheritance/](http://ejohn.org/blog/simple-javascript-inheritance/)
-  
-   The class is used wholesale, with the only differences being that instead
-   of appearing in a top-level namespace, the `Class` object is available as 
-   `Q.Class` and a second argument on the `extend` method allows for adding
-   class level methods and the class name is passed in a parameter for introspection
-   purposes.
-  
-   Classes can be created by calling `Q.Class.extend(name,{ .. })`, although most of the time
-   you'll want to use one of the derivitive classes, `Q.Evented` or `Q.GameObject` which
-   have a little bit of functionality built-in. `Q.Evented` adds event binding and 
-   triggering support and `Q.GameObject` adds support for components and a destroy method.
-  
-   The main things Q.Class get you are easy inheritance, a constructor method called `init()`,
-   dynamic addition of a this._super method when a method is overloaded (be careful with 
-   this as it adds some overhead to method calls.) Calls to `instanceof` also all 
-   work as you'd hope.
-  
-   By convention, classes should be added onto to the `Q` object and capitalized, so if 
-   you wanted to create a new class for your game, you'd write:
-  
-       Q.Class.extend("MyClass",{ ... });
-  
-   Examples:
-  
-       Q.Class.extend("Bird",{ 
-         init: function(name) { this.name = name; },
-         speak: function() { console.log(this.name); },
-         fly: function()   { console.log("Flying"); }
-       });
-  
-       Q.Bird.extend("Penguin",{
-         speak: function() { console.log(this.name + " the penguin"); },
-         fly: function()   { console.log("Can't fly, sorry..."); }
-       });
-  
-       var randomBird = new Q.Bird("Frank"),
-           pengy      = new Q.Penguin("Pengy");
-  
-       randomBird.fly(); // Logs "Flying"
-       pengy.fly();      // Logs "Can't fly,sorry..."
-  
-       randomBird.speak(); // Logs "Frank"
-       pengy.speak();      // Logs "Pengy the penguin"
-  
-       console.log(randomBird instanceof Q.Bird);    // true 
-       console.log(randomBird instanceof Q.Penguin); // false
-       console.log(pengy instanceof Q.Bird);         // true 
-       console.log(pengy instanceof Q.Penguin);      // true 
+The base Class object
+Quintus uses the Simple JavaScript inheritance Class object, created by
+John Resig and described on his blog:
+[http://ejohn.org/blog/simple-javascript-inheritance/](http://ejohn.org/blog/simple-javascript-inheritance/)
+The class is used wholesale, with the only differences being that instead
+of appearing in a top-level namespace, the `Class` object is available as
+`Q.Class` and a second argument on the `extend` method allows for adding
+class level methods and the class name is passed in a parameter for introspection
+purposes.
+Classes can be created by calling `Q.Class.extend(name,{ .. })`, although most of the time
+you'll want to use one of the derivitive classes, `Q.Evented` or `Q.GameObject` which
+have a little bit of functionality built-in. `Q.Evented` adds event binding and
+triggering support and `Q.GameObject` adds support for components and a destroy method.
+The main things Q.Class get you are easy inheritance, a constructor method called `init()`,
+dynamic addition of a this._super method when a method is overloaded (be careful with
+this as it adds some overhead to method calls.) Calls to `instanceof` also all
+work as you'd hope.
+By convention, classes should be added onto to the `Q` object and capitalized, so if
+you wanted to create a new class for your game, you'd write:
+Q.Class.extend("MyClass",{ ... });
+Examples:
+Q.Class.extend("Bird",{
+init: function(name) { this.name = name; },
+speak: function() { console.log(this.name); },
+fly: function() { console.log("Flying"); }
+});
+Q.Bird.extend("Penguin",{
+speak: function() { console.log(this.name + " the penguin"); },
+fly: function() { console.log("Can't fly, sorry..."); }
+});
+var randomBird = new Q.Bird("Frank"),
+pengy = new Q.Penguin("Pengy");
+randomBird.fly(); // Logs "Flying"
+pengy.fly(); // Logs "Can't fly,sorry..."
+randomBird.speak(); // Logs "Frank"
+pengy.speak(); // Logs "Pengy the penguin"
+console.log(randomBird instanceof Q.Bird); // true
+console.log(randomBird instanceof Q.Penguin); // false
+console.log(pengy instanceof Q.Bird); // true
+console.log(pengy instanceof Q.Penguin); // true
 
-  Simple JavaScript Inheritance
-  By John Resig http://ejohn.org/
-  MIT Licensed.
-  
-  Inspired by base2 and Prototype
-  @class Q.Class
-  @for Quintus
-  */
+Simple JavaScript Inheritance
+By John Resig http://ejohn.org/
+MIT Licensed.
+Inspired by base2 and Prototype
+@class Q.Class
+@for Quintus
+*/
   (function(){
-    var initializing = false, 
+    var initializing = false,
         fnTest = /xyz/.test(function(){ var xyz;}) ? /\b_super\b/ : /.*/;
-    /** The base Class implementation (does nothing) 
-     *
-     * @constructor
-     * @for Q.Class
-     */
+    /** The base Class implementation (does nothing)
+*
+* @constructor
+* @for Q.Class
+*/
     Q.Class = function(){};
 
     /**
-     * See if a object is a specific class
-     *
-     * @method isA
-     */
+* See if a object is a specific class
+*
+* @method isA
+*/
     Q.Class.prototype.isA = function(className) {
       return this.className === className;
     };
     
     /**
-     * Create a new Class that inherits from this class 
-     *
-     * @method extend
-     */
+* Create a new Class that inherits from this class
+*
+* @method extend
+*/
     Q.Class.extend = function(className, prop, classMethods) {
       /* No name, don't add onto Q */
       if(!Q._isString(className)) {
@@ -517,7 +499,7 @@ var Quintus = function Quintus(opts) {
 
           /* The method only need to be bound temporarily, so we */
           /* remove it when we're done executing */
-          var ret = fn.apply(this, arguments);        
+          var ret = fn.apply(this, arguments);
           this._super = tmp;
 
           return ret;
@@ -527,10 +509,10 @@ var Quintus = function Quintus(opts) {
       /* Copy the properties over onto the new prototype */
       for (var name in prop) {
         /* Check if we're overwriting an existing function */
-        prototype[name] = typeof prop[name] === "function" && 
-          typeof _super[name] === "function" && 
-            fnTest.test(prop[name]) ? 
-              _superFactory(name,prop[name]) : 
+        prototype[name] = typeof prop[name] === "function" &&
+          typeof _super[name] === "function" &&
+            fnTest.test(prop[name]) ?
+              _superFactory(name,prop[name]) :
               prop[name];
       }
       
@@ -555,7 +537,7 @@ var Quintus = function Quintus(opts) {
         Q._extend(Class,classMethods);
       }
 
-      if(className) { 
+      if(className) {
         /* Save the class onto Q */
         Q[className] = Class;
 
@@ -573,23 +555,23 @@ var Quintus = function Quintus(opts) {
   // ==============
 
   /**
-   The `Q.Evented` class adds event handling onto the base `Q.Class` 
-   class. Q.Evented objects can trigger events and other objects can
-   bind to those events.
+The `Q.Evented` class adds event handling onto the base `Q.Class`
+class. Q.Evented objects can trigger events and other objects can
+bind to those events.
 
-   @class Q.Evented
-   @for Quintus
-  */
+@class Q.Evented
+@for Quintus
+*/
   Q.Class.extend("Evented",{
 
     /**
-    Binds a callback to an event on this object. If you provide a
-    `target` object, that object will add this event to it's list of
-    binds, allowing it to automatically remove it when it is destroyed.
+Binds a callback to an event on this object. If you provide a
+`target` object, that object will add this event to it's list of
+binds, allowing it to automatically remove it when it is destroyed.
 
-    @method on
-    @for Q.Evented
-    */
+@method on
+@for Q.Evented
+*/
     on: function(event,target,callback) {
       if(Q._isArray(event) || event.indexOf(",") !== -1) {
         event = Q._normalizeArg(event);
@@ -620,13 +602,13 @@ var Quintus = function Quintus(opts) {
       // To keep `Q.Evented` objects from needing a constructor,
       // the `listeners` object is created on the fly as needed.
       // `listeners` keeps a list of callbacks indexed by event name
-      // for quick lookup. 
+      // for quick lookup.
       this.listeners = this.listeners || {};
       this.listeners[event] = this.listeners[event] || [];
       this.listeners[event].push([ target || this, callback]);
 
       // With a provided target, the target object keeps track of
-      // the events it is bound to, which allows for automatic 
+      // the events it is bound to, which allows for automatic
       // unbinding on destroy.
       if(target) {
         if(!target.binds) { target.binds = []; }
@@ -635,7 +617,7 @@ var Quintus = function Quintus(opts) {
     },
 
     // Triggers an event, passing in some optional additional data about
-    // the event. 
+    // the event.
     trigger: function(event,data) {
       // First make sure there are any listeners, then check for any listeners
       // on this specific event, if not, early out.
@@ -649,7 +631,7 @@ var Quintus = function Quintus(opts) {
       }
     },
     
-    // Unbinds an event. Can be called with 1, 2, or 3 parameters, each 
+    // Unbinds an event. Can be called with 1, 2, or 3 parameters, each
     // of which unbinds a more specific listener.
     off: function(event,target,callback) {
       // Without a target, remove all teh listeners.
@@ -710,16 +692,16 @@ var Quintus = function Quintus(opts) {
 
 
   /**
-   The master list of registered components, indexed in an object by name.
+The master list of registered components, indexed in an object by name.
 
-   @property Q.components
-   @for Quintus
-  */
+@property Q.components
+@for Quintus
+*/
   Q.components = {};
 
   // The base class for components. These are usually not derived directly but are instead
-  // created by calling `Q.register` to register a new component given a set of methods the 
-  // component supports. Components are created automatically when they are added to a 
+  // created by calling `Q.register` to register a new component given a set of methods the
+  // component supports. Components are created automatically when they are added to a
   // `Q.GameObject` with the `add` method.
   //
   // Many components also define an `added` method, which is called automatically by the
@@ -728,11 +710,11 @@ var Quintus = function Quintus(opts) {
   Q.Evented.extend("Component",{
 
     // Components are created when they are added onto a `Q.GameObject` entity. The entity
-    // is directly extended with any methods inside of an `extend` property and then the 
-    // component itself is added onto the entity as well. 
+    // is directly extended with any methods inside of an `extend` property and then the
+    // component itself is added onto the entity as well.
     init: function(entity) {
       this.entity = entity;
-      if(this.extend) { Q._extend(entity,this.extend);   }
+      if(this.extend) { Q._extend(entity,this.extend); }
       entity[this.name] = this;
 
       entity.activeComponents.push(this.componentName);
@@ -740,12 +722,12 @@ var Quintus = function Quintus(opts) {
       if(entity.stage && entity.stage.addToList) {
         entity.stage.addToList(this.componentName,entity);
       }
-      if(this.added) { this.added(); }    
+      if(this.added) { this.added(); }
     },
 
-    // `destroy` is called automatically when a component is removed from an entity. It is 
+    // `destroy` is called automatically when a component is removed from an entity. It is
     // not called, however, when an entity is destroyed (for performance reasons).
-    // 
+    //
     // It's job is to remove any methods that were added with `extend` and then remove and
     // debind itself from the entity. It will also call `destroyed` if the component has
     // a method by that name.
@@ -758,7 +740,7 @@ var Quintus = function Quintus(opts) {
       }
       delete this.entity[this.name];
       var idx = this.entity.activeComponents.indexOf(this.componentName);
-      if(idx !== -1) { 
+      if(idx !== -1) {
         this.entity.activeComponents.splice(idx,1);
 
         if(this.entity.stage && this.entity.stage.addToList) {
@@ -770,7 +752,7 @@ var Quintus = function Quintus(opts) {
     }
   });
 
-  // This is the base class most Quintus objects are derived from, it extends 
+  // This is the base class most Quintus objects are derived from, it extends
   // `Q.Evented` and adds component support to an object, allowing components to
   // be added and removed from an object. It also defines a destroyed method
   // which will debind the object, remove it from it's parent (usually a scene)
@@ -780,11 +762,11 @@ var Quintus = function Quintus(opts) {
     // Simple check to see if a component already exists
     // on an object by searching for a property of the same name.
     has: function(component) {
-      return this[component] ? true : false; 
+      return this[component] ? true : false;
     },
 
 
-    // Adds one or more components to an object. Accepts either 
+    // Adds one or more components to an object. Accepts either
     // a comma separated string or an array of strings that map
     // to component names.
     //
@@ -799,13 +781,13 @@ var Quintus = function Quintus(opts) {
       for(var i=0,len=components.length;i<len;i++) {
         var name = components[i],
             Comp = Q.components[name];
-        if(!this.has(name) && Comp) { 
-          var c = new Comp(this); 
+        if(!this.has(name) && Comp) {
+          var c = new Comp(this);
           this.trigger('addComponent',c);
         }
       }
       return this;
-    }, 
+    },
 
     // Removes one or more components from an object. Accepts the
     // same style of parameters as `add`. Triggers a delComponent event
@@ -816,9 +798,9 @@ var Quintus = function Quintus(opts) {
       components = Q._normalizeArg(components);
       for(var i=0,len=components.length;i<len;i++) {
         var name = components[i];
-        if(name && this.has(name)) { 
+        if(name && this.has(name)) {
           this.trigger('delComponent',this[name]);
-          this[name].destroy(); 
+          this[name].destroy();
         }
       }
       return this;
@@ -839,7 +821,7 @@ var Quintus = function Quintus(opts) {
     }
   });
 
-  // This registers a component with the engine, making it available to `Q.GameObject`'s 
+  // This registers a component with the engine, making it available to `Q.GameObject`'s
   // This creates a new descendent class of `Q.Component` with new methods added in.
   Q.component = function(name,methods) {
     if(!methods) { return Q.components[name]; }
@@ -853,16 +835,16 @@ var Quintus = function Quintus(opts) {
   // track of the current state of the Game, for example when the player starts
   // a new game you might want to keep track of their score and remaining lives:
   //
-  //     Q.reset({ score: 0, lives: 2 });
+  // Q.reset({ score: 0, lives: 2 });
   //
   // Then in your game might want to add to the score:
-  //     
-  //      Q.state.inc("score",50);
   //
-  // In your hud, you can listen for change events on the state to update your 
+  // Q.state.inc("score",50);
+  //
+  // In your hud, you can listen for change events on the state to update your
   // display:
   //
-  //      Q.state.on("change.score",function() { .. update the score display .. });
+  // Q.state.on("change.score",function() { .. update the score display .. });
   //
   Q.GameObject.extend("GameState",{
     init: function(p) {
@@ -918,8 +900,8 @@ var Quintus = function Quintus(opts) {
   // Canvas Methods
   // ==============
   //
-  // The `setup` and `clear` method are the only two canvas-specific methods in 
-  // the core of Quintus. `imageData`  also uses canvas but it can be used in
+  // The `setup` and `clear` method are the only two canvas-specific methods in
+  // the core of Quintus. `imageData` also uses canvas but it can be used in
   // any type of game.
 
 
@@ -973,7 +955,7 @@ var Quintus = function Quintus(opts) {
         upsampleWidth = options.upsampleWidth,
         upsampleHeight = options.upsampleHeight;
 
-    if(options.maximize === true || (Q.touchDevice && options.maximize === 'touch'))  {
+    if(options.maximize === true || (Q.touchDevice && options.maximize === 'touch')) {
       document.body.style.padding = 0;
       document.body.style.margin = 0;
 
@@ -999,8 +981,8 @@ var Quintus = function Quintus(opts) {
       Q.el.height = h * 2;
     }
     else if(((resampleWidth && w > resampleWidth) ||
-        (resampleHeight && h > resampleHeight)) && 
-       Q.touchDevice) { 
+        (resampleHeight && h > resampleHeight)) &&
+       Q.touchDevice) {
       Q.el.style.height = h + "px";
       Q.el.style.width = w + "px";
       Q.el.width = w / 2;
@@ -1028,7 +1010,7 @@ var Quintus = function Quintus(opts) {
     
     Q.el.style.position = 'relative';
 
-    Q.ctx = Q.el.getContext && 
+    Q.ctx = Q.el.getContext &&
             Q.el.getContext("2d");
 
 
@@ -1076,10 +1058,10 @@ var Quintus = function Quintus(opts) {
   // =====================
   //
   // The engine supports loading assets of different types using
-  // `load` or `preload`. Assets are stored by their name so the 
+  // `load` or `preload`. Assets are stored by their name so the
   // same asset won't be loaded twice if it already exists.
 
-  // Augmentable list of asset types, loads a specific asset 
+  // Augmentable list of asset types, loads a specific asset
   // type if the file type matches, otherwise defaults to a Ajax
   // load of the data.
   //
@@ -1087,7 +1069,7 @@ var Quintus = function Quintus(opts) {
   // adding to `assetTypes` and adding a method called
   // loadAssetTYPENAME where TYPENAME is the name of the
   // type you added in.
-  Q.assetTypes = { 
+  Q.assetTypes = {
     png: 'Image', jpg: 'Image', gif: 'Image', jpeg: 'Image',
     ogg: 'Audio', wav: 'Audio', m4a: 'Audio', mp3: 'Audio'
   };
@@ -1101,7 +1083,7 @@ var Quintus = function Quintus(opts) {
 
     // Use the web audio loader instead of the regular loader
     // if it's supported.
-    var fileType =  Q.assetTypes[fileExt];
+    var fileType = Q.assetTypes[fileExt];
     if(fileType === 'Audio' && Q.audio && Q.audio.type === "WebAudio") {
       fileType = 'WebAudio';
     }
@@ -1110,7 +1092,7 @@ var Quintus = function Quintus(opts) {
     return fileType || 'Other';
   };
 
-  // Either return an absolute URL, 
+  // Either return an absolute URL,
   // or add a base to a relative URL
   Q.assetUrl = function(base,url) {
     var timestamp = "";
@@ -1124,20 +1106,20 @@ var Quintus = function Quintus(opts) {
     }
   };
 
-  // Loader for Images, creates a new `Image` object and uses the 
+  // Loader for Images, creates a new `Image` object and uses the
   // load callback to determine the image has been loaded
   Q.loadAssetImage = function(key,src,callback,errorCallback) {
     var img = new Image();
-    img.onload = function() {  callback(key,img); };
+    img.onload = function() { callback(key,img); };
     img.onerror = errorCallback;
     img.src = Q.assetUrl(Q.options.imagePath,src);
   };
 
 
-  // List of mime types given an audio file extension, used to 
-  // determine what sound types the browser can play using the 
+  // List of mime types given an audio file extension, used to
+  // determine what sound types the browser can play using the
   // built-in `Sound.canPlayType`
-  Q.audioMimeTypes = { mp3: 'audio/mpeg', 
+  Q.audioMimeTypes = { mp3: 'audio/mpeg',
                        ogg: 'audio/ogg; codecs="vorbis"',
                        m4a: 'audio/m4a',
                        wav: 'audio/wav' };
@@ -1148,16 +1130,16 @@ var Quintus = function Quintus(opts) {
     var snd = new Audio();
 
     /* Find a supported type */
-    return Q._audioAssetPreferredExtension = 
+    return Q._audioAssetPreferredExtension =
       Q._detect(Q.options.audioSupported,
          function(extension) {
-         return snd.canPlayType(Q.audioMimeTypes[extension]) ? 
+         return snd.canPlayType(Q.audioMimeTypes[extension]) ?
                                 extension : null;
       });
   };
 
-  // Loader for Audio assets. By default chops off the extension and 
-  // will automatically determine which of the supported types is 
+  // Loader for Audio assets. By default chops off the extension and
+  // will automatically determine which of the supported types is
   // playable by the browser and load that type.
   //
   // Which types are available are determined by the file extensions
@@ -1182,12 +1164,12 @@ var Quintus = function Quintus(opts) {
     snd.addEventListener("error",errorCallback);
 
     // Don't wait for canplaythrough on mobile
-    if(!Q.touchDevice) { 
-      snd.addEventListener('canplaythrough',function() { 
-        callback(key,snd); 
+    if(!Q.touchDevice) {
+      snd.addEventListener('canplaythrough',function() {
+        callback(key,snd);
       });
     }
-    snd.src =  Q.assetUrl(Q.options.audioPath,baseName + "." + extension);
+    snd.src = Q.assetUrl(Q.options.audioPath,baseName + "." + extension);
     snd.load();
 
     if(Q.touchDevice) {
@@ -1260,18 +1242,18 @@ var Quintus = function Quintus(opts) {
 
   // Load assets, and call our callback when done.
   //
-  // Also optionally takes a `progressCallback` which will be called 
+  // Also optionally takes a `progressCallback` which will be called
   // with the number of assets loaded and the total number of assets
-  // to allow showing of a progress. 
+  // to allow showing of a progress.
   //
   // Assets can be passed in as an array of file names, and Quintus
-  // will use the file names as the name for reference, or as a hash of 
-  // `{ name: filename }`. 
+  // will use the file names as the name for reference, or as a hash of
+  // `{ name: filename }`.
   //
   // Example usage:
-  //     Q.load(['sprites.png','sprites.,json'],function() {
-  //        Q.stageScene("level1"); // or something to start the game.
-  //     });
+  // Q.load(['sprites.png','sprites.,json'],function() {
+  // Q.stageScene("level1"); // or something to start the game.
+  // });
   Q.load = function(assets,callback,options) {
     var assetObj = {};
 
@@ -1284,7 +1266,7 @@ var Quintus = function Quintus(opts) {
     var errors = false,
         errorCallback = function(itm) {
           errors = true;
-          (options.errorCallback  ||
+          (options.errorCallback ||
            function(itm) { throw("Error Loading: " + itm ); })(itm);
         };
 
@@ -1295,7 +1277,7 @@ var Quintus = function Quintus(opts) {
 
     /* If the user passed in an array, convert it */
     /* to a hash with lookups by filename */
-    if(Q._isArray(assets)) { 
+    if(Q._isArray(assets)) {
       Q._each(assets,function(itm) {
         if(Q._isObject(itm)) {
           Q._extend(assetObj,itm);
@@ -1327,8 +1309,8 @@ var Quintus = function Quintus(opts) {
         assetsRemaining--;
 
         /* Update our progress if we have it */
-        if(progressCallback) { 
-           progressCallback(assetsTotal - assetsRemaining,assetsTotal); 
+        if(progressCallback) {
+           progressCallback(assetsTotal - assetsRemaining,assetsTotal);
         }
       }
 
@@ -1337,7 +1319,7 @@ var Quintus = function Quintus(opts) {
       if(assetsRemaining === 0 && callback) {
         /* if we haven't set up our canvas element yet, */
         /* assume we're using a canvas with id 'quintus' */
-        callback.apply(Q); 
+        callback.apply(Q);
       }
     };
 
@@ -1363,7 +1345,7 @@ var Quintus = function Quintus(opts) {
 
   };
 
-  // Array to store any assets that need to be 
+  // Array to store any assets that need to be
   // preloaded
   Q.preloads = [];
   
@@ -1373,14 +1355,14 @@ var Quintus = function Quintus(opts) {
   // Q.load method if used.
   //
   // Example usage:
-  //      Q.preload("sprites.png");
-  //      ...
-  //      Q.preload("sprites.json");
-  //      ...
+  // Q.preload("sprites.png");
+  // ...
+  // Q.preload("sprites.json");
+  // ...
   //
-  //      Q.preload(function() {
-  //         Q.stageScene("level1"); // or something to start the game
-  //      });
+  // Q.preload(function() {
+  // Q.stageScene("level1"); // or something to start the game
+  // });
   Q.preload = function(arg,options) {
     if(Q._isFunction(arg)) {
       Q.load(Q._uniq(Q.preloads),arg,options);
@@ -1404,9 +1386,9 @@ var Quintus = function Quintus(opts) {
   };
 
   // A 2D matrix class, optimized for 2D points,
-  // where the last row of the matrix will always be 0,0,1 
-  // Good Docs where: 
-  //    https://github.com/heygrady/transform/wiki/calculating-2d-matrices
+  // where the last row of the matrix will always be 0,0,1
+  // Good Docs where:
+  // https://github.com/heygrady/transform/wiki/calculating-2d-matrices
   Q.Matrix2D = Q.Class.extend({
     init: function(source) {
 
@@ -1434,9 +1416,9 @@ var Quintus = function Quintus(opts) {
       return this;
     },
 
-    // a * b = 
-    //   [ [ a11*b11 + a12*b21 ], [ a11*b12 + a12*b22 ], [ a11*b31 + a12*b32 + a13 ] ,
-    //   [ a21*b11 + a22*b21 ], [ a21*b12 + a22*b22 ], [ a21*b31 + a22*b32 + a23 ] ]
+    // a * b =
+    // [ [ a11*b11 + a12*b21 ], [ a11*b12 + a12*b22 ], [ a11*b31 + a12*b32 + a13 ] ,
+    // [ a21*b11 + a22*b21 ], [ a21*b12 + a22*b22 ], [ a21*b31 + a22*b32 + a23 ] ]
     multiply: function(matrix) {
       var a = this.m, b = matrix.m;
 
@@ -1453,17 +1435,17 @@ var Quintus = function Quintus(opts) {
       return this;
     },
 
-    // Multiply this matrix by a rotation matrix rotated radians radians 
+    // Multiply this matrix by a rotation matrix rotated radians radians
     rotate: function(radians) {
       if(radians === 0) { return this; }
       var cos = Math.cos(radians),
           sin = Math.sin(radians),
           m = this.m;
 
-      var m11 = m[0]*cos  + m[1]*sin;
+      var m11 = m[0]*cos + m[1]*sin;
       var m12 = m[0]*-sin + m[1]*cos;
 
-      var m21 = m[3]*cos  + m[4]*sin;
+      var m21 = m[3]*cos + m[4]*sin;
       var m22 = m[3]*-sin + m[4]*cos;
 
       m[0] = m11; m[1] = m12; // m[2] == m[2]
@@ -1501,7 +1483,7 @@ var Quintus = function Quintus(opts) {
 
     // Memory Hoggy version
     transform: function(x,y) {
-      return [ x * this.m[0] + y * this.m[1] + this.m[2], 
+      return [ x * this.m[0] + y * this.m[1] + this.m[2],
                x * this.m[3] + y * this.m[4] + this.m[5] ];
     },
 
@@ -1545,15 +1527,15 @@ var Quintus = function Quintus(opts) {
     setContextTransform: function(ctx) {
       var m = this.m;
       // source:
-      //  m[0] m[1] m[2]
-      //  m[3] m[4] m[5]
-      //  0     0   1
+      // m[0] m[1] m[2]
+      // m[3] m[4] m[5]
+      // 0 0 1
       //
       // destination:
-      //  m11  m21  dx
-      //  m12  m22  dy
-      //  0    0    1
-      //  setTransform(m11, m12, m21, m22, dx, dy)
+      // m11 m21 dx
+      // m12 m22 dy
+      // 0 0 1
+      // setTransform(m11, m12, m21, m22, dx, dy)
       ctx.transform(m[0],m[3],m[1],m[4],m[2],m[5]);
       //ctx.setTransform(m[0],m[1],m[2],m[3],m[4],m[5]);
     }
@@ -1567,14 +1549,14 @@ var Quintus = function Quintus(opts) {
   return Q;
 };
 
-// Lastly, add in the `requestAnimationFrame` shim, if necessary. Does nothing 
+// Lastly, add in the `requestAnimationFrame` shim, if necessary. Does nothing
 // if `requestAnimationFrame` is already on the `window` object.
 (function() {
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
     for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
         window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame = 
+        window.cancelAnimationFrame =
           window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
     }
  
@@ -1582,7 +1564,7 @@ var Quintus = function Quintus(opts) {
         window.requestAnimationFrame = function(callback, element) {
             var currTime = new Date().getTime();
             var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
               timeToCall);
             lastTime = currTime + timeToCall;
             return id;
@@ -1643,7 +1625,7 @@ Quintus["2D"] = function(Q) {
       var followY = Q._isFunction(this.directions.y) ? this.directions.y(this.following) : this.directions.y;
 
       this[first === true ? 'centerOn' : 'softCenterOn'](
-                    followX ? 
+                    followX ?
                       this.following.p.x + this.following.p.w/2 - this.offsetX :
                       undefined,
                     followY ?
@@ -1658,7 +1640,7 @@ Quintus["2D"] = function(Q) {
     },
 
     softCenterOn: function(x,y) {
-      if(x !== void 0) {        
+      if(x !== void 0) {
         var dx = (x - Q.width / 2 / this.scale - this.x)/3;
         if(this.boundingBox) {
           if(this.x + dx < this.boundingBox.minX) {
@@ -1669,13 +1651,13 @@ Quintus["2D"] = function(Q) {
           }
           else {
             this.x += dx;
-          }            
+          }
         }
         else {
           this.x += dx;
         }
       }
-      if(y !== void 0) { 
+      if(y !== void 0) {
         var dy = (y - Q.height / 2 / this.scale - this.y)/3;
         if(this.boundingBox) {
           if(this.y + dy < this.boundingBox.minY) {
@@ -1686,7 +1668,7 @@ Quintus["2D"] = function(Q) {
           }
           else {
             this.y += dy;
-          }            
+          }
         }
         else {
           this.y += dy;
@@ -1698,7 +1680,7 @@ Quintus["2D"] = function(Q) {
       if(x !== void 0) {
         this.x = x - Q.width / 2 / this.scale;
       }
-      if(y !== void 0) { 
+      if(y !== void 0) {
         this.y = y - Q.height / 2 / this.scale;
       }
 
@@ -1708,7 +1690,7 @@ Quintus["2D"] = function(Q) {
       if(x !== void 0) {
         this.x = x;
       }
-      if(y !== void 0) { 
+      if(y !== void 0) {
         this.y = y;
       }
       return this.entity;
@@ -1747,10 +1729,10 @@ Quintus["2D"] = function(Q) {
       this.blocks = [];
       this.p.blockW = this.p.tileW * this.p.blockTileW;
       this.p.blockH = this.p.tileH * this.p.blockTileH;
-      this.colBounds = {}; 
+      this.colBounds = {};
       this.directions = [ 'top','left','right','bottom'];
 
-      this.collisionObject = { 
+      this.collisionObject = {
         p: {
           w: this.p.tileW,
           h: this.p.tileH,
@@ -1767,8 +1749,8 @@ Quintus["2D"] = function(Q) {
           fileExt = fileParts[fileParts.length-1].toLowerCase(),
           data;
 
-      if (fileExt === "json") {  
-        data = Q._isString(dataAsset) ?  Q.asset(dataAsset) : dataAsset;
+      if (fileExt === "json") {
+        data = Q._isString(dataAsset) ? Q.asset(dataAsset) : dataAsset;
       }
       else if (fileExt === "tmx" || fileExt === "xml") {
         var parser = new DOMParser(),
@@ -1813,7 +1795,7 @@ Quintus["2D"] = function(Q) {
 
       if(blockX >= 0 && blockY >= 0 &&
          blockX < this.p.cols &&
-         blockY <  this.p.cols) {
+         blockY < this.p.cols) {
         this.p.tiles[y][x] = tile;
         if(this.blocks[blockY]) {
           this.blocks[blockY][blockX] = null;
@@ -1841,8 +1823,8 @@ Quintus["2D"] = function(Q) {
       var p = this.p,
           tileStartX = Math.floor((obj.p.x - obj.p.cx - p.x) / p.tileW),
           tileStartY = Math.floor((obj.p.y - obj.p.cy - p.y) / p.tileH),
-          tileEndX =  Math.ceil((obj.p.x - obj.p.cx + obj.p.w - p.x) / p.tileW),
-          tileEndY =  Math.ceil((obj.p.y - obj.p.cy + obj.p.h - p.y) / p.tileH),
+          tileEndX = Math.ceil((obj.p.x - obj.p.cx + obj.p.w - p.x) / p.tileW),
+          tileEndY = Math.ceil((obj.p.y - obj.p.cy + obj.p.h - p.y) / p.tileH),
           colObj = this.collisionObject,
           normal = this.collisionNormal,
           col;
@@ -1856,7 +1838,7 @@ Quintus["2D"] = function(Q) {
             colObj.p.y = tileY * p.tileH + p.y + p.tileH/2;
             
             col = Q.collision(obj,colObj);
-            if(col && col.magnitude > 0 && 
+            if(col && col.magnitude > 0 &&
                (!normal.collided || normal.magnitude < col.magnitude )) {
                  normal.collided = true;
                  normal.separate[0] = col.separate[0];
@@ -1919,7 +1901,7 @@ Quintus["2D"] = function(Q) {
         this.prerenderBlock(blockX,blockY);
       }
 
-      if(this.blocks[blockY]  && this.blocks[blockY][blockX]) {
+      if(this.blocks[blockY] && this.blocks[blockY][blockX]) {
         ctx.drawImage(this.blocks[blockY][blockX],startX,startY);
       }
     },
@@ -1981,7 +1963,7 @@ Quintus["2D"] = function(Q) {
       p.y -= col.separate[1];
 
       // Top collision
-      if(col.normalY < -0.3) { 
+      if(col.normalY < -0.3) {
         if(p.vy > 0) { p.vy = 0; }
         col.impact = impactY;
         entity.trigger("bump.bottom",col);
@@ -1993,12 +1975,12 @@ Quintus["2D"] = function(Q) {
         entity.trigger("bump.top",col);
       }
 
-      if(col.normalX < -0.3) { 
-        if(p.vx > 0) { p.vx = 0;  }
+      if(col.normalX < -0.3) {
+        if(p.vx > 0) { p.vx = 0; }
         col.impact = impactX;
         entity.trigger("bump.right",col);
       }
-      if(col.normalX > 0.3) { 
+      if(col.normalX > 0.3) {
         if(p.vx < 0) { p.vx = 0; }
         col.impact = impactX;
 
@@ -2010,7 +1992,7 @@ Quintus["2D"] = function(Q) {
       var p = this.entity.p,
           dtStep = dt;
       // TODO: check the entity's magnitude of vx and vy,
-      // reduce the max dtStep if necessary to prevent 
+      // reduce the max dtStep if necessary to prevent
       // skipping through objects.
       while(dtStep > 0) {
         dt = Math.min(1/30,dtStep);
@@ -2033,7 +2015,7 @@ Quintus["2D"] = function(Q) {
     },
 
     goLeft: function(col) {
-      this.entity.p.vx = -col.impact;      
+      this.entity.p.vx = -col.impact;
       if(this.entity.p.defaultDirection === 'right') {
           this.entity.p.flip = 'x';
       }
@@ -2094,7 +2076,7 @@ Quintus.Anim = function(Q) {
         p.animationTime += dt;
         if(p.animationChanged) {
           p.animationChanged = false;
-        } else { 
+        } else {
           p.animationTime += dt;
           if(p.animationTime > rate) {
             stepped = Math.floor(p.animationTime / rate);
@@ -2110,7 +2092,7 @@ Quintus.Anim = function(Q) {
               entity.trigger('animEnd.' + p.animation);
               p.animation = null;
               p.animationPriority = -1;
-              if(anim.trigger) {  
+              if(anim.trigger) {
                 entity.trigger(anim.trigger,anim.triggerData);
               }
               if(anim.next) { this.play(anim.next,anim.nextPriority); }
@@ -2256,7 +2238,7 @@ Quintus.Anim = function(Q) {
       }
 
       if(progress >= 1) {
-        if(this.options.callback) { 
+        if(this.options.callback) {
           this.options.callback.apply(this.entity);
         }
       }
@@ -2270,7 +2252,7 @@ Quintus.Anim = function(Q) {
     Linear: function (k) { return k; },
 
     Quadratic: {
-      In: function ( k )  { return k * k; },
+      In: function ( k ) { return k * k; },
       Out: function ( k ) {return k * ( 2 - k ); },
       InOut: function ( k ) {
         if ((k *= 2 ) < 1) { return 0.5 * k * k; }
@@ -2298,7 +2280,7 @@ Quintus.Anim = function(Q) {
           var lastTween = this.tween._tweens[tweenCnt - 1];
           options = options || {};
           options['delay'] = lastTween.duration - lastTween.time + lastTween.delay;
-        } 
+        }
 
         this.animate(properties,duration,easing,options);
         return this;
@@ -2330,7 +2312,7 @@ Quintus.Audio = function(Q) {
 
   Q.audio = {
     channels: [],
-    channelMax:  Q.options.channelMax || 10,
+    channelMax: Q.options.channelMax || 10,
     active: {},
     play: function() {}
   };
@@ -2338,7 +2320,7 @@ Quintus.Audio = function(Q) {
 
   Q.hasWebAudio = (typeof AudioContext !== "undefined") || (typeof webkitAudioContext !== "undefined");
 
-  if(Q.hasWebAudio) { 
+  if(Q.hasWebAudio) {
     if(typeof AudioContext !== "undefined") {
       Q.audioContext = new AudioContext();
     } else {
@@ -2347,7 +2329,7 @@ Quintus.Audio = function(Q) {
   }
 
   Q.enableSound = function() {
-    var hasTouch =  !!('ontouchstart' in window);
+    var hasTouch = !!('ontouchstart' in window);
 
     if(Q.hasWebAudio) {
       Q.audio.enableWebAudioSound();
@@ -2370,12 +2352,12 @@ Quintus.Audio = function(Q) {
       delete Q.audio.playingSounds[soundID];
     };
 
-    // Play a single sound, optionally debounced 
+    // Play a single sound, optionally debounced
     // to prevent repeated plays in a short time
     Q.audio.play = function(s,options) {
       var now = new Date().getTime();
 
-      // See if this audio file is currently being debounced, if 
+      // See if this audio file is currently being debounced, if
       // it is, don't do anything and just return
       if(Q.audio.active[s] && Q.audio.active[s] > now) { return; }
 
@@ -2411,7 +2393,7 @@ Quintus.Audio = function(Q) {
       for(var key in Q.audio.playingSounds) {
         var snd = Q.audio.playingSounds[key];
         if(!s || s === snd.assetName) {
-          if(snd.stop) { snd.stop(0);  } else {  snd.noteOff(0); }
+          if(snd.stop) { snd.stop(0); } else { snd.noteOff(0); }
         }
       }
     };
@@ -2421,18 +2403,18 @@ Quintus.Audio = function(Q) {
   Q.audio.enableHTML5Sound = function() {
     Q.audio.type = "HTML5";
 
-    for (var i=0;i<Q.audio.channelMax;i++) {	
+    for (var i=0;i<Q.audio.channelMax;i++) {        
       Q.audio.channels[i] = {};
-      Q.audio.channels[i]['channel'] = new Audio();  // HTML5 Audio Element
-      Q.audio.channels[i]['finished'] = -1;	
+      Q.audio.channels[i]['channel'] = new Audio(); // HTML5 Audio Element
+      Q.audio.channels[i]['finished'] = -1;        
     }
 
-    // Play a single sound, optionally debounced 
+    // Play a single sound, optionally debounced
     // to prevent repeated plays in a short time
     Q.audio.play = function(s,options) {
       var now = new Date().getTime();
 
-      // See if this audio file is currently being debounced, if 
+      // See if this audio file is currently being debounced, if
       // it is, don't do anything and just return
       if(Q.audio.active[s] && Q.audio.active[s] > now) { return; }
 
@@ -2447,13 +2429,13 @@ Quintus.Audio = function(Q) {
       // Find a free audio channel and play the sound
       for (var i=0;i<Q.audio.channels.length;i++) {
         // Check the channel is either finished or not looping
-        if (!Q.audio.channels[i]['loop'] && Q.audio.channels[i]['finished'] < now) {	
+        if (!Q.audio.channels[i]['loop'] && Q.audio.channels[i]['finished'] < now) {        
 
           Q.audio.channels[i]['channel'].src = Q.asset(s).src;
 
           // If we're looping - just set loop to true to prevent this channcel
           // from being used.
-          if(options && options['loop']) { 
+          if(options && options['loop']) {
             Q.audio.channels[i]['loop'] = true;
             Q.audio.channels[i]['channel'].loop = true;
           } else {
@@ -2471,7 +2453,7 @@ Quintus.Audio = function(Q) {
       var src = s ? Q.asset(s).src : null;
       var tm = new Date().getTime();
       for (var i=0;i<Q.audio.channels.length;i++) {
-        if ((!src || Q.audio.channels[i]['channel'].src === src) && 
+        if ((!src || Q.audio.channels[i]['channel'].src === src) &&
             (Q.audio.channels[i]['loop'] || Q.audio.channels[i]['finished'] >= tm)) {
           Q.audio.channels[i]['channel'].pause();
           Q.audio.channels[i]['loop'] = false;
@@ -2505,43 +2487,43 @@ concerns itself with game-type (pretty anything besides touchscreen input)
 */
 
 /**
- * Quintus Input class
- *
- * @class Quintus.Input
- */
+* Quintus Input class
+*
+* @class Quintus.Input
+*/
 Quintus.Input = function(Q) {
   var KEY_NAMES = { LEFT: 37, RIGHT: 39, SPACE: 32,
                     UP: 38, DOWN: 40,
-                    Z: 90, X: 88   
+                    Z: 90, X: 88
                   };
   
   var DEFAULT_KEYS = { LEFT: 'left', RIGHT: 'right',
-                       UP: 'up',     DOWN: 'down',
+                       UP: 'up', DOWN: 'down',
                        SPACE: 'fire',
                        Z: 'fire',
                        X: 'action' };
 
-  var DEFAULT_TOUCH_CONTROLS  = [ ['left','<' ],
+  var DEFAULT_TOUCH_CONTROLS = [ ['left','<' ],
                             ['right','>' ],
                             [],
                             ['action','b'],
                             ['fire', 'a' ]];
 
   // Clockwise from midnight (a la CSS)
-  var DEFAULT_JOYPAD_INPUTS =  [ 'up','right','down','left'];
+  var DEFAULT_JOYPAD_INPUTS = [ 'up','right','down','left'];
 
   Q.inputs = {};
   Q.joypad = {};
 
-  var hasTouch =  !!('ontouchstart' in window);
+  var hasTouch = !!('ontouchstart' in window);
 
 
   /**
-   *
-   * Convert a canvas point to a stage point, x dimension
-   *
-   * @method Q.canvasToStageX
-   */
+*
+* Convert a canvas point to a stage point, x dimension
+*
+* @method Q.canvasToStageX
+*/
   Q.canvasToStageX = function(x,stage) {
     x = x / Q.cssWidth * Q.width;
     if(stage.viewport) {
@@ -2553,11 +2535,11 @@ Quintus.Input = function(Q) {
   };
 
   /**
-   *
-   * Convert a canvas point to a stage point, y dimension
-   *
-   * @method Q.canvasToStageY
-   */
+*
+* Convert a canvas point to a stage point, y dimension
+*
+* @method Q.canvasToStageY
+*/
   Q.canvasToStageY = function(y,stage) {
       y = y / Q.cssWidth * Q.width;
       if(stage.viewport) {
@@ -2571,14 +2553,14 @@ Quintus.Input = function(Q) {
 
 
   /**
-   *
-   * Button and mouse input subsystem for Quintus.
-   * An instance of this class is auto-created as {{#crossLink "Q.input"}}{{/crossLink}}
-   *
-   * @class InputSystem
-   * @extends Evented
-   * @for Quintus.Input
-   */
+*
+* Button and mouse input subsystem for Quintus.
+* An instance of this class is auto-created as {{#crossLink "Q.input"}}{{/crossLink}}
+*
+* @class InputSystem
+* @extends Evented
+* @for Quintus.Input
+*/
   Q.InputSystem = Q.Evented.extend({
     keys: {},
     keypad: {},
@@ -2640,7 +2622,7 @@ Quintus.Input = function(Q) {
     },
 
     touchLocation: function(touch) {
-      var el = Q.el, 
+      var el = Q.el,
         posX = touch.offsetX,
         posY = touch.offsetY,
         touchX, touchY;
@@ -2778,7 +2760,7 @@ Quintus.Input = function(Q) {
           if(loc.x < joypad.zone) {
             joypad.joypadTouch = touch.identifier;
             joypad.centerX = loc.x;
-            joypad.centerY = loc.y; 
+            joypad.centerY = loc.y;
             joypad.x = null;
             joypad.y = null;
           }
@@ -2799,7 +2781,7 @@ Quintus.Input = function(Q) {
                   dy = loc.y - joypad.centerY,
                   dist = Math.sqrt(dx * dx + dy * dy),
                   overage = Math.max(1,dist / joypad.size),
-                  ang =  Math.atan2(dx,dy);
+                  ang = Math.atan2(dx,dy);
 
               if(overage > 1) {
                 dx /= overage;
@@ -2819,12 +2801,12 @@ Quintus.Input = function(Q) {
                 if(triggers[k]) {
                   Q.inputs[actionName] = true;
 
-                  if(!joypad.triggers[k]) { 
+                  if(!joypad.triggers[k]) {
                     Q.input.trigger(actionName);
                   }
                 } else {
                   Q.inputs[actionName] = false;
-                  if(joypad.triggers[k]) { 
+                  if(joypad.triggers[k]) {
                     Q.input.trigger(actionName + "Up");
                   }
                 }
@@ -2846,11 +2828,11 @@ Quintus.Input = function(Q) {
         e.preventDefault();
       };
 
-      this.joypadEnd = function(e) { 
+      this.joypadEnd = function(e) {
           var evt = e;
 
           if(joypad.joypadTouch !== null) {
-            for(var i=0,len=evt.changedTouches.length;i<len;i++) { 
+            for(var i=0,len=evt.changedTouches.length;i<len;i++) {
             var touch = evt.changedTouches[i];
               if(touch.identifier === joypad.joypadTouch) {
                 for(var k=0;k<joypad.triggers.length;k++) {
@@ -2898,7 +2880,7 @@ Quintus.Input = function(Q) {
       Q._mouseMove = function(e) {
         e.preventDefault();
         var touch = e.touches ? e.touches[0] : e;
-        var el = Q.el, 
+        var el = Q.el,
             posX = touch.offsetX,
             posY = touch.offsetY,
             eX, eY,
@@ -2944,7 +2926,7 @@ Quintus.Input = function(Q) {
           ctx = Q.ctx;
 
       ctx.save();
-      ctx.textAlign = "center"; 
+      ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
       for(var i=0;i<keypad.controls.length;i++) {
@@ -2978,7 +2960,7 @@ Quintus.Input = function(Q) {
       ctx.beginPath();
       ctx.globalAlpha=joypad.alpha;
       ctx.fillStyle = color;
-      ctx.arc(x, y, size, 0, Math.PI*2, true); 
+      ctx.arc(x, y, size, 0, Math.PI*2, true);
       ctx.closePath();
       ctx.fill();
       ctx.restore();
@@ -3016,11 +2998,11 @@ Quintus.Input = function(Q) {
   });
   
   /**
-   * Instance of the input subsytem that is actually used during development
-   *
-   * @property Q.input
-   * @for Quintus.Input
-   */
+* Instance of the input subsytem that is actually used during development
+*
+* @property Q.input
+* @for Quintus.Input
+*/
   Q.input = new Q.InputSystem();
 
   Q.controls = function(joypad) {
@@ -3141,13 +3123,13 @@ Quintus.Input = function(Q) {
         p.diffY = p.stepDistance;
       }
 
-      if(p.diffY || p.diffX ) { 
+      if(p.diffY || p.diffX ) {
         p.stepping = true;
         p.origX = p.x;
         p.origY = p.y;
         p.destX = p.x + p.diffX;
         p.destY = p.y + p.diffY;
-        p.stepWait = p.stepDelay; 
+        p.stepWait = p.stepDelay;
       }
 
     }
@@ -3188,7 +3170,7 @@ Quintus.Scenes = function(Q) {
       x: 0,
       y: 0,
       /* cx: 0,
-      cy: 0, */
+cy: 0, */
       angle: 0,
       scale: 1
     },
@@ -3198,7 +3180,7 @@ Quintus.Scenes = function(Q) {
  
   // Default to SAT collision between two objects
   // Thanks to doc's at: http://www.sevenson.com.au/actionscript/sat/
-  Q.collision = (function() { 
+  Q.collision = (function() {
     var normalX, normalY,
         offset = [ 0,0 ],
         result1 = { separate: [] },
@@ -3253,7 +3235,7 @@ Quintus.Scenes = function(Q) {
       } else {
         p2 = o2.p.points;
         offset[0] += -o2.p.x;
-        offset[1] += -o2.p.y; 
+        offset[1] += -o2.p.y;
       }
 
       o1 = o1.p;
@@ -3379,7 +3361,7 @@ Quintus.Scenes = function(Q) {
       this.time = 0;
 
       this.options = Q._extend({},this.defaults);
-      if(this.scene)  { 
+      if(this.scene) {
         Q._extend(this.options,scene.opts);
       }
       if(opts) { Q._extend(this.options,opts); }
@@ -3397,14 +3379,14 @@ Quintus.Scenes = function(Q) {
 
     // Needs to be separated out so the current stage can be set
     loadScene: function() {
-      if(this.scene)  { 
+      if(this.scene) {
         this.scene.sceneFunc(this);
       }
     },
 
     // Load an array of assets of the form:
     // [ [ "Player", { x: 15, y: 54 } ],
-    //   [ "Enemy",  { x: 54, y: 42 } ] ]
+    // [ "Enemy", { x: 54, y: 42 } ] ]
     // Either pass in the array or a string of asset name
     loadAssets: function(asset) {
       var assetArray = Q._isArray(asset) ? asset : Q.asset(asset);
@@ -3422,7 +3404,7 @@ Quintus.Scenes = function(Q) {
     },
 
     invoke: function(funcName) {
-      for(var i=0,len=this.items.length;i<len;i++) {              
+      for(var i=0,len=this.items.length;i<len;i++) {
         this.items[i][funcName].call(
           this.items[i],arguments[1],arguments[2]
         );
@@ -3469,7 +3451,7 @@ Quintus.Scenes = function(Q) {
 
     removeFromList: function(list, itm) {
       var listIndex = this.lists[list].indexOf(itm);
-      if(listIndex !== -1) { 
+      if(listIndex !== -1) {
         this.lists[list].splice(listIndex,1);
       }
     },
@@ -3509,8 +3491,8 @@ Quintus.Scenes = function(Q) {
     },
 
     forceRemove: function(itm) {
-      var idx =  this.items.indexOf(itm);
-      if(idx !== -1) { 
+      var idx = this.items.indexOf(itm);
+      if(idx !== -1) {
         this.items.splice(idx,1);
 
         if(itm.className) { this.removeFromList(itm.className,itm); }
@@ -3560,7 +3542,7 @@ Quintus.Scenes = function(Q) {
         if(this.grid[y]) {
           for(var x = grid.X1;x <= grid.X2;x++) {
             gridCell = this.grid[y][x];
-            if(gridCell) { 
+            if(gridCell) {
               col = Q._detect(gridCell,this._gridCellCheck,this,obj,collisionMask);
               if(col) { return col; }
             }
@@ -3589,11 +3571,11 @@ Quintus.Scenes = function(Q) {
     },
 
     _locateObj: {
-      p: { 
+      p: {
         x: 0,
         y: 0,
-				cx: 0,
-				cy: 0,
+                                cx: 0,
+                                cy: 0,
         w: 1,
         h: 1
       }, grid: {}
@@ -3611,7 +3593,7 @@ Quintus.Scenes = function(Q) {
         col = this._collisionLayer.collide(this._locateObj);
       }
 
-      if(!col) { 
+      if(!col) {
         col = this.gridTest(this._locateObj,collisionMask,this._collisionLayer);
       }
 
@@ -3624,7 +3606,7 @@ Quintus.Scenes = function(Q) {
     },
 
     collide: function(obj,options) {
-      var col, col2, collisionMask, 
+      var col, col2, collisionMask,
           maxCol, curCol, skipEvents;
       if(Q._isObject(options)) {
         collisionMask = options.collisionMask;
@@ -3633,7 +3615,7 @@ Quintus.Scenes = function(Q) {
       } else {
         collisionMask = options;
       }
-      collisionMask = collisionMask  || (obj.p && obj.p.collisionMask);
+      collisionMask = collisionMask || (obj.p && obj.p.collisionMask);
       maxCol = maxCol || 3;
 
       curCol = maxCol;
@@ -3642,7 +3624,7 @@ Quintus.Scenes = function(Q) {
       if(this._collisionLayer && (this._collisionLayer.p.type & collisionMask)) {
         while(curCol > 0 && (col = this._collisionLayer.collide(obj))) {
           col.obj = this._collisionLayer;
-          if(!skipEvents) { 
+          if(!skipEvents) {
             obj.trigger('hit',col);
             obj.trigger('hit.collision',col);
           }
@@ -3658,7 +3640,7 @@ Quintus.Scenes = function(Q) {
 
         // Do the recipricol collision
         // TODO: extract
-        if(!skipEvents) { 
+        if(!skipEvents) {
           var obj2 = col2.obj;
           col2.obj = obj;
           col2.normalX *= -1;
@@ -3721,7 +3703,7 @@ Quintus.Scenes = function(Q) {
           gridY2 = Math.floor((c.y - c.cy + c.h) / this.options.gridH),
           grid = item.grid;
 
-      if(grid.X1 !== gridX1 || grid.X2 !== gridX2 || 
+      if(grid.X1 !== gridX1 || grid.X2 !== gridX2 ||
          grid.Y1 !== gridY1 || grid.Y2 !== gridY2) {
 
          if(grid.X1 !== void 0) { this.delGrid(item); }
@@ -3748,7 +3730,7 @@ Quintus.Scenes = function(Q) {
           gridRow, gridBlock;
 
       for(var iy=gridY1; iy<=gridY2; iy++) {
-        if((gridRow = this.grid[iy])) { 
+        if((gridRow = this.grid[iy])) {
           for(var ix=gridX1; ix<=gridX2; ix++) {
             if((gridBlock = gridRow[ix])) {
               for(var id in gridBlock) {
@@ -3765,13 +3747,13 @@ Quintus.Scenes = function(Q) {
     updateSprites: function(items,dt,isContainer) {
       var item;
 
-      for(var i=0,len=items.length;i<len;i++) {              
+      for(var i=0,len=items.length;i<len;i++) {
         item = items[i];
         // If set to visible only, don't step if set to visibleOnly
         if(!isContainer && (item.p.visibleOnly && item.mark < this.time)) { continue; }
 
 
-        if(isContainer || !item.container) { 
+        if(isContainer || !item.container) {
           item.update(dt);
           Q._generateCollisionPoints(item);
           this.regrid(item);
@@ -3827,7 +3809,7 @@ Quintus.Scenes = function(Q) {
       this.trigger("prerender",ctx);
       this.trigger("beforerender",ctx);
 
-      for(var i=0,len=this.items.length;i<len;i++) {              
+      for(var i=0,len=this.items.length;i<len;i++) {
         var item = this.items[i];
         // Don't render sprites with containers (sprites do that themselves)
         // Also don't render if not onscreen
@@ -3863,7 +3845,7 @@ Quintus.Scenes = function(Q) {
     },
 
     invoke: function(funcName) {
-      for(var i=0,len=this.items.length;i<len;i++) {              
+      for(var i=0,len=this.items.length;i<len;i++) {
         this.items[i][funcName].call(
           this.items[i],arguments[1],arguments[2]
         );
@@ -3937,12 +3919,12 @@ Quintus.Scenes = function(Q) {
 
   // Maybe add support for different types
   // entity - active collision detection
-  //  particle - no collision detection, no adding components to lists / etc
+  // particle - no collision detection, no adding components to lists / etc
   //
 
   // Q("Player").invoke("shimmer); - needs to return a selector
   // Q(".happy").invoke("sasdfa",'fdsafas',"fasdfas");
-  // Q("Enemy").p({ a: "asdfasf"  });
+  // Q("Enemy").p({ a: "asdfasf" });
 
   Q.select = function(selector,scope) {
     scope = (scope === void 0) ? Q.activeStage : scope;
@@ -3983,7 +3965,7 @@ Quintus.Scenes = function(Q) {
 
     // Grab the stage class, pulling from options, the scene default, or use
     // the default stage
-    var StageClass = (Q._popProperty(options,"stageClass")) || 
+    var StageClass = (Q._popProperty(options,"stageClass")) ||
                      (scene && scene.opts.stageClass) || Q.Stage;
 
     // Figure out which stage to use
@@ -4023,7 +4005,7 @@ Quintus.Scenes = function(Q) {
 
 
     if(dt < 0) { dt = 1.0/60; }
-    if(dt > 1/15) { dt  = 1.0/15; }
+    if(dt > 1/15) { dt = 1.0/15; }
 
     for(i =0,len=Q.stages.length;i<len;i++) {
       Q.activeStage = i;
@@ -4049,8 +4031,8 @@ Quintus.Scenes = function(Q) {
   };
 
   Q.clearStage = function(num) {
-    if(Q.stages[num]) { 
-      Q.stages[num].destroy(); 
+    if(Q.stages[num]) {
+      Q.stages[num].destroy();
       Q.stages[num] = null;
     }
   };
@@ -4080,33 +4062,33 @@ Most games will include at a minimum `Quintus.Sprites` and `Quintus.Scenes`
 
 
 /**
- * Quintus Sprites Module Class
- *
- * @class Quintus.Sprites
- */
+* Quintus Sprites Module Class
+*
+* @class Quintus.Sprites
+*/
 Quintus.Sprites = function(Q) {
  
   /**
-   *
+*
 
-   Create a new sprite sheet
-   Options:
-    tileW - tile width
-    tileH - tile height
-    w     - width of the sprite block
-    h     - height of the sprite block
-    sx    - start x
-    sy    - start y
-    cols  - number of columns per row
+Create a new sprite sheet
+Options:
+tileW - tile width
+tileH - tile height
+w - width of the sprite block
+h - height of the sprite block
+sx - start x
+sy - start y
+cols - number of columns per row
 
-  @class SpriteSheet
-  @for Quintus.Sprites
-  */
+@class SpriteSheet
+@for Quintus.Sprites
+*/
   Q.Class.extend("SpriteSheet",{
 
     /**
-     @constructor
-    */
+@constructor
+*/
     init: function(name, asset,options) {
       if(!Q.asset(asset)) { throw "Invalid Asset:" + asset; }
       Q._extend(this,{
@@ -4121,16 +4103,16 @@ Quintus.Sprites = function(Q) {
         });
       if(options) { Q._extend(this,options); }
       // fix for old tilew instead of tileW
-      if(this.tilew) { 
-        this.tileW = this.tilew; 
-        delete this['tilew']; 
+      if(this.tilew) {
+        this.tileW = this.tilew;
+        delete this['tilew'];
       }
-      if(this.tileh) { 
-        this.tileH = this.tileh; 
-        delete this['tileh']; 
+      if(this.tileh) {
+        this.tileH = this.tileh;
+        delete this['tileh'];
       }
 
-      this.cols = this.cols || 
+      this.cols = this.cols ||
                   Math.floor(this.w / this.tileW);
     },
 
@@ -4172,15 +4154,15 @@ Quintus.Sprites = function(Q) {
   };
 
 
-  Q.SPRITE_NONE     = 0;
-  Q.SPRITE_DEFAULT  = 1;
+  Q.SPRITE_NONE = 0;
+  Q.SPRITE_DEFAULT = 1;
   Q.SPRITE_PARTICLE = 2;
-  Q.SPRITE_ACTIVE   = 4;
+  Q.SPRITE_ACTIVE = 4;
   Q.SPRITE_FRIENDLY = 8;
-  Q.SPRITE_ENEMY    = 16;
-  Q.SPRITE_POWERUP  = 32;
-  Q.SPRITE_UI       = 64;
-  Q.SPRITE_ALL   = 0xFFFF;
+  Q.SPRITE_ENEMY = 16;
+  Q.SPRITE_POWERUP = 32;
+  Q.SPRITE_UI = 64;
+  Q.SPRITE_ALL = 0xFFFF;
 
 
   Q._generatePoints = function(obj,force) {
@@ -4189,11 +4171,11 @@ Quintus.Sprites = function(Q) {
         halfW = p.w/2,
         halfH = p.h/2;
 
-    p.points = [ 
+    p.points = [
       [ -halfW, -halfH ],
-      [  halfW, -halfH ],
-      [  halfW,  halfH ],
-      [ -halfW,  halfH ]
+      [ halfW, -halfH ],
+      [ halfW, halfH ],
+      [ -halfW, halfH ]
       ];
   };
 
@@ -4202,11 +4184,11 @@ Quintus.Sprites = function(Q) {
     if(!obj.c) { obj.c = { points: [] }; }
     var p = obj.p, c = obj.c;
 
-    if(!p.moved && 
+    if(!p.moved &&
        c.origX === p.x &&
        c.origY === p.y &&
        c.origScale === p.scale &&
-       c.origScale === p.angle) { 
+       c.origScale === p.angle) {
         return;
     }
 
@@ -4219,7 +4201,7 @@ Quintus.Sprites = function(Q) {
 
     var container = obj.container || Q._nullContainer;
 
-    // TODO: see if we care or if it's more 
+    // TODO: see if we care or if it's more
     // efficient just to do the calc each time
     c.x = container.matrix.transformX(p.x,p.y);
     c.y = container.matrix.transformY(p.x,p.y);
@@ -4260,14 +4242,14 @@ Quintus.Sprites = function(Q) {
   
   
 // Properties:
-  //    x
-  //    y
-  //    z - sort order
-  //    sheet or asset
-  //    frame
+  // x
+  // y
+  // z - sort order
+  // sheet or asset
+  // frame
   Q.GameObject.extend("Sprite",{
     init: function(props,defaultProps) {
-      this.p = Q._extend({ 
+      this.p = Q._extend({
         x: 0,
         y: 0,
         z: 0,
@@ -4280,7 +4262,7 @@ Quintus.Sprites = function(Q) {
       this.matrix = new Q.Matrix2D();
       this.children = [];
 
-      Q._extend(this.p,props); 
+      Q._extend(this.p,props);
 
       this.size();
       this.p.id = this.p.id || Q._uniqueId();
@@ -4293,7 +4275,7 @@ Quintus.Sprites = function(Q) {
     // Resets the width, height and center based on the
     // asset or sprite sheet
     size: function(force) {
-      if(force || (!this.p.w || !this.p.h)) { 
+      if(force || (!this.p.w || !this.p.h)) {
         if(this.asset()) {
           this.p.w = this.asset().width;
           this.p.h = this.asset().height;
@@ -4301,7 +4283,7 @@ Quintus.Sprites = function(Q) {
           this.p.w = this.sheet().tileW;
           this.p.h = this.sheet().tileH;
         }
-      } 
+      }
 
       this.p.cx = (force || this.p.cx === void 0) ? (this.p.w / 2) : this.p.cx;
       this.p.cy = (force || this.p.cy === void 0) ? (this.p.h / 2) : this.p.cy;
@@ -4323,7 +4305,7 @@ Quintus.Sprites = function(Q) {
       if(!name) { return Q.sheet(this.p.sheet); }
 
       this.p.sheet = name;
-      if(resize) { 
+      if(resize) {
         this.size(true);
         Q._generatePoints(this,true);
       }
@@ -4347,8 +4329,8 @@ Quintus.Sprites = function(Q) {
     },
 
     _flipArgs: {
-      "x":  [ -1,  1],
-      "y":  [  1, -1],
+      "x": [ -1, 1],
+      "y": [ 1, -1],
       "xy": [ -1, -1]
     },
 
@@ -4428,18 +4410,18 @@ Quintus.Sprites = function(Q) {
 
       ctx.restore();
 
-      if(this.c) { 
+      if(this.c) {
         var c = this.c;
         ctx.save();
           ctx.globalAlpha = 1;
           ctx.lineWidth = 2;
           ctx.strokeStyle = "#FF00FF";
           ctx.beginPath();
-          ctx.moveTo(c.x - c.cx,       c.y - c.cy);
+          ctx.moveTo(c.x - c.cx, c.y - c.cy);
           ctx.lineTo(c.x - c.cx + c.w, c.y - c.cy);
           ctx.lineTo(c.x - c.cx + c.w, c.y - c.cy + c.h);
-          ctx.lineTo(c.x - c.cx      , c.y - c.cy + c.h);
-          ctx.lineTo(c.x - c.cx,       c.y - c.cy);
+          ctx.lineTo(c.x - c.cx , c.y - c.cy + c.h);
+          ctx.lineTo(c.x - c.cx, c.y - c.cy);
           ctx.stroke();
         ctx.restore();
       }
@@ -4506,7 +4488,7 @@ Quintus.Touch = function(Q) {
     throw "Quintus.Touch requires Quintus.Sprites Module";
   }
 
-  var hasTouch =  !!('ontouchstart' in window);
+  var hasTouch = !!('ontouchstart' in window);
 
   var touchStage = [0];
   var touchType = 0;
@@ -4721,9 +4703,9 @@ Quintus.UI = function(Q) {
     ctx.lineTo(-rect.cx + rect.w - rect.radius, -rect.cy);
     ctx.quadraticCurveTo(-rect.cx + rect.w, -rect.cy, -rect.cx + rect.w, -rect.cy + rect.radius);
     ctx.lineTo(-rect.cx + rect.w, -rect.cy + rect.h - rect.radius);
-    ctx.quadraticCurveTo(-rect.cx + rect.w, 
-                         -rect.cy + rect.h, 
-                         -rect.cx + rect.w - rect.radius, 
+    ctx.quadraticCurveTo(-rect.cx + rect.w,
+                         -rect.cy + rect.h,
+                         -rect.cx + rect.w - rect.radius,
                          -rect.cy + rect.h);
     ctx.lineTo(-rect.cx + rect.radius, -rect.cy + rect.h);
     ctx.quadraticCurveTo(-rect.cx, -rect.cy + rect.h, -rect.cx, -rect.cy + rect.h - rect.radius);
@@ -4740,22 +4722,22 @@ Quintus.UI = function(Q) {
           match;
 
       if(p && Q._isString(p.w) && (match = p.w.match(/^[0-9]+%$/))) {
-        adjustedP.w = parseInt(p.w,10) * Q.width / 100;         
+        adjustedP.w = parseInt(p.w,10) * Q.width / 100;
         adjustedP.x = Q.width/2 - adjustedP.w/2;
       }
 
       if(p && Q._isString(p.h) && (match = p.h.match(/^[0-9]+%$/))) {
-        adjustedP.h = parseInt(p.h,10) * Q.height / 100;         
+        adjustedP.h = parseInt(p.h,10) * Q.height / 100;
         adjustedP.y = Q.height /2 - adjustedP.h/2;
       }
 
       this._super(adjustedP,{
         opacity: 1,
         hidden: false, // Set to true to not show the container
-        fill:   null, // Set to color to add background
-        highlight:   null, // Set to color to for button
+        fill: null, // Set to color to add background
+        highlight: null, // Set to color to for button
         radius: 5, // Border radius
-        stroke: "#000", 
+        stroke: "#000",
         border: false, // Set to a width to show a border
         shadow: false, // Set to true or a shadow offest
         shadowColor: false, // Set to a rgba value for the shadow
@@ -4827,7 +4809,7 @@ Quintus.UI = function(Q) {
 
     drawSquare: function(ctx) {
       this.addShadow(ctx);
-      if(this.p.fill) { 
+      if(this.p.fill) {
         ctx.fillRect(-this.p.cx,-this.p.cy,
                       this.p.w,this.p.h);
       }
@@ -4852,7 +4834,7 @@ Quintus.UI = function(Q) {
       }
       ctx.strokeStyle = this.p.stroke;
 
-      if(this.p.radius > 0) { 
+      if(this.p.radius > 0) {
         this.drawRadius(ctx);
       } else {
         this.drawSquare(ctx);
@@ -4920,11 +4902,11 @@ Quintus.UI = function(Q) {
       this.setFont(ctx);
       if(this.p.opacity !== void 0) { ctx.globalAlpha = this.p.opacity; }
       for(var i =0;i<this.splitLabel.length;i++) {
-        if(this.p.align === 'center') { 
+        if(this.p.align === 'center') {
           ctx.fillText(this.splitLabel[i],0,-this.p.cy + i * this.p.size * 1.2);
         } else if(this.p.align === 'right') {
           ctx.fillText(this.splitLabel[i],this.p.cx,-this.p.cy + i * this.p.size * 1.2);
-        } else { 
+        } else {
           ctx.fillText(this.splitLabel[i],-this.p.cx,-this.p.cy +i * this.p.size * 1.2);
         }
       }
@@ -4964,7 +4946,7 @@ Quintus.UI = function(Q) {
         this.setFont(Q.ctx);
         var metrics = Q.ctx.measureText(this.p.label);
         Q.ctx.restore();
-        if(!this.p.h) {  this.p.h = 24 + 20; }
+        if(!this.p.h) { this.p.h = 24 + 20; }
         if(!this.p.w) { this.p.w = metrics.width + 20; }
       }
 
@@ -5064,7 +5046,7 @@ Quintus.UI = function(Q) {
     },
 
     remove: function() {
-      if(this.iframe) { 
+      if(this.iframe) {
         Q.wrapper.removeChild(this.iframe);
         this.iframe = null;
       }
@@ -5073,7 +5055,7 @@ Quintus.UI = function(Q) {
 
   Q.UI.HTMLElement = Q.Sprite.extend("UI.HTMLElement", {
     init: function(p) {
-      this._super(p, { opacity: 1, type: Q.SPRITE_UI  });
+      this._super(p, { opacity: 1, type: Q.SPRITE_UI });
 
       Q.wrapper.style.overflow = "hidden";
 
@@ -5097,7 +5079,7 @@ Quintus.UI = function(Q) {
     },
 
     remove: function() {
-      if(this.el) { 
+      if(this.el) {
         Q.wrapper.removeChild(this.el);
         this.el= null;
       }
