@@ -23,6 +23,9 @@ Q.UI.Text.extend("Score",{
     }
 });
 
+    /**
+     * Der Kanonenschuss
+     */
 Q.Sprite.extend("CannonShot",{
     init: function(p) {
         this._super(p,{
@@ -35,7 +38,8 @@ Q.Sprite.extend("CannonShot",{
     },
 
     step: function(dt){
-        this.p.y =this.p.y-2;
+        this.p.y =this.p.y-5;
+        //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
         if(this.p.y < 0) this.destroy();
     }
 
@@ -70,10 +74,11 @@ Q.Sprite.extend("Cannon", {
 
     fireGun: function(){
         console.log("firing...");
+
+        //Kanonenschuss erstellen. X: X-Koordinate von der Kanone nehmen;
+        // Y: Y-Koordinate von der Kanone nehmen und um 40 verschieben
         var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
         this.stage.insert(cannonShot);
-
-
         Q.audio.play("fire2.mp3");
     }
 });
