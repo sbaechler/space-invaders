@@ -12,6 +12,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
 
 
+
         // cleanup
         stage.on("destroy",function() {
             cannon.destroy();
