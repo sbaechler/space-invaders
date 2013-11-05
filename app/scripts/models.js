@@ -66,7 +66,7 @@ Q.Sprite.extend("Cannon", {
                 tileH: 32,  // Default tile height
                 blockTileW: 10,  // Default pre-render size
                 blockTileH: 10,
-                type: Q.SPRITE_DEFAULT, // Default type (for collisions)
+                type: Q.SPRITE_DEFAULT // Default type (for collisions)
 
 
                    // gravity factor
@@ -87,5 +87,50 @@ Q.Sprite.extend("Cannon", {
             console.log("firing...");
             Q.audio.play("fire2.mp3");
         }
+    });
+
+
+
+    Q.TileLayer.extend("GameTiles",{
+        init: function(p) {
+            this._super({
+                dataAsset: "bg.tmx",
+                sheet: 'tiles',
+                tileW: 16,
+                tileH: 16,
+                blockTileW: 21,
+                blockTileH: 27
+            });
+        },
+
+        // Override the load method to load the bg.tmx file,
+        // then pass the data array to the original implementation
+        load: function(dataAsset) {
+            var parser = new DOMParser(),
+                doc = parser.parseFromString(Q.asset(dataAsset), "application/xml");
+
+            var layer = doc.getElementsByTagName("layer")[0],
+                width = parseInt(layer.getAttribute("width")),
+                height = parseInt(layer.getAttribute("height"));
+
+            var data = [],
+                tiles = layer.getElementsByTagName("tile"),
+                idx = 0;
+            for(var y = 0;y < height;y++) {
+                data[y] = [];
+                for(var x = 0;x < width;x++) {
+                    var tile = tiles[idx];
+                    data[y].push(parseInt(tile.getAttribute("gid")-1));
+                    idx++;
+                }
+            }
+
+            this._super(data);
+        },
+
+        collidableTile: function(tileNum) {
+            return tileNum != 23;
+        }
+
     });
 }

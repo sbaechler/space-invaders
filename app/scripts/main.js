@@ -22,10 +22,19 @@ window.addEventListener('load',function() {
 
 
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
-    Q.load([ "cannon.png", "invaders.png", "fire2.mp3"], function() {
+    Q.load([ "cannon.png", "invaders.png", "tiles.png", "fire2.mp3"], function() {
+
+            Q.useTiles = window.location.href.indexOf('usetiles') > -1;
+
+            // Set up all the sprite sheets
+            Q.compileSheets("tiles.png","sprites.json");
+
+
+
 
         // Start level 1
         Q.stageScene("level1");
+
 
 
 
