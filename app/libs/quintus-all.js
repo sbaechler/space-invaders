@@ -2421,7 +2421,7 @@ Quintus.Audio = function(Q) {
 
     for (var i=0;i<Q.audio.channelMax;i++) {	
       Q.audio.channels[i] = {};
-      Q.audio.channels[i]['channel'] = new Quintus.Audio();
+      Q.audio.channels[i]['channel'] = new Audio(); 
       Q.audio.channels[i]['finished'] = -1;	
     }
 
@@ -2867,18 +2867,10 @@ Quintus.Input = function(Q) {
       var stageNum = options.stageNum || 0;
       var mouseInputX = options.mouseX || "mouseX";
       var mouseInputY = options.mouseY || "mouseY";
-      var cursor = options.cursor || "off";
 
       var mouseMoveObj = {};
 
-      if(cursor !== "on") {
-          if(cursor === "off") {
-              Q.el.style.cursor = 'none';
-          }
-          else {
-              Q.el.style.cursor = cursor;
-          }
-      }
+      Q.el.style.cursor = 'none';
 
       Q.inputs[mouseInputX] = 0;
       Q.inputs[mouseInputY] = 0;
@@ -3186,6 +3178,7 @@ Quintus.Scenes = function(Q) {
  
   // Default to SAT collision between two objects
   // Thanks to doc's at: http://www.sevenson.com.au/actionscript/sat/
+  // TODO: handle angles on objects 
   Q.collision = (function() { 
     var normalX, normalY,
         offset = [ 0,0 ],
@@ -3363,8 +3356,6 @@ Quintus.Scenes = function(Q) {
       this.index = {};
       this.removeList = [];
       this.grid = {};
-
-      this.time = 0;
 
       this.options = Q._extend({},this.defaults);
       if(this.scene)  { 
@@ -3721,44 +3712,12 @@ Quintus.Scenes = function(Q) {
          if(!skipAdd) { this.addGrid(item); }
       }
     },
-    
-    markSprites: function(items,time) {
-      var viewport = this.viewport,
-          scale = viewport ? viewport.scale : 1,
-          x = viewport ? viewport.x : 0,
-          y = viewport ? viewport.y : 0,
-          viewW = Q.width / scale,
-          viewH = Q.height / scale,
-          gridX1 = Math.floor(x / this.options.gridW),
-          gridY1 = Math.floor(y / this.options.gridH),
-          gridX2 = Math.floor((x + viewW) / this.options.gridW),
-          gridY2 = Math.floor((y + viewH) / this.options.gridH),
-          gridRow, gridBlock;
-
-      for(var iy=gridY1; iy<=gridY2; iy++) {
-        if((gridRow = this.grid[iy])) { 
-          for(var ix=gridX1; ix<=gridX2; ix++) {
-            if((gridBlock = gridRow[ix])) {
-              for(var id in gridBlock) {
-                this.index[id].mark = time;
-              }
-            }
-          }
-        }
-      }
-
-      if(this._collisionLayer) { this._collisionLayer.mark = time; }
-    },
 
     updateSprites: function(items,dt,isContainer) {
       var item;
 
       for(var i=0,len=items.length;i<len;i++) {              
         item = items[i];
-        // If set to visible only, don't step if set to visibleOnly
-        if(!isContainer && (item.p.visibleOnly && item.mark < this.time)) { continue; }
-
-
         if(isContainer || !item.container) { 
           item.update(dt);
           Q._generateCollisionPoints(item);
@@ -3771,9 +3730,6 @@ Quintus.Scenes = function(Q) {
 
     step:function(dt) {
       if(this.paused) { return false; }
-
-      this.time += dt;
-      this.markSprites(this.items,this.time);
 
       this.trigger("prestep",dt);
       this.updateSprites(this.items,dt);
@@ -3818,8 +3774,7 @@ Quintus.Scenes = function(Q) {
       for(var i=0,len=this.items.length;i<len;i++) {              
         var item = this.items[i];
         // Don't render sprites with containers (sprites do that themselves)
-        // Also don't render if not onscreen
-        if(!item.container && item.mark >= this.time) {
+        if(!item.container) { 
           item.render(ctx);
         }
       }
@@ -4008,7 +3963,6 @@ Quintus.Scenes = function(Q) {
 
   Q.stageGameLoop = function(dt) {
     var i,len,stage;
-
 
     if(dt < 0) { dt = 1.0/60; }
     if(dt > 1/15) { dt  = 1.0/15; }
