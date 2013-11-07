@@ -1,0 +1,5 @@
+{
+  "alien1":{"sx":39,"sy":29,"cols":1,"tilew":65,"tileh":64,"frames":2 },
+  "alien2":{"sx":39,"sy":29,"cols":1,"tilew":65,"tileh":64,"frames":2 },
+  "alien3":{"sx":39,"sy":29,"cols":1,"tilew":65,"tileh":64,"frames":2 }
+}

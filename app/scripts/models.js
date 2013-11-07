@@ -77,4 +77,60 @@ Q.Sprite.extend("Cannon", {
         Q.audio.play("fire2.mp3");
     }
 });
+Q.Sprite.extend("Alien", {
+    init: function(p) {
+      this._super({
+        sheet: "alien" + p.num,
+        sprite: "alien"
+      },p);
+
+      this.add("animation");
+      this.play("appear");
+      this.on("destroy"); // will just call destroy
+    }
+});
+
+Q.Sprite.extend("AlienTracker",{
+    init: function(p) {
+      this._super(p, {
+        x: Q.width/2,
+        y: 64,
+        scale: 0.1
+      });
+
+      this.add("tween");
+
+      this.animate({ scale: 1 },1.5, Q.Easing.Quadratic.InOut);
+
+      this.on("inserted", this, "setupAliens");
+    },
+
+    setupAliens: function() {
+      Q._each(this.p.data,function(row,y) {
+        Q._each(row,function(alien,x) {
+          if(alien) {
+            // Add onto the stage, with this as the
+            // container
+            this.stage.insert(new Q.Alien({
+              num: alien,
+              x: 32 * x - (row.length / 2 - 0.5) * 32,
+              y: 16 * y
+            }), this);
+          }
+
+        },this);
+      },this);
+    },
+
+    step: function(dt) {
+      if(this.children.length == 0) {
+        this.stage.trigger("complete");
+      }
+    }
+  });
+
+
+
+
+
 }
