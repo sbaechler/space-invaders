@@ -2351,8 +2351,10 @@ Quintus.Audio = function(Q) {
 
     if(Q.hasWebAudio) {
       Q.audio.enableWebAudioSound();
-    } else {
+    } else if (typeof Audio !== 'undefined') {
       Q.audio.enableHTML5Sound();
+    } else {
+      Q.audio.enableDummySound();
     }
     return Q;
   };
@@ -2421,7 +2423,7 @@ Quintus.Audio = function(Q) {
 
     for (var i=0;i<Q.audio.channelMax;i++) {	
       Q.audio.channels[i] = {};
-      Q.audio.channels[i]['channel'] = new Quintus.Audio();
+      Q.audio.channels[i]['channel'] = new Audio();  // HTML5 Audio Element
       Q.audio.channels[i]['finished'] = -1;	
     }
 
@@ -2479,6 +2481,16 @@ Quintus.Audio = function(Q) {
 
   };
 
+  // Dummy audio device for testing
+  Q.audio.enableDummySound = function() {
+    Q.audio.type = "DummyAudio";
+    Q.audio.played = [];
+
+    Q.audio.play = function(s,options) {
+        Q.audio.played.append(s);
+    };
+    Q.audio.stop = function(s) { };
+  };
 };
   
 
