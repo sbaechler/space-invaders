@@ -2,9 +2,13 @@
   "name": "spaceinvaders",
   "version": "0.0.1",
   "dependencies": {
-    "quintus": "~0.1.5"
+    "Quintus": "https://github.com/sbaechler/Quintus.git#ad79d16c1a5e72b3de60652812e8e0d1da907891"
   },
   "devDependencies": {
-      "jasmine": "~1.3.1"
+    "jasmine": "~1.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbaechler/space-invaders"
   }
 }
