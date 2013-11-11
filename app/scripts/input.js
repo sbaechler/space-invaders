@@ -19,8 +19,6 @@ Quintus.GunControls = function(Q) {
 
       if(p.stepping) {
         p.stepping = false;
-        p.x = p.origX;
-        p.y = p.origY;
       }
 
     },
