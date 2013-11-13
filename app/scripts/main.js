@@ -26,8 +26,8 @@ window.addEventListener('load',function() {
 
         // Now add in the animations for the various sprites
         Q.animations("alien", {
-            default: { frames: [0,1], rate: 1/2 },
-            appear: { frames: [ 0,1], rate: 1/2 }
+           // default: { frames: [0,1], rate: 1/2 },
+            appear: { frames: [ 0,1], rate: 1/2, loop:false }
         });
         // Start level 1
         Q.stageScene("level1");

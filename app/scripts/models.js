@@ -133,4 +133,4 @@ Q.Sprite.extend("AlienTracker",{
 
 
 
-}
+};

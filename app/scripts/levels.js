@@ -1,15 +1,15 @@
 ;Quintus.SpaceInvadersLevels = function(Q) {
 
-	var O = 1, //
-	    X = 1, //
-	    A = 1,
-	    o = 0; // NULL
+    var b = 0; // red
+    var r = 3; // blue
+    var o = 2; // orange
+    var g = 1; // green
+    var X = 0; // null
 
   Q.assets['level1'] = [
-    [A,A,A,A,A,A,A,A,A,A,A,A,A],
-    [A,A,A,A,A,A,A,A,A,A,A,A,A],
-    [X,X,X,X,X,X,X,X,X,X,X,X,X],
-    [O,O,O,O,O,O,O,O,O,O,O,O,O]
+      [X,X,g,o,g,X,X],
+      [o,b,g,g,g,b,o],
+      [X,b,b,b,b,b,X]
   ];
 
 };
