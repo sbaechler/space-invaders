@@ -8,7 +8,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
     /**
      *  The first level.
      */
-    Q.scene("level1",function(stage) {
+    //Q.scene("level1",function(stage) {
         var cannon = stage.insert(new Q.Cannon());
         // stage.collisionLayer(new Q.Shield());
         var shieldPos = [60, 171, 282, 393];
@@ -18,7 +18,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
 
 
-        var cannon = stage.insert(new Q.Cannon())  ;
+      //  var cannon = stage.insert(new Q.Cannon())  ;
         var alien = stage.insert(new Q.AlienTracker());
 
 
@@ -28,7 +28,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
             cannon.destroy();
             shield1.destroy();
         });
-      });
+     // });
     }
 
     /**
