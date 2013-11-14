@@ -6,10 +6,11 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
         // stage.insert(new Q.Background());
 
-        stage.insert(new Q.AlienTracker({ data: Q.asset(levelAsset) }));
+        var cannon = stage.insert(new Q.Cannon())  ;
+        var alien = stage.insert(new Q.AlienTracker());
 
-        var cannon = stage.insert(new Q.Cannon());
 
+//        stage.insert(new Q.AlienTracker({ data: Q.asset(levelAsset) }));
         // cleanup
         stage.on("destroy",function() {
             cannon.destroy();

@@ -1,6 +1,6 @@
 ;Quintus.SpaceInvadersLevels = function(Q) {
 
-    var b = 0; // red
+    var b = 1; // red
     var r = 3; // blue
     var o = 2; // orange
     var g = 1; // green

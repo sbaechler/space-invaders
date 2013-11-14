@@ -7,6 +7,9 @@ Quintus.SpaceInvadersModels = function(Q) {
  * Add the score Class
  */
 
+
+
+
 Q.UI.Text.extend("Score",{
     init: function(p){
     this._super({
@@ -77,57 +80,105 @@ Q.Sprite.extend("Cannon", {
         Q.audio.play("fire2.mp3");
     }
 });
-Q.Sprite.extend("Alien", {
-    init: function(p) {
-      this._super({
-        sheet: "alien" + p.num,
-        sprite: "alien"
-      },p);
+//Q.Sprite.extend("Alien", {
+//    init: function(p) {
+//      this._super({
+//        sheet: "alien" + p.num,
+//        sprite: "alien"
+//      },p);
+//
+//      this.add("animation");
+//      this.play("appear");
+//      this.on("destroy"); // will just call destroy
+//    }
+//});
 
-      this.add("animation");
-      this.play("appear");
-      this.on("destroy"); // will just call destroy
-    }
-});
 
-Q.Sprite.extend("AlienTracker",{
-    init: function(p) {
-      this._super(p, {
-        x: Q.width/2,
-        y: 64,
-        scale: 0.1
-      });
 
-      this.add("tween");
+    Q.Sprite.extend("AlienTracker", {
+        init: function(p){
+            this._super({
+                sprite: 'alienTracker',
+                w: 400,
+                h: 300,
+                x: 10,
+                y: 100,
+                data: Q.assets['level1']
+            }, p);
+            this.on('hit');
+            this.on("inserted", this, "setupAlien");
+        },
+        hit: function(){
+            this.destroy();
+        },
+        setupAlien: function(){
+            Q._each(this.p.data, function(row,y) {
+                Q._each(row, function(type, x) {
+                    if(type) {
+                        this.stage.insert(new Q.Alien({
+                            sheet:"alien"+type,
+                            x: 100 * x + this.p.x,
+                            y: 80 * y + this.p.y
+                        }), this);
+                    }
+                }, this);
+            }, this)
+        }
+    });
 
-      this.animate({ scale: 1 },1.5, Q.Easing.Quadratic.InOut);
+    Q.Sprite.extend("Alien", {
+        init: function(p) {
+            this._super(p, {
+                w: 107,
+                h: 88,
+                collisionMask: Q.SPRITE_DEFAULT
 
-      this.on("inserted", this, "setupAliens");
-    },
+            });
 
-    setupAliens: function() {
-      Q._each(this.p.data,function(row,y) {
-        Q._each(row,function(alien,x) {
-          if(alien) {
-            // Add onto the stage, with this as the
-            // container
-            this.stage.insert(new Q.Alien({
-              num: alien,
-              x: 32 * x - (row.length / 2 - 0.5) * 32,
-              y: 16 * y
-            }), this);
-          }
 
-        },this);
-      },this);
-    },
+        }
 
-    step: function(dt) {
-      if(this.children.length == 0) {
-        this.stage.trigger("complete");
-      }
-    }
-  });
+
+
+    });
+//Q.Sprite.extend("AlienTracker",{
+//    init: function(p) {
+//      this._super(p, {
+//        x: Q.width/2,
+//        y: 64,
+//        scale: 0.1
+//      });
+//
+//      this.add("tween");
+//
+//      this.animate({ scale: 1 },1.5, Q.Easing.Quadratic.InOut);
+//
+//      this.on("inserted", this, "setupAliens");
+//    },
+//
+//    setupAliens: function() {
+//      Q._each(this.p.data,function(row,y) {
+//        Q._each(row,function(alien,x) {
+//          if(alien) {
+//            // Add onto the stage, with this as the
+//            // container
+//            this.stage.insert(new Q.Alien({
+//              num: alien,
+//              x: 32 * x - (row.length / 2 - 0.5) * 32,
+//              y: 16 * y
+//            }), this);
+//          }
+//
+//        },this);
+//      },this);
+//    },
+//
+//    step: function(dt) {
+//      if(this.children.length == 0) {
+//        this.stage.trigger("complete");
+//      }
+//    }
+//  });
 
 
 
