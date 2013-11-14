@@ -3,6 +3,18 @@
 Quintus.SpaceInvadersModels = function(Q) {
   Q.gravityY = 0;
   Q.gravityX = 0;
+
+  // Blueprint for the shield element
+  Q.assets['shield'] = [
+    [0,1,1,1,1,1,1,1,1,1,1,4],
+    [1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,2,5,5,5,5,5,5,3,1,1],
+    [1,1,5,5,5,5,5,5,5,5,1,1]
+    ];
+
 /**
  * Add the score Class
  */
@@ -32,14 +44,23 @@ Q.Sprite.extend("CannonShot",{
            asset: 'shoot.png',    // image
             w: 20,
             h: 20,
-            type: Q.SPRITE_DEFAULT | Q.SPRITE_FRIENDLY
+            sprite: 'shot',
+            collisionMask: Q.SPRITE_DEFAULT
         });
-
+        this.on('hit.sprite', this, 'collide');
     },
 
     step: function(dt){
-        this.p.y =this.p.y-2;
+        this.p.y = this.p.y-2;
         if(this.p.y < 0) this.destroy();
+        this.stage.collide(this);
+    },
+
+    collide: function(col) {
+        if(col.obj.isA("ShieldElement")) {
+            col.obj.destroy();  // destroy the shield element
+            this.destroy();  // destroy the shot
+        }
     }
 
 });
@@ -50,15 +71,15 @@ Q.Sprite.extend("CannonShot",{
  */
 Q.Sprite.extend("Cannon", {
     init: function(p){
-        this._super({
+        this._super(p, {
             asset: 'cannon.png',    // image
             w: 110,                 // width
             h: 68,                  // height
-            collisionMask: Q.SPRITE_DEFAULT,// reacts to sprites mask
             y: 680,                 // position
             x: 512,
+            sprite: 'cannon',
             stepDistance: 50       // moving speed
-        }, p);
+        });
         this.add('GunControls, gunControls');
         Q.input.on('fire', this, "fireGun");
 
@@ -72,26 +93,13 @@ Q.Sprite.extend("Cannon", {
     },
 
     fireGun: function(){
-        console.log("firing...");
         var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
         this.stage.insert(cannonShot);
-
 
         Q.audio.play("fire2.mp3");
     }
 });
-//Q.Sprite.extend("Alien", {
-//    init: function(p) {
-//      this._super({
-//        sheet: "alien" + p.num,
-//        sprite: "alien"
-//      },p);
-//
-//      this.add("animation");
-//      this.play("appear");
-//      this.on("destroy"); // will just call destroy
-//    }
-//});
+
 
 
 
@@ -141,47 +149,56 @@ Q.Sprite.extend("Cannon", {
 
 
     });
-//Q.Sprite.extend("AlienTracker",{
-//    init: function(p) {
-//      this._super(p, {
-//        x: Q.width/2,
-//        y: 64,
-//        scale: 0.1
-//      });
-//
-//      this.add("tween");
-//
-//      this.animate({ scale: 1 },1.5, Q.Easing.Quadratic.InOut);
-//
-//      this.on("inserted", this, "setupAliens");
-//    },
-//
-//    setupAliens: function() {
-//      Q._each(this.p.data,function(row,y) {
-//        Q._each(row,function(alien,x) {
-//          if(alien) {
-//            // Add onto the stage, with this as the
-//            // container
-//            this.stage.insert(new Q.Alien({
-//              num: alien,
-//              x: 32 * x - (row.length / 2 - 0.5) * 32,
-//              y: 16 * y
-//            }), this);
-//          }
-//
-//        },this);
-//      },this);
-//    },
-//
-//    step: function(dt) {
-//      if(this.children.length == 0) {
-//        this.stage.trigger("complete");
-//      }
-//    }
-//  });
 
 
 
 
 
-};
+Q.Sprite.extend("ShieldElement", {
+    init: function(p){
+        this._super({
+           sheet: 'shield',
+           sprite: 'shieldElement',
+            w: 10,
+            h: 10
+        }, p);
+        this.on('hit');
+    },
+    hit: function(){
+        this.destroy();
+    }
+
+
+});
+
+Q.Sprite.extend("Shield", {
+   init: function(p) {
+      this._super(p, {
+          x: 100,
+          y: 100,
+          w: 120,
+          h: 70,
+          collisionMask: Q.SPRITE_DEFAULT,
+          data: Q.assets['shield']
+      });
+      this.on("inserted", this, "setupShield");
+
+   },
+    setupShield: function(){
+        Q._each(this.p.data, function(row,y) {
+            Q._each(row, function(block, x) {
+                if(block<5) {
+                    this.stage.insert(new Q.ShieldElement({
+                        frame: block,
+                        x: 10 * x + this.p.x,
+                        y: 10 * y + this.p.y
+                    }), this);
+                }
+            }, this);
+        }, this);
+    }
+
+});
+}
+
+

@@ -19,10 +19,13 @@ window.addEventListener('load',function() {
     Q.state.reset({ score: 0, lives: 3 });
 
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
-    Q.load([ "cannon.png", "invaders.png", "shoot.png", "fire2.mp3", "sprites.json"],
+
+    Q.load([ "cannon.png", "invaders.png", "shoot.png",  "shield.png","fire2.mp3", "sprites.json"],
         function() {
             Q.compileSheets("invaders.png","sprites.json");
+            Q.sheet("shield", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:0, frames:5 });
           //  Q.sheet("alien", "invaders.png", {tilew: 110, tileh: 110, sx:10, sy:10, frames:2 });
+
 
             // Start level 1
         Q.stageScene("level1");
