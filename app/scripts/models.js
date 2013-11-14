@@ -61,6 +61,10 @@ Q.Sprite.extend("CannonShot",{
             col.obj.destroy();  // destroy the shield element
             this.destroy();  // destroy the shot
         }
+        if(col.obj.isA("Alien")) {
+            col.obj.destroy();  // destroy the shield element
+            this.destroy();  // destroy the shot
+        }
     }
 
 });
@@ -107,10 +111,10 @@ Q.Sprite.extend("Cannon", {
         init: function(p){
             this._super({
                 sprite: 'alienTracker',
-                w: 400,
-                h: 300,
-                x: 10,
-                y: 100,
+                w: 2,  //habe das mal so klein gemacht, da wenn man links vorbeischoss, das ganze verschwunden war....
+                h: 100,
+                x: 120,
+                y: p.y + 40,
                 data: Q.assets['level1']
             }, p);
             this.on('hit');
@@ -119,6 +123,11 @@ Q.Sprite.extend("Cannon", {
         hit: function(){
             this.destroy();
         },
+      /*  step: function(dt){
+            this.p.y = this.p.y+2;
+            if(this.p.y < 0) this.destroy();
+            this.stage.collide(this);
+        },*/
         setupAlien: function(){
             Q._each(this.p.data, function(row,y) {
                 Q._each(row, function(type, x) {
