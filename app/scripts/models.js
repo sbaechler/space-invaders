@@ -123,11 +123,12 @@ Q.Sprite.extend("Cannon", {
         hit: function(){
             this.destroy();
         },
-      /*  step: function(dt){
-            this.p.y = this.p.y+2;
-            if(this.p.y < 0) this.destroy();
-            this.stage.collide(this);
-        },*/
+       step: function(dt){
+           this.p.y = this.p.y+1;
+           if(this.p.y < 0) this.destroy();
+           if(this.p.y>600)  this.destroy();
+           //this.stage.collide(this);
+        },
         setupAlien: function(){
             Q._each(this.p.data, function(row,y) {
                 Q._each(row, function(type, x) {
