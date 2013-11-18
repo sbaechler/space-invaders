@@ -32,6 +32,7 @@ Q.Sprite.extend("CannonShot",{
            asset: 'shoot.png',    // image
             w: 20,
             h: 20,
+            speed: 100,
             type: Q.SPRITE_DEFAULT | Q.SPRITE_FRIENDLY
         });
 
