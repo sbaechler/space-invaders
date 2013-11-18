@@ -8,8 +8,6 @@ SpriteFixtures = {
 
   loadSprites: function(Q,callback) {
     SpriteFixtures.isLoaded = false;
-    Q.options.imagePath = 'app/images/';
-    Q.options.dataPath = 'app/data/';
     Q.load(["cannon.png", "shoot.png",  "shield.png", "invaders.png"],function() {
       // fake the sprites.json asset as the JSON doesn't load in the browser
       Q.assets['sprites.json'] =  {

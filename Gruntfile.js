@@ -21,11 +21,14 @@ module.exports = function (grunt) {
         },
         jasmine: {
             pivotal: {
-              src: 'app/scripts/*.js',
+              // src: 'app/scripts/*.js',
+              src: ['app/scripts/assets.js', 'app/scripts/input.js',
+                    'app/scripts/models.js', 'app/scripts/scenes.js'],
               options: {
                 specs: 'test/spec/*.js',
                 vendor: 'app/libs/quintus-all.js',
-                helpers: 'test/fixtures/*.js'
+                helpers: 'test/fixtures/*.js',
+                outfile: 'app/_SpecRunner.html'
               }
             }
           },
