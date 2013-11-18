@@ -7,7 +7,7 @@ Quintus.SpaceInvadersModels = function(Q) {
   var SPRITE_FRIENDLY = 1,
       SPRITE_ENEMY = 2,
       SPRITE_NEUTRAL = 4,
-      SPRITE_HELPER = 8;
+      SPRITE_NONE = 8;
 
 /**
  * Add the score Class
@@ -104,7 +104,7 @@ Q.Sprite.extend("Cannon", {
                 x: 120,
                 y: p.y + 40,
                 data: Q.assets['level1'],
-                type: SPRITE_HELPER
+                type: SPRITE_NONE
             }, p);
             this.on('hit');
             this.on("inserted", this, "setupAlien");
@@ -176,7 +176,7 @@ Q.Sprite.extend("Shield", {
           y: 100,
           w: 120,
           h: 70,
-          type: SPRITE_HELPER,
+          type: SPRITE_NONE,
           data: Q.assets['shield']
       });
       this.on("inserted", this, "setupShield");
