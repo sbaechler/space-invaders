@@ -24,7 +24,8 @@ module.exports = function (grunt) {
               src: 'app/scripts/*.js',
               options: {
                 specs: 'test/spec/*.js',
-                vendor: 'app/libs/quintus-all.js'
+                vendor: 'app/libs/quintus-all.js',
+                helpers: 'test/fixtures/*.js'
               }
             }
           },

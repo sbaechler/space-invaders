@@ -5,8 +5,11 @@ window.addEventListener('load',function() {
     /**
      * The game engine class is initialized.
      */
-    window.Q = Quintus({    // bind it to window for debugging
-                    audioSupported: ['mp3']   // We only have mp3 samples for now.
+    var Q = Quintus({
+                    audioSupported: ['mp3'],   // We only have mp3 samples for now.
+                    imagePath: "app/images/",
+                    audioPath: "app/audio/",
+                    dataPath: "app/data/"
            })       // Create a new engine instance
           .include("Sprites, Scenes, Input, 2D, Touch, UI, Audio, Anim") // Load any needed modules
           .include("SpaceInvadersScenes, SpaceInvadersModels, GunControls, SpaceInvadersAssets")
