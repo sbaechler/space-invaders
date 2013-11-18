@@ -4,24 +4,11 @@ Quintus.SpaceInvadersModels = function(Q) {
   Q.gravityY = 0;
   Q.gravityX = 0;
 
-  // Blueprint for the shield element
-  Q.assets['shield'] = [
-    [0,1,1,1,1,1,1,1,1,1,1,4],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,2,5,5,5,5,5,5,3,1,1],
-    [1,1,5,5,5,5,5,5,5,5,1,1]
-    ];
+
 
 /**
  * Add the score Class
  */
-
-
-
-
 Q.UI.Text.extend("Score",{
     init: function(p){
     this._super({
