@@ -81,6 +81,7 @@ Q.Sprite.extend("Cannon", {
             collisionMask: SPRITE_ENEMY
         });
         this.add('GunControls, gunControls');
+        this.on('hit');
         Q.input.on('fire', this, "fireGun");
 
 // this.on("hit.sprite",function(collision) {
@@ -96,6 +97,9 @@ Q.Sprite.extend("Cannon", {
         var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
         this.stage.insert(cannonShot);
         Q.audio.play("fire2.mp3");
+    },
+    hit: function(){
+        this.destroy();
     }
 });
 
@@ -131,6 +135,7 @@ Q.Sprite.extend("Cannon", {
                             this.stage.insert(new Q.Alien({
                                 sheet:"alien"+type,
                                 column: x,
+                                parent: this.p,
                                 x: 100 * x + this.p.x,
                                 y: 80 * y + this.p.y
                             }), this)
@@ -155,7 +160,8 @@ Q.Sprite.extend("Cannon", {
 
         fireGun: function(){
                 console.log("alienshoot");
-            var alienshot = new Q.AlienShot({x: this.p.x+(this.p.w/2), y: this.p.y+80 });
+            var alienshot = new Q.AlienShot({x: this.p.x + this.p.parent.x,
+                                             y: this.p.y + this.p.parent.y + this.p.cy });
             this.stage.insert(alienshot);
         },
         hit: function(){
@@ -188,7 +194,7 @@ Q.Sprite.extend("Cannon", {
 
         collide: function(col) {
             if(col.obj.isA("ShieldElement")|| col.obj.isA("Cannon")) {
-                col.obj.destroy(); // destroy the element
+                col.obj.trigger('hit'); // destroy the element
                 this.destroy(); // destroy the shot
             }
         }
