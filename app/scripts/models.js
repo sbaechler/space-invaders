@@ -35,8 +35,8 @@ Q.Sprite.extend("CannonShot",{
     init: function(p) {
         this._super(p,{
            asset: 'shoot.png', // image
-            w: 20,
-            h: 20,
+            w: 11,
+            h: 10,
             sprite: 'shot',
             type: SPRITE_FRIENDLY,
             collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
@@ -53,9 +53,12 @@ Q.Sprite.extend("CannonShot",{
     },
 
     collide: function(col) {
-        if(col.obj.isA("ShieldElement")|| col.obj.isA("Alien")) {
+        if(col.obj.isA("ShieldElement")) {
             col.obj.destroy(); // destroy the element
             this.destroy(); // destroy the shot
+        } else if(col.obj.isA("Alien")) {
+            col.obj.trigger('hit');
+            this.destroy();
         }
     }
 });
@@ -119,14 +122,19 @@ Q.Sprite.extend("Cannon", {
            if(this.p.y>600) this.destroy();
         },
         setupAlien: function(){
+            Q.assets.invaders = {};  // Store a reference to the aliens
             Q._each(this.p.data, function(row,y) {
                 Q._each(row, function(type, x) {
-                    if(type) {
-                        this.stage.insert(new Q.Alien({
-                            sheet:"alien"+type,
-                            x: 100 * x + this.p.x,
-                            y: 80 * y + this.p.y
-                        }), this);
+                    if(type > 0) {
+                        Q.assets.invaders[x] = Q.assets.invaders[x]  || []; // Create a stack per column
+                        Q.assets.invaders[x].push(
+                            this.stage.insert(new Q.Alien({
+                                sheet:"alien"+type,
+                                column: x,
+                                x: 100 * x + this.p.x,
+                                y: 80 * y + this.p.y
+                            }), this)
+                        );
                     }
                 }, this);
             }, this)
@@ -141,15 +149,19 @@ Q.Sprite.extend("Cannon", {
             });
 
             this.add('GunControls, gunControls');
-            Q.input.on('fire', this, "fireGun");
+            this.on('fire', this, "fireGun");
+            this.on('hit');
         },
 
         fireGun: function(){
                 console.log("alienshoot");
-            var alienshot = new Q.AlienShot({x: this.p.x, y: this.p.y+40 });
+            var alienshot = new Q.AlienShot({x: this.p.x+(this.p.w/2), y: this.p.y+80 });
             this.stage.insert(alienshot);
-
-            Q.audio.play("fire2.mp3");
+        },
+        hit: function(){
+            this.off('hit'); // event is fired multiple times
+            Q.assets.invaders[this.p.column].pop();
+            this.destroy();
         }
         
     });
@@ -158,11 +170,11 @@ Q.Sprite.extend("Cannon", {
         init: function(p) {
             this._super(p,{
                asset: 'shoot.png', // image
-                w: 20,
-                h: 20,
+                w: 11,
+                h: 10,
                 sprite: 'shot',
-                type: SPRITE_FRIENDLY,
-                collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
+                type: SPRITE_ENEMY,
+                collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
             });
             this.on('hit.sprite', this, 'collide');
         },
