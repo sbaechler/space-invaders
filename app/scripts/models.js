@@ -153,7 +153,6 @@ Q.Sprite.extend("Cannon", {
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
             });
 
-            this.add('GunControls, gunControls');
             this.on('fire', this, "fireGun");
             this.on('hit');
         },
