@@ -88,7 +88,10 @@ Q.Sprite.extend("Cannon", {
 // });
 
     },
-
+    hit: function(){
+        this.destroy();
+    },
+   
     fireGun: function(){
         var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
         this.stage.insert(cannonShot);
@@ -117,6 +120,7 @@ Q.Sprite.extend("Cannon", {
            // this.p.y = this.p.y+1;
            if(this.p.y < 0) this.destroy();
            if(this.p.y>600) this.destroy();
+           
         },
         setupAlien: function(){
             Q._each(this.p.data, function(row,y) {
@@ -140,16 +144,16 @@ Q.Sprite.extend("Cannon", {
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
             });
 
-            this.add('GunControls, gunControls');
-            Q.input.on('fire', this, "fireGun");
+            this.on('fire', this, "fireGun");
         },
 
+        step: function(dt){
+        },
+
+        
         fireGun: function(){
-                console.log("alienshoot");
             var alienshot = new Q.AlienShot({x: this.p.x, y: this.p.y+40 });
             this.stage.insert(alienshot);
-
-            Q.audio.play("fire2.mp3");
         }
         
     });
@@ -160,9 +164,9 @@ Q.Sprite.extend("Cannon", {
                asset: 'shoot.png', // image
                 w: 20,
                 h: 20,
-                sprite: 'shot',
-                type: SPRITE_FRIENDLY,
-                collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
+                sprite: 'alienshot',
+                type: SPRITE_ENEMY,
+                collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL 
             });
             this.on('hit.sprite', this, 'collide');
         },
