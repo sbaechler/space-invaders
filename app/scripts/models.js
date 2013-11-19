@@ -164,7 +164,7 @@ Q.Sprite.extend("Cannon", {
     });
 
     Q.animations('alien',{
-        run_right: { frames: [0,5], rate: 1/1},
+        run_right: { frames: [0,1], rate: 1/1},
         run_left: { frames: [1,2], rate:1/15 },
         fall_down:{frames:[1,2], rate:1/15}
     });
