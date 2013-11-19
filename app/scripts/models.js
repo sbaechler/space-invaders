@@ -28,6 +28,9 @@ Quintus.SpaceInvadersModels = function(Q) {
 // }
 //});
 
+    /**
+     * Der Kanonenschuss
+     */
 Q.Sprite.extend("CannonShot",{
     init: function(p) {
         this._super(p,{
@@ -43,6 +46,8 @@ Q.Sprite.extend("CannonShot",{
 
     step: function(dt){
         this.p.y = this.p.y-2;
+        //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
+
         if(this.p.y < 0) this.destroy();
         this.stage.collide(this);
     },
@@ -87,7 +92,6 @@ Q.Sprite.extend("Cannon", {
     fireGun: function(){
         var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
         this.stage.insert(cannonShot);
-
         Q.audio.play("fire2.mp3");
     }
 });
