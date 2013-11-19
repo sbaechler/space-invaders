@@ -92,9 +92,6 @@ Q.Sprite.extend("Cannon", {
     }
 });
 
-
-
-
     Q.Sprite.extend("AlienTracker", {
         init: function(p){
             this._super({
@@ -139,15 +136,47 @@ Q.Sprite.extend("Cannon", {
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
             });
 
+            this.add('GunControls, gunControls');
+            Q.input.on('fire', this, "fireGun");
+        },
 
+        fireGun: function(){
+        	console.log("alienshoot");
+            var alienshot = new Q.AlienShot({x: this.p.x, y: this.p.y+40 });
+            this.stage.insert(alienshot);
+
+            Q.audio.play("fire2.mp3");
         }
-
-
-
+        
     });
 
+    Q.Sprite.extend("AlienShot",{
+        init: function(p) {
+            this._super(p,{
+               asset: 'shoot.png', // image
+                w: 20,
+                h: 20,
+                sprite: 'shot',
+                type: SPRITE_FRIENDLY,
+                collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
+            });
+            this.on('hit.sprite', this, 'collide');
+        },
 
+        step: function(dt){
+        	
+            this.p.y = this.p.y+2;
+            if(this.p.y > 700) this.destroy();
+            this.stage.collide(this);
+        },
 
+        collide: function(col) {
+            if(col.obj.isA("ShieldElement")|| col.obj.isA("Cannon")) {
+                col.obj.destroy(); // destroy the element
+                this.destroy(); // destroy the shot
+            }
+        }
+    });
 
 
 Q.Sprite.extend("ShieldElement", {
