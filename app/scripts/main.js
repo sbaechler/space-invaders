@@ -26,7 +26,7 @@ window.addEventListener('load',function() {
             Q.sheet("shield", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:0, frames:5 });
           //  Q.sheet("alien", "invaders.png", {tilew: 110, tileh: 110, sx:10, sy:10, frames:2 });
 
-
+            Q.debug=true;
             // Start level 1
         Q.stageScene("level1");
     });

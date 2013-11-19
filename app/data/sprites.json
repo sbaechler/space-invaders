@@ -1,6 +1,9 @@
 {
-  "alien1":{"sx":39,"sy":29,"cols":1,"tilew":65,"tileh":70, "w":108,"h":70,"frames":2 },
-  "alien2":{"sx":25,"sy":134,"cols":1,"tilew":97,"tileh":70, "w":128,"h":70,"frames":2 },
-  "alien3":{"sx":15,"sy":245,"cols":1,"tilew":97,"tileh":79, "w":128,"h":70,"frames":2 },
-  "alien4":{"sx":15,"sy":337,"cols":1,"tilew":180,"tileh":88, "w":128,"h":70,"frames":2 }
+  "alien1":{"sx":28,"sy":22,"tilew":87,"tileh":83 },
+
+    "alien2":{"sx":25,"sy":134,"cols":1,"tilew":97,"tileh":70, "w":58,"h":70 },
+  "alien3":{"sx":15,"sy":245,"cols":1,"tilew":97,"tileh":79, "w":58,"h":70 },
+    "alien4":{"sx":15,"sy":337,"cols":1,"tilew":180,"tileh":88, "w":58,"h":70 },
+    "alien5":{"sx":132,"sy":22,"tilew":87,"tileh":83 }
+
 }

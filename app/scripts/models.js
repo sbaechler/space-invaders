@@ -124,7 +124,7 @@ Q.Sprite.extend("Cannon", {
             this.destroy();
         },
        step: function(dt){
-           this.p.y = this.p.y+1;
+           this.p.y ;//= this.p.y+1;
            if(this.p.y < 0) this.destroy();
            if(this.p.y>600)  this.destroy();
            //this.stage.collide(this);
@@ -138,6 +138,8 @@ Q.Sprite.extend("Cannon", {
                             x: 100 * x + this.p.x,
                             y: 80 * y + this.p.y
                         }), this);
+
+
                     }
                 }, this);
             }, this)
@@ -147,17 +149,24 @@ Q.Sprite.extend("Cannon", {
     Q.Sprite.extend("Alien", {
         init: function(p) {
             this._super(p, {
+                sprite:"alien",
                 w: 107,
                 h: 88,
                 collisionMask: Q.SPRITE_DEFAULT
 
             });
-
-
+        this.add("animation");
+            this.play("run_right")
         }
 
 
 
+    });
+
+    Q.animations('alien',{
+        run_right: { frames: [0,5], rate: 1/1},
+        run_left: { frames: [1,2], rate:1/15 },
+        fall_down:{frames:[1,2], rate:1/15}
     });
 
 
@@ -209,6 +218,8 @@ Q.Sprite.extend("Shield", {
     }
 
 });
+
+
 }
 
 

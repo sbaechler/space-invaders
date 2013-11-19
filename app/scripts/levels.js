@@ -7,7 +7,7 @@
     var X = 0; // null
 
   Q.assets['level1'] = [
-      [X,X,g,o,g,X,X],
+      [X,g,g,o,g,X,X],
       [o,b,g,g,g,b,o],
       [X,b,r,r,b,b,X]
   ];
