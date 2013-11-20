@@ -17,6 +17,8 @@ window.addEventListener('load',function() {
 
 
     Q.state.reset({ score: 0, lives: 3 });
+    // Q.debug = true;
+    window.Q = Q;
 
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
 
