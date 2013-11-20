@@ -3,40 +3,30 @@
 Quintus.SpaceInvadersModels = function(Q) {
   Q.gravityY = 0;
   Q.gravityX = 0;
-
-  // Blueprint for the shield element
-  Q.assets['shield'] = [
-    [0,1,1,1,1,1,1,1,1,1,1,4],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,2,5,5,5,5,5,5,3,1,1],
-    [1,1,5,5,5,5,5,5,5,5,1,1]
-    ];
+  // define the sprite masks
+  var SPRITE_FRIENDLY = 1,
+      SPRITE_ENEMY = 2,
+      SPRITE_NEUTRAL = 4,
+      SPRITE_NONE = 8;
 
 /**
  * Add the score Class
  */
-
-
-
-
-Q.UI.Text.extend("Score",{
-    init: function(p){
-    this._super({
-      label: "score: 0",
-      x: 0,
-      y: 0
-    });
-
-    Q.state.on("change.score",this,"score");
-    },
-
-    score: function(score) {
-    this.p.label = "score: " + score;
-    }
-});
+//Q.UI.Text.extend("Score",{
+//    init: function(p){
+//    this._super({
+//      label: "score: 0",
+//      x: 0,
+//      y: 0
+//    });
+//
+//    Q.state.on("change.score",this,"score");
+//    },
+//
+//    score: function(score) {
+//    this.p.label = "score: " + score;
+//    }
+//});
 
 Q.Sprite.extend("CannonShot",{
     init: function(p) {
@@ -45,7 +35,8 @@ Q.Sprite.extend("CannonShot",{
             w: 20,
             h: 20,
             sprite: 'shot',
-            collisionMask: Q.SPRITE_DEFAULT
+            type: SPRITE_FRIENDLY,
+            collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
         });
         this.on('hit.sprite', this, 'collide');
     },
@@ -57,16 +48,11 @@ Q.Sprite.extend("CannonShot",{
     },
 
     collide: function(col) {
-        if(col.obj.isA("ShieldElement")) {
-            col.obj.destroy();  // destroy the shield element
-            this.destroy();  // destroy the shot
-        }
-        if(col.obj.isA("Alien")) {
-            col.obj.destroy();  // destroy the shield element
+        if(col.obj.isA("ShieldElement")|| col.obj.isA("Alien")) {
+            col.obj.destroy();  // destroy the element
             this.destroy();  // destroy the shot
         }
     }
-
 });
 
 
@@ -82,7 +68,9 @@ Q.Sprite.extend("Cannon", {
             y: 680,                 // position
             x: 512,
             sprite: 'cannon',
-            stepDistance: 50       // moving speed
+            stepDistance: 50,       // moving speed
+            type: SPRITE_FRIENDLY,
+            collisionMask: SPRITE_ENEMY
         });
         this.add('GunControls, gunControls');
         Q.input.on('fire', this, "fireGun");
@@ -115,7 +103,8 @@ Q.Sprite.extend("Cannon", {
                 h: 100,
                 x: 120,
                 y: p.y + 40,
-                data: Q.assets['level1']
+                data: Q.assets['level1'],
+                type: SPRITE_NONE
             }, p);
             this.on('hit');
             this.on("inserted", this, "setupAlien");
@@ -124,10 +113,11 @@ Q.Sprite.extend("Cannon", {
             this.destroy();
         },
        step: function(dt){
-           this.p.y ;//= this.p.y+1;
+
+           // this.p.y = this.p.y+1;
+
            if(this.p.y < 0) this.destroy();
            if(this.p.y>600)  this.destroy();
-           //this.stage.collide(this);
         },
         setupAlien: function(){
             Q._each(this.p.data, function(row,y) {
@@ -149,10 +139,9 @@ Q.Sprite.extend("Cannon", {
     Q.Sprite.extend("Alien", {
         init: function(p) {
             this._super(p, {
-                sprite:"alien",
-                w: 107,
-                h: 88,
-                collisionMask: Q.SPRITE_DEFAULT
+
+                type: SPRITE_ENEMY,
+                collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
 
             });
         this.add("animation");
@@ -178,8 +167,10 @@ Q.Sprite.extend("ShieldElement", {
         this._super({
            sheet: 'shield',
            sprite: 'shieldElement',
-            w: 10,
-            h: 10
+           w: 10,
+           h: 10,
+           type: SPRITE_NEUTRAL,
+           collisionMask: SPRITE_ENEMY | SPRITE_FRIENDLY
         }, p);
         this.on('hit');
     },
@@ -197,11 +188,10 @@ Q.Sprite.extend("Shield", {
           y: 100,
           w: 120,
           h: 70,
-          collisionMask: Q.SPRITE_DEFAULT,
+          type: SPRITE_NONE,
           data: Q.assets['shield']
       });
       this.on("inserted", this, "setupShield");
-
    },
     setupShield: function(){
         Q._each(this.p.data, function(row,y) {
@@ -216,7 +206,6 @@ Q.Sprite.extend("Shield", {
             }, this);
         }, this);
     }
-
 });
 
 
