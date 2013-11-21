@@ -71,6 +71,7 @@ Q.Sprite.extend("Cannon", {
     init: function(p){
         this._super(p, {
             asset: 'cannon.png', // image
+            scale:0.8,
             w: 110, // width
             h: 68, // height
             y: 680, // position
@@ -112,6 +113,7 @@ Q.Sprite.extend("Cannon", {
                 x: 120,
                 y: p.y + 40,
                 data: Q.assets['level1'],
+                scale:0.8,
                 type: SPRITE_NONE
             }, p);
             this.on('hit');
@@ -123,7 +125,7 @@ Q.Sprite.extend("Cannon", {
        step: function(dt){
 
            // this.p.y = this.p.y+1;
-
+         //  console.log(dt);
            if(this.p.y < 0) this.destroy();
            if(this.p.y>600) this.destroy();
         },
@@ -151,13 +153,17 @@ Q.Sprite.extend("Cannon", {
     Q.Sprite.extend("Alien", {
         init: function(p) {
             this._super(p, {
-
+                sprite:"alien",
+                scale:0.8,
+                play:"run_right",
                 type: SPRITE_ENEMY,
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
 
             });
-            this.add("animation");
-            this.play("run_right")
+            //this.animation('alien','run_right');
+             this.add("animation");
+
+             this.play("hampelmann");
 
             this.add('GunControls, gunControls');
             this.on('fire', this, "fireGun");
@@ -178,9 +184,7 @@ Q.Sprite.extend("Cannon", {
         
     });
 
-    Q.animations('alien',{
-        run_right: { frames: [0,1], rate: 1/1}
-    });
+
 
     Q.Sprite.extend("AlienShot",{
         init: function(p) {

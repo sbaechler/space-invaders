@@ -20,15 +20,19 @@ window.addEventListener('load',function() {
     // Q.debug = true;
     window.Q = Q;
 
+    Q.animations('alien', {
+        hampelmann: { frames: [0,1],animationTime:0, rate:1/1}
+    });
+
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
 
-    Q.load([ "cannon.png", "invaders.png", "shoot.png",  "shield.png","fire2.mp3", "sprites.json"],
+    Q.load([ "cannon.png", "invaders2.png", "shoot.png",  "shield.png","fire2.mp3", "sprites.json"],
         function() {
-            Q.compileSheets("invaders.png","sprites.json");
+            Q.compileSheets("invaders2.png","sprites.json");
             Q.sheet("shield", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:0, frames:5 });
           //  Q.sheet("alien", "invaders.png", {tilew: 110, tileh: 110, sx:10, sy:10, frames:2 });
 
-            Q.debug=true;
+          //  Q.debug=true;
             // Start level 1
         Q.stageScene("level1");
     });

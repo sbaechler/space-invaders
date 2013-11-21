@@ -1,8 +1,8 @@
 {
 
-  "alien1":{"sx":28,"sy":22,"tilew":102,"tileh":83, "cols":2},
-  "alien2":{"sx":25,"sy":134,"cols":2,"tilew":104,"tileh":70, "w":58,"h":70 },
-  "alien3":{"sx":14,"sy":245,"cols":2,"tilew":113,"tileh":70, "w":58,"h":70 },
-    "ufo":{"sx":15,"sy":337,"cols":2,"tilew":180,"tileh":88, "w":58,"h":70 }
+  "alien1":{"sx":0,"sy":0,"tilew":64,"tileh":64, "cols":2},
+  "alien2":{"sx":0,"sy":71,"cols":2,"tilew":87,"tileh":64, "w":58,"h":70 },
+  "alien3":{"sx":0,"sy":140,"cols":2,"tilew":96,"tileh":65, "w":58,"h":70 },
+    "ufo":{"sx":0,"sy":210,"cols":2,"tilew":196,"tileh":85, "w":58,"h":70 }
 
 }
