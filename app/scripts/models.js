@@ -9,26 +9,9 @@ Quintus.SpaceInvadersModels = function(Q) {
       SPRITE_NEUTRAL = 4,
       SPRITE_NONE = 8;
 
-/**
-* Add the score Class
-*/
-//Q.UI.Text.extend("Score",{
-// init: function(p){
-// this._super({
-// label: "score: 0",
-// x: 0,
-// y: 0
-// });
-//
-// Q.state.on("change.score",this,"score");
-// },
-//
-// score: function(score) {
-// this.p.label = "score: " + score;
-// }
-//});
 
-    /**
+
+/**
 * Der Kanonenschuss
 */
 Q.Sprite.extend("CannonShot",{
@@ -68,6 +51,7 @@ Q.Sprite.extend("CannonShot",{
 */
 Q.Sprite.extend("Cannon", {
     init: function(p){
+        var self = this;
         this._super(p, {
             asset: 'cannon.png', // image
             w: 110, // width
@@ -78,13 +62,17 @@ Q.Sprite.extend("Cannon", {
             stepDistance: 50, // moving speed
             cannonReady: true,
             cadence: 680,  // in ms
+            hittable: false,
             type: SPRITE_FRIENDLY,
-            collisionMask: SPRITE_ENEMY
+            collisionMask: SPRITE_ENEMY // will be changed. Prevent hit on insert
         });
         this.add('GunControls, gunControls');
         this.on('hit');
         Q.input.on('fire', this, "fireGun");
-
+        // Die Kanone soll die ersten 2 Sekunden unverletzbar sein.
+        setTimeout(function(){
+            self.p.hittable = true;
+        },2000);
     },
 
     fireGun: function(){
@@ -101,8 +89,21 @@ Q.Sprite.extend("Cannon", {
 
     },
     hit: function(){
-        Q.audio.play("explosion.mp3");
-        this.destroy();
+        var self = this;
+        if(this.p.hittable){
+            this.off('hit');
+            Q.audio.play("explosion.mp3");
+            Q.state.dec("lives",1);
+            this.destroy();
+            if(Q.state.get('lives') <= 0) {
+                alert("Game over");
+            } else {
+                setTimeout(function(){
+                    self.stage.insert(new Q.Cannon());
+                }, 1000);
+            }
+        }
+
     }
 });
 
@@ -152,6 +153,7 @@ Q.Sprite.extend("Cannon", {
         },
 
         setupAlien: function(){
+            var alienScore = [0, 40, 20, 10];
             Q.assets.invaders = {};  // Store a reference to the aliens
             Q._each(this.p.data, function(row,y) {
                 Q._each(row, function(type, x) {
@@ -160,6 +162,7 @@ Q.Sprite.extend("Cannon", {
                         Q.assets.invaders[x].push(
                             this.stage.insert(new Q.Alien({
                                 sheet:"alien"+type,
+                                score: alienScore[type],
                                 column: x,
                                 parent: this.p,
                                 x: 100 * x + this.p.x,
@@ -193,6 +196,7 @@ Q.Sprite.extend("Cannon", {
             this.off('hit'); // event is fired multiple times
             Q.assets.invaders[this.p.column].pop();
             Q.audio.play('fire1.mp3');
+            Q.state.inc('score', this.p.score);
             this.destroy();
         }
         
@@ -291,5 +295,75 @@ Q.Sprite.extend("UFO", {
         // TODO: add points
     }
 });
+
+
+/**
+* Add the score Class and UI components
+*/
+Q.UI.Text.extend("Score",{
+    init: function(p){
+    this._super({
+        label: "score: 0",
+        align: "right",
+        color: 'white',
+        x: Q.width - 100,
+        y: 20,
+        nextLife: 1500
+    });
+
+    Q.state.on("change.score",this,"score");
+    },
+
+    score: function(score) {
+        this.p.label = "score: " + score;
+        if (score >= this.p.nextLife){
+            this.p.nextLife += this.p.nextLife;
+            Q.state.inc('lives', 1);
+        }
+    }
+});
+
+Q.UI.Text.extend("Level",{
+    init: function() {
+      this._super({
+        label: "level: 1",
+        align: "right",
+        color: 'white',
+        level: 1,
+        x: Q.width - 70,
+        y: Q.height - 10,
+        weight: "normal",
+        size:18
+      });
+
+      Q.state.on("change.level",this,"level");
+    },
+
+    level: function(lvl) {
+      this.p.label = "level: " + lvl;
+    }
+});
+
+Q.UI.Text.extend("Lives",{
+    init: function() {
+      this._super({
+        label: "lives: 3",
+        align: "left",
+        color: 'white',
+        x: 70,
+        y: Q.height - 10,
+        weight: "normal",
+        size:18
+      });
+
+      Q.state.on("change.lives",this,"lives");
+    },
+
+    lives: function(lives) {
+      this.p.label = "lives: " + lives;
+    }
+});
+
+
 
 }
