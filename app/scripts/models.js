@@ -76,6 +76,8 @@ Q.Sprite.extend("Cannon", {
             x: 512,
             sprite: 'cannon',
             stepDistance: 50, // moving speed
+            cannonReady: true,
+            cadence: 680,  // in ms
             type: SPRITE_FRIENDLY,
             collisionMask: SPRITE_ENEMY
         });
@@ -86,9 +88,17 @@ Q.Sprite.extend("Cannon", {
     },
 
     fireGun: function(){
-        var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
-        this.stage.insert(cannonShot);
-        Q.audio.play("fire2.mp3");
+        if(this.p.cannonReady){
+            var p = this.p;
+            p.cannonReady = false;
+            setTimeout(function(){
+                p.cannonReady = true;
+            }, p.cadence);
+            var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
+            this.stage.insert(cannonShot);
+            Q.audio.play("fire2.mp3");
+        }
+
     },
     hit: function(){
         Q.audio.play("explosion.mp3");
