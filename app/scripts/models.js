@@ -150,9 +150,9 @@ Q.Sprite.extend("Cannon", {
         init: function(p) {
             this._super(p, {
                 type: SPRITE_ENEMY,
-                collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
+                collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL,
+                scale:0.4
             });
-
             this.add('GunControls, gunControls');
             this.on('fire', this, "fireGun");
             this.on('hit');
