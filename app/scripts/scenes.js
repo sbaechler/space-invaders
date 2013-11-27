@@ -3,6 +3,7 @@
 Quintus.SpaceInvadersScenes = function(Q) {
 
     function setupLevel(levelAsset,stage) {
+
         var cannon = stage.insert(new Q.Cannon());
         var shieldPos = [60, 171, 282, 393];
         Q._each(shieldPos, function(pos, i) {
@@ -31,12 +32,27 @@ Quintus.SpaceInvadersScenes = function(Q) {
         }, 2000);
     };
 
+    /**
+     * The HUD displays score and level
+     */
+    Q.scene("hud",function(stage) {
+        stage.insert(new Q.Score());
+        stage.insert(new Q.Lives());
+        stage.insert(new Q.Level());
+    }, { stage: 1 });
 
     /**
      *  The first level.
      */
     Q.scene("level1",function(stage) {
+        Q.state.reset({ score: 0, lives: 3, level: 1 });  // removes all event listeners
+
+
+        // Add the hud in
+        Q.stageScene("hud");
+
         setupLevel("level1", stage);
+        // Set up the game state
         stage.on("complete",function() { Q.stageScene("level2"); });
     });
 }
