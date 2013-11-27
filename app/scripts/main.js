@@ -17,12 +17,12 @@ window.addEventListener('load',function() {
 
 
     Q.state.reset({ score: 0, lives: 3 });
-    // Q.debug = true;
+//     Q.debug = true;
     window.Q = Q;
 
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
 
-    Q.load([ "cannon.png", "invaders.png", "shoot.png",  "shield.png","fire2.mp3", "sprites.json"],
+    Q.load([ "cannon.png", "invaders.png", "shoot.png",  "alienShot.png", "shield.png","explosion.mp3", "fire2.mp3", "sprites.json"],
         function() {
             Q.compileSheets("invaders.png","sprites.json");
             Q.sheet("shield", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:0, frames:5 });

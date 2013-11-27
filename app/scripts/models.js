@@ -45,7 +45,7 @@ Q.Sprite.extend("CannonShot",{
     },
 
     step: function(dt){
-        this.p.y = this.p.y-2;
+        this.p.y = this.p.y-6;
         //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
 
         if(this.p.y < 0) this.destroy();
@@ -59,6 +59,17 @@ Q.Sprite.extend("CannonShot",{
         } else if(col.obj.isA("Alien")) {
             col.obj.trigger('hit');
             this.destroy();
+        }else if(col.obj.isA("AlienShot")) {
+        	
+        	this.off("collide");
+        	
+        	var decide = Math.random();
+        	if(decide<0.5){
+                this.destroy();
+        	}else{
+                col.obj.trigger('destroy');
+            	this.on("collide");
+        	}
         }
     }
 });
@@ -100,6 +111,8 @@ Q.Sprite.extend("Cannon", {
     },
     hit: function(){
         this.destroy();
+
+        Q.audio.play("explosion.mp3");
     }
 });
 
@@ -158,7 +171,6 @@ Q.Sprite.extend("Cannon", {
         },
 
         fireGun: function(){
-                console.log("alienshoot");
             var alienshot = new Q.AlienShot({x: this.p.x + this.p.parent.x,
                                              y: this.p.y + this.p.parent.y + this.p.cy });
             this.stage.insert(alienshot);
@@ -174,7 +186,7 @@ Q.Sprite.extend("Cannon", {
     Q.Sprite.extend("AlienShot",{
         init: function(p) {
             this._super(p,{
-               asset: 'shoot.png', // image
+               asset: 'alienShot.png', // image
                 w: 11,
                 h: 10,
                 sprite: 'shot',
@@ -182,11 +194,12 @@ Q.Sprite.extend("Cannon", {
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
             });
             this.on('hit.sprite', this, 'collide');
+            this.on('destroy', this, 'destroy');
         },
 
         step: function(dt){
                 
-            this.p.y = this.p.y+2;
+            this.p.y = this.p.y+6;
             if(this.p.y > 700) this.destroy();
             this.stage.collide(this);
         },
