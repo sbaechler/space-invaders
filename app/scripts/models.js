@@ -41,6 +41,17 @@ Q.Sprite.extend("CannonShot",{
         } else if(col.obj.isA("Alien")) {
             col.obj.trigger('hit');
             this.destroy();
+        }else if(col.obj.isA("AlienShot")) {
+        	
+        	this.off("collide");
+        	
+        	var decide = Math.random();
+        	if(decide<0.5){
+                this.destroy();
+        	}else{
+                col.obj.trigger('destroy');
+            	this.on("collide");
+        	}
         }
     }
 });
@@ -89,6 +100,7 @@ Q.Sprite.extend("Cannon", {
 
     },
     hit: function(){
+
         var self = this;
         if(this.p.hittable){
             this.off('hit');
@@ -103,7 +115,6 @@ Q.Sprite.extend("Cannon", {
                 }, 1000);
             }
         }
-
     }
 });
 
@@ -153,12 +164,14 @@ Q.Sprite.extend("Cannon", {
         },
 
         setupAlien: function(){
-            var alienScore = [0, 40, 20, 10];
+
+        	var alienScore = [0, 40, 20, 10];
             Q.assets.invaders = {};  // Store a reference to the aliens
+
             Q._each(this.p.data, function(row,y) {
                 Q._each(row, function(type, x) {
                     if(type > 0) {
-                        Q.assets.invaders[x] = Q.assets.invaders[x]  || []; // Create a stack per column
+                        Q.assets.invaders[x] = Q.assets.invaders[x] || []; // Create a stack per column
                         Q.assets.invaders[x].push(
                             this.stage.insert(new Q.Alien({
                                 sheet:"alien"+type,
@@ -182,7 +195,6 @@ Q.Sprite.extend("Cannon", {
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
             });
 
-            this.add('GunControls, gunControls');
             this.on('fire', this, "fireGun");
             this.on('hit');
         },
@@ -205,7 +217,7 @@ Q.Sprite.extend("Cannon", {
     Q.Sprite.extend("AlienShot",{
         init: function(p) {
             this._super(p,{
-               asset: 'shoot.png', // image
+               asset: 'alienShot.png', // image
                 w: 11,
                 h: 10,
                 sprite: 'shot',
@@ -213,11 +225,13 @@ Q.Sprite.extend("Cannon", {
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
             });
             this.on('hit.sprite', this, 'collide');
+            this.on('destroy', this, 'destroy');
         },
 
         step: function(dt){
-                
-            this.p.y = this.p.y+4;
+            
+            this.p.y = this.p.y+6;
+
             if(this.p.y > 700) this.destroy();
             this.stage.collide(this);
         },

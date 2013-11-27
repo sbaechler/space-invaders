@@ -67,5 +67,16 @@
                 });
             });
         });
+        
+        describe('AlienTracker', function () {
+            it('should be able to shoot', function(){
+                runs(function(){
+                    var alien = new Q.AlienTracker();
+                    stage.insert(alien);
+                    expect(Q('AlienShot').length).toBe(1);
+                });
+            });
+
+        });
     });
 })();

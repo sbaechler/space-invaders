@@ -15,12 +15,13 @@ window.addEventListener('load',function() {
 
 
     Q.state.reset({ score: 0, lives: 3 });
-    // Q.debug = true;
+//     Q.debug = true;
     window.Q = Q;
 
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
 
-    Q.load([ "cannon.png", "invaders.png", "shoot.png",  "shield.png",
+
+    Q.load([ "cannon.png", "invaders.png",  "alienShot.png", "shoot.png",  "shield.png",
              "fire2.mp3", "explosion.mp3", "fastinvader1.mp3", "fastinvader2.mp3",
              "fastinvader3.mp3", "fastinvader4.mp3", "fire1.mp3", "ufo_lowpitch.mp3",
              "ufo_shot.mp3",
