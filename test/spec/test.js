@@ -63,5 +63,20 @@
             });
 
         });
+        
+        describe('AlienTracker', function () {
+            it('should be able to shoot', function(){
+                runs(function(){
+                    var cannonShot = new Q.CannonShot();
+                    stage.insert(cannonShot);
+                    
+                    var alienShot = new Q.AlienShot();
+                    stage.insert(alienShot);
+                    
+                    cannonShot.collide(alienShot);
+                });
+            });
+
+        });
     });
 })();
