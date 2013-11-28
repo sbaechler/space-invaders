@@ -126,7 +126,7 @@ Q.Sprite.extend("Cannon", {
             this.beep = function(){ // Factory method
                 var i=0;  // closure
                 return function(){
-                    var sample = i%4 + 1;  // 0-4
+                    var sample = i%4 + 1;  // 1-4
                     Q.audio.play('fastinvader' + sample + '.mp3');
                     i++;
                 };
