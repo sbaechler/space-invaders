@@ -117,11 +117,13 @@ Q.Sprite.extend("Cannon", {
                 y: p.y + 40,
                 data: Q.assets['level1'],
                 type: SPRITE_NONE,
+                cadence:80,
                 step: 0,  // step counter (ca 50-60 steps/s)
                 move: 50  // alle 50 steps ein Move.
             }, p);
             this.on('hit');
             this.on('move');
+
             this.on("inserted", this, "setupAlien");
             this.beep = function(){ // Factory method
                 var i=0;  // closure
@@ -137,15 +139,27 @@ Q.Sprite.extend("Cannon", {
             this.destroy();
         },
        step: function(dt){
-           // this.p.y = this.p.y+1;
+
+if (this.p.cadence == 0) {  
+
+   this.p.y = this.p.y+5;  
+   this.p.cadence = 80;
+ }
+ else
+    {
+this.p.cadence --;
+    }
+           
+         
 //           if(this.p.y < 0) this.destroy();
 //           if(this.p.y>600) this.destroy();
-           if(this.p.step < this.p.move ) {
+        /*   if(this.p.step < this.p.move ) {
                this.p.step++;
            } else {
                this.trigger('move');
                this.p.step = 0;
-           }
+           }*/
+      //     this.p.y = this.p.y + 3;
         },
         move: function(){
             console.log('moving');
@@ -180,11 +194,18 @@ Q.Sprite.extend("Cannon", {
             this._super(p, {
                 type: SPRITE_ENEMY,
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL,
-                scale:0.4
+                scale:0.4,
+                 sprite:"alien"//,
+             //    play:"hampelmann"
+
             });
-            this.add('GunControls, gunControls');
+         //   this.add('GunControls, gunControls');
             this.on('fire', this, "fireGun");
             this.on('hit');
+            this.add('animation');
+            this.play('hampelmann');
+
+
         },
 
         fireGun: function(){

@@ -19,7 +19,7 @@ window.addEventListener('load',function() {
     window.Q = Q;
 
     Q.animations('alien', {
-        hampelmann: { frames: [0,1],animationTime:0, rate:1/1}
+        hampelmann: { frames: [0,1], rate:1/1}
     });
 
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
