@@ -47,10 +47,25 @@
                     var cannon = new Q.Cannon();
                     stage.insert(cannon);
                     Q.input.trigger('fire');
-                    expect(Q('CannonShot').length).toBe(1);
+                    expect(Q('CannonShot').items.length).toBe(1);
                 });
             });
+            it('should be destroyed if hit', function(){
+                runs(function(){
+                    var cannon = new Q.Cannon();
+                    stage.insert(cannon);
+                    expect(Q('Cannon').items.length).toBe(1);
+                    cannon.trigger('hit');
+                    // wait 0.1s
+                    waits(100);
+                    runs(function(){
+                        expect(Q('Cannon').items.length).toBe(0);
+                        }
+                    );
 
+
+                });
+            });
         });
         
         describe('AlienTracker', function () {

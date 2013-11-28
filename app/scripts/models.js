@@ -9,26 +9,9 @@ Quintus.SpaceInvadersModels = function(Q) {
       SPRITE_NEUTRAL = 4,
       SPRITE_NONE = 8;
 
-/**
-* Add the score Class
-*/
-//Q.UI.Text.extend("Score",{
-// init: function(p){
-// this._super({
-// label: "score: 0",
-// x: 0,
-// y: 0
-// });
-//
-// Q.state.on("change.score",this,"score");
-// },
-//
-// score: function(score) {
-// this.p.label = "score: " + score;
-// }
-//});
 
-    /**
+
+/**
 * Der Kanonenschuss
 */
 Q.Sprite.extend("CannonShot",{
@@ -47,7 +30,6 @@ Q.Sprite.extend("CannonShot",{
     step: function(dt){
         this.p.y = this.p.y-6;
         //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
-
         if(this.p.y < 0) this.destroy();
         this.stage.collide(this);
     },
@@ -80,6 +62,7 @@ Q.Sprite.extend("CannonShot",{
 */
 Q.Sprite.extend("Cannon", {
     init: function(p){
+        var self = this;
         this._super(p, {
             asset: 'cannon.png', // image
             w: 110, // width
@@ -88,31 +71,50 @@ Q.Sprite.extend("Cannon", {
             x: 512,
             sprite: 'cannon',
             stepDistance: 50, // moving speed
+            cannonReady: true,
+            cadence: 680,  // in ms
+            hittable: false,
             type: SPRITE_FRIENDLY,
-            collisionMask: SPRITE_ENEMY
+            collisionMask: SPRITE_ENEMY // will be changed. Prevent hit on insert
         });
         this.add('GunControls, gunControls');
         this.on('hit');
         Q.input.on('fire', this, "fireGun");
-
-// this.on("hit.sprite",function(collision) {
-// if(collision.obj.isA("AlienShot")) {
-// Q.stageScene("CannonHit", 1);
-// this.destroy();
-// }
-// });
-
+        // Die Kanone soll die ersten 2 Sekunden unverletzbar sein.
+        setTimeout(function(){
+            self.p.hittable = true;
+        },2000);
     },
 
     fireGun: function(){
-        var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
-        this.stage.insert(cannonShot);
-        Q.audio.play("fire2.mp3");
+        if(this.p.cannonReady){
+            var p = this.p;
+            p.cannonReady = false;
+            setTimeout(function(){
+                p.cannonReady = true;
+            }, p.cadence);
+            var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
+            this.stage.insert(cannonShot);
+            Q.audio.play("fire2.mp3");
+        }
+
     },
     hit: function(){
-        this.destroy();
 
-        Q.audio.play("explosion.mp3");
+        var self = this;
+        if(this.p.hittable){
+            this.off('hit');
+            Q.audio.play("explosion.mp3");
+            Q.state.dec("lives",1);
+            this.destroy();
+            if(Q.state.get('lives') <= 0) {
+                alert("Game over");
+            } else {
+                setTimeout(function(){
+                    self.stage.insert(new Q.Cannon());
+                }, 1000);
+            }
+        }
     }
 });
 
@@ -125,21 +127,47 @@ Q.Sprite.extend("Cannon", {
                 x: 120,
                 y: p.y + 40,
                 data: Q.assets['level1'],
-                type: SPRITE_NONE
+                type: SPRITE_NONE,
+                step: 0,  // step counter (ca 50-60 steps/s)
+                move: 50  // alle 50 steps ein Move.
             }, p);
             this.on('hit');
+            this.on('move');
             this.on("inserted", this, "setupAlien");
+            this.beep = function(){ // Factory method
+                var i=0;  // closure
+                return function(){
+                    var sample = i%4 + 1;  // 0-4
+                    Q.audio.play('fastinvader' + sample + '.mp3');
+                    i++;
+                };
+            }();
+
         },
         hit: function(){
             this.destroy();
         },
        step: function(dt){
            // this.p.y = this.p.y+1;
-           if(this.p.y < 0) this.destroy();
-           if(this.p.y>600) this.destroy();
+//           if(this.p.y < 0) this.destroy();
+//           if(this.p.y>600) this.destroy();
+           if(this.p.step < this.p.move ) {
+               this.p.step++;
+           } else {
+               this.trigger('move');
+               this.p.step = 0;
+           }
         },
+        move: function(){
+            console.log('moving');
+            // this.beep();   // NOT YET.
+        },
+
         setupAlien: function(){
-            Q.assets.invaders = {}; // Store a reference to the aliens
+
+        	var alienScore = [0, 40, 20, 10];
+            Q.assets.invaders = {};  // Store a reference to the aliens
+
             Q._each(this.p.data, function(row,y) {
                 Q._each(row, function(type, x) {
                     if(type > 0) {
@@ -147,6 +175,7 @@ Q.Sprite.extend("Cannon", {
                         Q.assets.invaders[x].push(
                             this.stage.insert(new Q.Alien({
                                 sheet:"alien"+type,
+                                score: alienScore[type],
                                 column: x,
                                 parent: this.p,
                                 x: 100 * x + this.p.x,
@@ -178,6 +207,8 @@ Q.Sprite.extend("Cannon", {
         hit: function(){
             this.off('hit'); // event is fired multiple times
             Q.assets.invaders[this.p.column].pop();
+            Q.audio.play('fire1.mp3');
+            Q.state.inc('score', this.p.score);
             this.destroy();
         }
         
@@ -198,8 +229,9 @@ Q.Sprite.extend("Cannon", {
         },
 
         step: function(dt){
-                
+            
             this.p.y = this.p.y+6;
+
             if(this.p.y > 700) this.destroy();
             this.stage.collide(this);
         },
@@ -258,4 +290,94 @@ Q.Sprite.extend("Shield", {
         }, this);
     }
 });
+
+Q.Sprite.extend("UFO", {
+   init: function(p){
+        this._super(p, {
+            type: SPRITE_ENEMY
+
+        });
+        this.on('inserted');
+        this.on('hit');
+    },
+    inserted: function(){
+        Q.audio.play('ufo.lowpitch.mp3');
+    },
+    hit: function(){
+        Q.audio.play('ufo_shot.mp3');
+        this.destroy();
+        // TODO: add points
+    }
+});
+
+
+/**
+* Add the score Class and UI components
+*/
+Q.UI.Text.extend("Score",{
+    init: function(p){
+    this._super({
+        label: "score: 0",
+        align: "right",
+        color: 'white',
+        x: Q.width - 100,
+        y: 20,
+        nextLife: 1500
+    });
+
+    Q.state.on("change.score",this,"score");
+    },
+
+    score: function(score) {
+        this.p.label = "score: " + score;
+        if (score >= this.p.nextLife){
+            this.p.nextLife += this.p.nextLife;
+            Q.state.inc('lives', 1);
+        }
+    }
+});
+
+Q.UI.Text.extend("Level",{
+    init: function() {
+      this._super({
+        label: "level: 1",
+        align: "right",
+        color: 'white',
+        level: 1,
+        x: Q.width - 70,
+        y: Q.height - 10,
+        weight: "normal",
+        size:18
+      });
+
+      Q.state.on("change.level",this,"level");
+    },
+
+    level: function(lvl) {
+      this.p.label = "level: " + lvl;
+    }
+});
+
+Q.UI.Text.extend("Lives",{
+    init: function() {
+      this._super({
+        label: "lives: 3",
+        align: "left",
+        color: 'white',
+        x: 70,
+        y: Q.height - 10,
+        weight: "normal",
+        size:18
+      });
+
+      Q.state.on("change.lives",this,"lives");
+    },
+
+    lives: function(lives) {
+      this.p.label = "lives: " + lives;
+    }
+});
+
+
+
 }
