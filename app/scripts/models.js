@@ -118,7 +118,7 @@ Quintus.SpaceInvadersModels = function(Q) {
                 h: 1,
                 x: 100,
                 y: p.y + 40,
-                direction:'right',
+                direction: 'right',
                 data: Q.assets['level1'],
                 type: SPRITE_NONE,
                 cadence: 80,
@@ -166,21 +166,26 @@ Quintus.SpaceInvadersModels = function(Q) {
         },
         move: function() {
             console.log('moving');
+            var ystep = false;
             // this.beep();   // NOT YET.
             console.log(this.p.x);
-            if (Q.width -  this.p.w >this.p.x + 100 && this.p.x <100 && this.p.x <320 && this.p.direction == 'left') {
+            if (Q.width - this.p.w > this.p.x + 100 && this.p.x < 100 && this.p.x < 320 && this.p.direction == 'left') {
                 this.p.y = this.p.y + 10;
+                ystep = true;
                 this.p.direction = 'right';
-                 // this.p.x = this.p.x + this.direction('right');
-            }
-            else if (Q.width -  this.p.w <this.p.x + 100 && this.p.x>100 &&this.p.direction =='right')
-            {
+
+                // this.p.x = this.p.x + this.direction('right');
+            } else if (Q.width - this.p.w < this.p.x + 100 && this.p.x > 100 && this.p.direction == 'right') {
                 this.p.y = this.p.y + 10;
+                ystep = true;
                 this.p.direction = 'left';
             }
 
-            this.p.x = this.p.x + this.direction(this.p.direction);
-            
+            if (ystep == false) {
+                this.p.x = this.p.x + this.direction(this.p.direction);
+            };
+            ystep = false;
+
             this.getWidth();
             //max rechts = 340
             //min links = 100
@@ -188,13 +193,11 @@ Quintus.SpaceInvadersModels = function(Q) {
             //1024-600>340
         },
 
-        direction: function(richtung){
+        direction: function(richtung) {
 
             if (richtung == 'left') {
                 return -20;
-            }
-            else
-            {
+            } else {
                 return 20;
             }
         },
@@ -367,16 +370,16 @@ Quintus.SpaceInvadersModels = function(Q) {
         init: function(p) {
             this._super(p, {
                 type: SPRITE_ENEMY,
-                   sprite: "alien"
+                sprite: "alien"
 
             });
             this.on('inserted', this, 'setupUFO');
-           
+
             this.on('hit');
         },
 
-           setupUFO: function() {
-           
+        setupUFO: function() {
+
             Q._each(this.p.data, function(row, y) {
                 Q._each(row, function(type, x) {
                     if (type > 0) {
@@ -396,19 +399,19 @@ Quintus.SpaceInvadersModels = function(Q) {
                     }
                 }, this);
             }, this);
-           
+
         },
         inserted: function() {
-     //       Q.audio.play('ufo.lowpitch.mp3');
+            //       Q.audio.play('ufo.lowpitch.mp3');
         },
         hit: function() {
-      //      Q.audio.play('ufo_shot.mp3');
+            //      Q.audio.play('ufo_shot.mp3');
             this.destroy();
             // TODO: add points
         }
     });
 
-    
+
 
 
 
