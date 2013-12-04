@@ -19,17 +19,19 @@ window.addEventListener('load',function() {
     window.Q = Q;
 
     Q.animations('alien', {
-        hampelmann: { frames: [0,1],animationTime:0, rate:1/1}
+        hampelmann: { frames: [0,1], rate:1/1}
     });
 
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
 
-    Q.load([ "cannon.png", "invaders.png", "shoot.png",  "shield.png",
+
+    Q.load([ "cannon.png", "invaders2.png", "shoot.png",  "shield.png",
              "fire2.mp3", "explosion.mp3", "fastinvader1.mp3", "fastinvader2.mp3",
              "fastinvader3.mp3", "fastinvader4.mp3", "fire1.mp3", "ufo_lowpitch.mp3",
              "ufo_shot.mp3",
              // only mp3 needs to be specified. Alternate formats loaded accordingly.
              "sprites.json"],
+
         function() {
             Q.compileSheets("invaders2.png","sprites.json");
             Q.sheet("shield", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:0, frames:5 });
