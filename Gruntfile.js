@@ -266,10 +266,13 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,png,txt}',
                         '.htaccess',
+                        'package.json',
                         'images/{,*/}*.{png,gif}',
                         'data/{,*/}*.json',
                         'audio/{,*/}*.{mp3,ogg}',
-                        'styles/fonts/{,*/}*.*'
+                        'styles/fonts/{,*/}*.*',
+                        'server.js',
+                        'Procfile'
                     ]
                 }]
             },
