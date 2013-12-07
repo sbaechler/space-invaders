@@ -22,6 +22,7 @@
 			});
 			Q.stageScene("dummy_scene");
 			stage = Q.stage();
+            Q.state.reset({ score: 0, lives: 3, level: 1 });
 
             SpriteFixtures.loadSprites(Q);
             waitsFor(SpriteFixtures.doneLoaded,400);
@@ -52,18 +53,18 @@
             });
             it('should be destroyed if hit', function(){
                 runs(function(){
-                    var cannon = new Q.Cannon();
+                    var cannon = new Q.Cannon({hittable: true});
                     stage.insert(cannon);
                     expect(Q('Cannon').items.length).toBe(1);
+                    expect(Q.state.get('lives')).toBe(3);
                     cannon.trigger('hit');
                     // wait 0.1s
                     waits(100);
                     runs(function(){
                         expect(Q('Cannon').items.length).toBe(0);
+                        expect(Q.state.get('lives')).toBe(2);
                         }
                     );
-
-
                 });
             });
         });
