@@ -164,13 +164,19 @@ Quintus.SpaceInvadersModels = function(Q) {
                 this.p.y = this.p.y + 10;
                 ystep = true;
                 this.p.direction = 'left';
+                console.log(this.p.y);
             }
 
             if (ystep == false) {
                 this.p.x = this.p.x + this.direction(this.p.direction);
-            };
+            }
             ystep = false;
 
+            if(this.p.y > 240){
+                Q._each(this.children, function(alien){
+                    alien.stage.collide(alien);
+                });
+            }
             this.getWidth();
             //max rechts = 340
             //min links = 100
@@ -249,11 +255,9 @@ Quintus.SpaceInvadersModels = function(Q) {
             });
             //   this.add('GunControls, gunControls');
             this.on('fire', this, "fireGun");
-            this.on('hit');
+            this.on('hit.sprite', this, 'collide');
             this.add('animation');
             this.play('hampelmann');
-
-
         },
 
         fireGun: function() {
@@ -263,14 +267,17 @@ Quintus.SpaceInvadersModels = function(Q) {
             });
             this.stage.insert(alienshot);
         },
-        hit: function() {
-            this.off('hit'); // event is fired multiple times
-            Q.assets.invaders[this.p.column].pop();
-            Q.audio.play('fire1.mp3');
-            Q.state.inc('score', this.p.score);
-            this.destroy();
+        collide: function(col){
+            if (col.obj.isA("ShieldElement")) {
+                col.obj.trigger('hit'); // destroy the element
+            } else {
+                this.off('hit'); // event is fired multiple times
+                Q.assets.invaders[this.p.column].pop();
+                Q.audio.play('fire1.mp3');
+                Q.state.inc('score', this.p.score);
+                this.destroy();
+            }
         }
-
     });
 
     Q.Sprite.extend("AlienShot", {
