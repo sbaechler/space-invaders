@@ -129,7 +129,7 @@ Quintus.SpaceInvadersModels = function(Q) {
             this.on('move');
             this.on("inserted", this, "setupAlien");
 
-            this.beep = function() { // Factory method
+            this.beep = function() { // closure pattern
                 var i = 0; // closure
                 return function() {
                     var sample = i % 4 + 1; // 0-4
