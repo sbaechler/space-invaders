@@ -152,10 +152,8 @@ Quintus.SpaceInvadersModels = function(Q) {
 
         },
         move: function() {
-            console.log('moving');
             var ystep = false;
             // this.beep();   // NOT YET.
-            console.log(this.p.x);
             if (Q.width - this.p.w > this.p.x + 100 && this.p.x < 100 && this.p.x < 320 && this.p.direction == 'left') {
                 this.p.y = this.p.y + 10;
                 ystep = true;
@@ -208,7 +206,6 @@ Quintus.SpaceInvadersModels = function(Q) {
                                 y: 80 * y + this.p.y*/
                             }), this)
                         );
-                        console.log(this.p.x);
                     }
                 }, this);
             }, this);
@@ -231,8 +228,6 @@ Quintus.SpaceInvadersModels = function(Q) {
                 //  var breite = 
                 //console.log(alien);
             });
-            console.log("max: " + maxx_pos);
-            console.log("min: " + minx_pos);
             this.p.w = maxx_pos - minx_pos;
             this.p.h = 100;
 
@@ -300,7 +295,7 @@ Quintus.SpaceInvadersModels = function(Q) {
 
         collide: function(col) {
             if (col.obj.isA("ShieldElement") || col.obj.isA("Cannon")) {
-                col.obj.trigger('hit'); // destroy the element
+                col.obj.trigger('hit', 'AlienShot'); // destroy the element
                 this.destroy(); // destroy the shot
             }
         }
@@ -314,13 +309,25 @@ Quintus.SpaceInvadersModels = function(Q) {
                 sprite: 'shieldElement',
                 w: 10,
                 h: 10,
+                strength: 1,
                 type: SPRITE_NEUTRAL,
                 collisionMask: SPRITE_ENEMY | SPRITE_FRIENDLY
             }, p);
             this.on('hit');
         },
-        hit: function() {
-            this.destroy();
+        hit: function(evt) {
+            this.off('hit');
+            // Bei einem Alientreffer das Schild erst beschädigen, dann zerstören.
+            if (this.p.strength && evt === 'AlienShot'){
+                this.p.sheet = 'shield-hit';
+                this.p.strength -= 1;
+                var self = this;
+                setTimeout(function(){
+                    self.on('hit', self, 'hit');
+                }, 100);
+            } else {
+                this.destroy();
+            }
         }
 
 
@@ -357,42 +364,20 @@ Quintus.SpaceInvadersModels = function(Q) {
         init: function(p) {
             this._super(p, {
                 type: SPRITE_ENEMY,
-                sprite: "alien"
-
+                sprite: "UFO",
+                sheet: 'ufo'
             });
-            this.on('inserted', this, 'setupUFO');
+            this.on('inserted');  // ruft this.insterted() auf.
 
             this.on('hit');
         },
 
-        setupUFO: function() {
-            // Nein.
-            Q._each(this.p.data, function(row, y) {
-                Q._each(row, function(type, x) {
-                    if (type > 0) {
-                        Q.assets.invaders[x] = Q.assets.invaders[x] || []; // Create a stack per column
-                        Q.assets.invaders[x].push(
-                            this.stage.insert(new Q.Alien({
-                                sheet: "ufo",
-                                column: x,
-                                parent: this.p,
-                                x: 60 * x,
-                                y: 60 * y
-                                /*x: 55 * x + this.p.x,
-                                y: 80 * y + this.p.y*/
-                            }), this)
-                        );
-                        console.log(this.p.x);
-                    }
-                }, this);
-            }, this);
 
-        },
         inserted: function() {
-            //       Q.audio.play('ufo.lowpitch.mp3');
+                   Q.audio.play('ufo.lowpitch.mp3');
         },
         hit: function() {
-            //      Q.audio.play('ufo_shot.mp3');
+                   Q.audio.play('ufo_shot.mp3');
             this.destroy();
             // TODO: add points
         }

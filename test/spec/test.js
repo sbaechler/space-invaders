@@ -68,5 +68,35 @@
                 });
             });
         });
+        describe('Shields', function () {
+            it('should have 70 elements', function(){
+                runs(function(){
+                    var shield = stage.insert(new Q.Shield({x: 100, y:100 }));
+                    expect(Q('Shield').items.length).toBe(1);
+                    expect(shield.children.length).toBe(70);
+                    expect(Q('ShieldElement').items.length).toBe(70);
+                });
+            });
+            it('should be damaged by Alien hit', function(){
+                runs(function(){
+                    var shield = new Q.Shield({x: 100, y:100 });
+                    stage.insert(shield);
+                    expect(shield.children.length).toBe(70);
+                    var element = shield.children[0];
+                    expect(element.p.sheet).toEqual('shield');
+                    expect(element.p.strength).toBe(1);
+                    element.trigger('hit', 'AlienShot');
+                    expect(element.p.sheet).toEqual('shield-hit');
+                    expect(element.p.strength).toBe(0);
+                    var element = shield.children[1];
+                    element.trigger('hit', 'Alien');
+                    waits(100);
+                    runs(function(){
+                        expect(shield.children.length).toBe(69);
+                    });
+
+                });
+            });
+        });
     });
 })();

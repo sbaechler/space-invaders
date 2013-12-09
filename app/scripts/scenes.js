@@ -14,7 +14,6 @@ Quintus.SpaceInvadersScenes = function(Q) {
         var alien = stage.insert(new Q.AlienTracker({y:20}));
         makeAliensShoot(levelAsset, stage);
 
-        var ufo = stage.insert(new Q.UFO());
         // cleanup
         stage.on("destroy",function() {
             cannon.destroy();
