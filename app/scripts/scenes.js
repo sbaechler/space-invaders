@@ -32,6 +32,20 @@ Quintus.SpaceInvadersScenes = function(Q) {
         }, 2000);
     };
 
+    /**Game Over Scene**/
+    Q.scene("gameOver",function(stage) {
+        stage.insert(new Q.UI.Text({
+          label: "Game Over",
+          align: 'center',
+          color: 'white',
+          x: Q.width/2,
+          y: 350,
+          weight: "normal",
+          size: 100
+        }));
+
+      });
+    
     /**
      * The HUD displays score and level
      */

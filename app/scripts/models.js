@@ -108,7 +108,9 @@ Q.Sprite.extend("Cannon", {
             Q.state.dec("lives",1);
             this.destroy();
             if(Q.state.get('lives') <= 0) {
-                alert("Game over");
+              //  alert("Game over");
+
+                Q.stageScene("gameOver");
             } else {
                 setTimeout(function(){
                     self.stage.insert(new Q.Cannon());
