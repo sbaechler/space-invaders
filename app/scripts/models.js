@@ -353,31 +353,73 @@ Quintus.SpaceInvadersModels = function(Q) {
         }
     });
 
-    Q.Sprite.extend("UFO", {
+ 
+    Q.Sprite.extend("UfoTracker", {
         init: function(p) {
-            this._super(p, {
-                type: SPRITE_ENEMY,
-                sprite: "alien"
-
-            });
-            this.on('inserted', this, 'setupUFO');
-
+            this._super({
+                sprite: 'ufoTracker',
+                w: 1,
+                h: 1,
+                x: p.x,
+                y: p.y ,
+                direction: 'right',
+                data: Q.assets['level1'],
+                type: SPRITE_NONE,
+                cadence: 80,
+                step: p.step, // step counter (ca 50-60 steps/s)
+                move: 20 // alle 50 steps ein Move.
+            }, p);
             this.on('hit');
+            this.on('move');
+            this.on("inserted", this, "setupUfo");
+
+            this.beep = function() { // Factory method
+                var i = 0; // closure
+                return function() {
+                    var sample = i % 4 + 1; // 0-4
+                    Q.audio.play('fastinvader' + sample + '.mp3');
+                    i++;
+                };
+            }();
+
+        },
+        hit: function() {
+            this.destroy();
+        },
+        step: function(dt) {
+           
+                this.trigger('move');
+             
+
+        },
+        move: function() {
+            console.log('moving ufo');
+          this.p.x = this.p.x+this.p.step;
+
+          
+            //max rechts = 340
+            //min links = 100
+
+            //1024-600>340
         },
 
-        setupUFO: function() {
-            // Nein.
+        setupUfo: function() {
+            var alienScore = [0, 40, 20, 10];
+            var ufovorhanden = false;
+            Q.assets.ufoholder = {}; // Store a reference to the aliens
             Q._each(this.p.data, function(row, y) {
                 Q._each(row, function(type, x) {
-                    if (type > 0) {
-                        Q.assets.invaders[x] = Q.assets.invaders[x] || []; // Create a stack per column
-                        Q.assets.invaders[x].push(
-                            this.stage.insert(new Q.Alien({
+                    if (ufovorhanden === false) {
+                        Q.assets.ufoholder[x] = Q.assets.ufoholder[x] || []; // Create a stack per column
+                        Q.assets.ufoholder[1].push(
+                            this.stage.insert(new Q.Ufo({
                                 sheet: "ufo",
+                                score: alienScore[type],
                                 column: x,
                                 parent: this.p,
-                                x: 60 * x,
-                                y: 60 * y
+                                x:x,
+                                y:  y,
+                                ufovorhanden : true
                                 /*x: 55 * x + this.p.x,
                                 y: 80 * y + this.p.y*/
                             }), this)
@@ -386,19 +428,49 @@ Quintus.SpaceInvadersModels = function(Q) {
                     }
                 }, this);
             }, this);
+          
+        },
 
-        },
-        inserted: function() {
-            //       Q.audio.play('ufo.lowpitch.mp3');
-        },
-        hit: function() {
-            //      Q.audio.play('ufo_shot.mp3');
-            this.destroy();
-            // TODO: add points
-        }
+         //  Q.width
+
+        
+
     });
 
 
+
+    Q.Sprite.extend("Ufo", {
+        init: function(p) {
+            this._super(p, {
+                type: SPRITE_ENEMY,
+                collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL,
+                scale: 0.5,
+                sprite: "ufo"
+            });
+            //   this.add('GunControls, gunControls');
+            this.on('fire', this, "fireGun");
+            this.on('hit');
+         
+
+
+        },
+
+        fireGun: function() {
+            var alienshot = new Q.AlienShot({
+                x: this.p.x + this.p.parent.x,
+                y: this.p.y + this.p.parent.y + this.p.cy
+            });
+            this.stage.insert(alienshot);
+        },
+        hit: function() {
+            this.off('hit'); // event is fired multiple times
+            Q.assets.invaders[this.p.column].pop();
+            Q.audio.play('fire1.mp3');
+            Q.state.inc('score', this.p.score);
+            this.destroy();
+        }
+
+    });
     /**
      * Add the score Class and UI components
      */
