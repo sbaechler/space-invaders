@@ -170,7 +170,6 @@ Q.Sprite.extend("Cannon", {
                 this.p.y = this.p.y + 10;
                 ystep = true;
                 this.p.direction = 'left';
-                console.log(this.p.y);
             }
 
             if (ystep == false) {
