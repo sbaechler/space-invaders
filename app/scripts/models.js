@@ -42,9 +42,7 @@ Q.Sprite.extend("CannonShot",{
             col.obj.trigger('hit');
             this.destroy();
         }else if(col.obj.isA("AlienShot")) {
-        	
         	this.off("collide");
-        	
         	var decide = Math.random();
         	if(decide<0.5){
                 this.destroy();

@@ -100,8 +100,9 @@
             it('should be able to shoot', function() {
                 runs(function() {
                     var alien = new Q.Alien();
+                    alien.p.parent = {x: 100}; // mock
                     stage.insert(alien);
-                    Q.input.trigger('fire');
+                    alien.trigger('fire');
                     expect(Q('AlienShot').items.length).toBe(1);
                 });
             });
@@ -113,11 +114,14 @@
                     var alienShot = new Q.AlienShot();
                     stage.insert(alienShot);
 
-                    cannonShot.collide(alienShot);
-                    var shotCounter = Q('CannonShot').items.length
+                    alienShot.trigger('collide', 'CannonShot');
+                    waits(100);
+                    runs(function(){
+                        var shotCounter = Q('CannonShot').items.length
                             + Q('AlienShot').items.length;
 
-                    expect(shotCounter).toBe(1);
+                        expect(shotCounter).toBe(1);
+                    });
                 });
             });
 
@@ -127,35 +131,13 @@
                     var cannon = new Q.Cannon({
                         hittable : true
                     });
-
                     stage.insert(cannon);
-                    expect(Q('Cannon').items.length).toBe(1);
-                    expect(Q.state.get('lives')).toBe(3);
+                    Q.state.set('lives', 1);
                     cannon.trigger('hit');
-                    // wait 0.1s
                     waits(100);
-
-                    runs(function() {
-                        expect(Q.state.get('lives')).toBe(2);
+                    runs(function(){
+                       expect(Q.stage().items[0].p.label).toEqual('Game Over');
                     });
-
-                    cannon.trigger('hit');
-                    // wait 0.1s
-                    waits(100);
-
-                    runs(function() {
-                        expect(Q.state.get('lives')).toBe(1);
-                    });
-
-                    cannon.trigger('hit');
-                    // wait 0.1s
-                    waits(100);
-
-                    runs(function() {
-                        expect(Q.state.get('lives')).toBe(0);
-                    });
-
-                    expect(Q.stageScene).toEqual('gameOver');
                 });
             });
         });
