@@ -108,8 +108,6 @@ Q.Sprite.extend("Cannon", {
             Q.state.dec("lives",1);
             this.destroy();
             if(Q.state.get('lives') <= 0) {
-              //  alert("Game over");
-
                 Q.stageScene("gameOver");
             } else {
                 setTimeout(function(){
@@ -202,7 +200,7 @@ Q.Sprite.extend("Cannon", {
         },
 
         fireGun: function(){
-            var alienshot = new Q.AlienShot({x: this.p.x + this.p.parent.x,
+            var alienshot = new Q.AlienShot({x: 512, 
                                              y: this.p.y + this.p.parent.y + this.p.cy });
             this.stage.insert(alienshot);
         },
