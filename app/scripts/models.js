@@ -1,114 +1,120 @@
 'use-strict';
 
 Quintus.SpaceInvadersModels = function(Q) {
-    Q.gravityY = 0;
-    Q.gravityX = 0;
-    // define the sprite masks
-    var SPRITE_FRIENDLY = 1,
-        SPRITE_ENEMY = 2,
-        SPRITE_NEUTRAL = 4,
-        SPRITE_NONE = 8;
+  Q.gravityY = 0;
+  Q.gravityX = 0;
+  // define the sprite masks
+  var SPRITE_FRIENDLY = 1,
+      SPRITE_ENEMY = 2,
+      SPRITE_NEUTRAL = 4,
+      SPRITE_NONE = 8;
 
 
 
-    /**
-     * Der Kanonenschuss
-     */
-    Q.Sprite.extend("CannonShot", {
-        init: function(p) {
-            this._super(p, {
-                asset: 'shoot.png', // image
-                w: 11,
-                h: 10,
-                sprite: 'shot',
-                type: SPRITE_FRIENDLY,
-                collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
-            });
-            this.on('hit.sprite', this, 'collide');
-        },
+/**
+* Der Kanonenschuss
+*/
+Q.Sprite.extend("CannonShot",{
+    init: function(p) {
+        this._super(p,{
+           asset: 'shoot.png', // image
+            w: 11,
+            h: 10,
+            sprite: 'shot',
+            type: SPRITE_FRIENDLY,
+            collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
+        });
+        this.on('hit.sprite', this, 'collide');
+    },
 
-        step: function(dt) {
-            this.p.y = this.p.y - 6;
-            //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
-            if (this.p.y < 0) this.destroy();
-            this.stage.collide(this);
-        },
+    step: function(dt){
+        this.p.y = this.p.y-6;
+        //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
+        if(this.p.y < 0) this.destroy();
+        this.stage.collide(this);
+    },
 
-        collide: function(col) {
-            if (col.obj.isA("ShieldElement")) {
-                col.obj.destroy(); // destroy the element
-                this.destroy(); // destroy the shot
-            } else if (col.obj.isA("Alien")) {
-                col.obj.trigger('hit');
+    collide: function(col) {
+        if(col.obj.isA("ShieldElement")) {
+            col.obj.destroy(); // destroy the element
+            this.destroy(); // destroy the shot
+        } else if(col.obj.isA("Alien")) {
+            col.obj.trigger('hit');
+            this.destroy();
+        }else if(col.obj.isA("AlienShot")) {
+        	this.off("collide");
+        	var decide = Math.random();
+        	if(decide<0.5){
                 this.destroy();
+        	}else{
+                col.obj.trigger('destroy');
+            	this.on("collide");
+        	}
+        }
+    }
+});
+
+
+/**
+* The Cannon class which is at the bottom of the page.
+*/
+Q.Sprite.extend("Cannon", {
+    init: function(p){
+        var self = this;
+        this._super(p, {
+            asset: 'cannon.png', // image
+            w: 110, // width
+            h: 68, // height
+            y: 680, // position
+            x: 512,
+            sprite: 'cannon',
+            stepDistance: 50, // moving speed
+            cannonReady: true,
+            cadence: 680,  // in ms
+            hittable: false,
+            type: SPRITE_FRIENDLY,
+            collisionMask: SPRITE_ENEMY // will be changed. Prevent hit on insert
+        });
+        this.add('GunControls, gunControls');
+        this.on('hit');
+        Q.input.on('fire', this, "fireGun");
+        // Die Kanone soll die ersten 2 Sekunden unverletzbar sein.
+        setTimeout(function(){
+            self.p.hittable = true;
+        },2000);
+    },
+
+    fireGun: function(){
+        if(this.p.cannonReady){
+            var p = this.p;
+            p.cannonReady = false;
+            setTimeout(function(){
+                p.cannonReady = true;
+            }, p.cadence);
+            var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
+            this.stage.insert(cannonShot);
+            Q.audio.play("fire2.mp3");
+        }
+
+    },
+    hit: function(){
+        var self = this;
+        if(this.p.hittable){
+            this.off('hit');
+            Q.audio.play("explosion.mp3");
+            Q.state.dec("lives",1);
+            this.destroy();
+            if(Q.state.get('lives') <= 0) {
+                Q.stageScene("gameOver");
+            } else {
+                setTimeout(function(){
+                    self.stage.insert(new Q.Cannon());
+                }, 1000);
             }
         }
-    });
+    }
+});
 
-
-    /**
-     * The Cannon class which is at the bottom of the page.
-     */
-    Q.Sprite.extend("Cannon", {
-        init: function(p) {
-            var self = this;
-            this._super(p, {
-                asset: 'cannon.png', // image
-                w: 110, // width
-                h: 68, // height
-                y: 680, // position
-                x: 512,
-                sprite: 'cannon',
-                stepDistance: 50, // moving speed
-                cannonReady: true,
-                cadence: 680, // in ms
-                hittable: false,
-                type: SPRITE_FRIENDLY,
-                collisionMask: SPRITE_ENEMY // will be changed. Prevent hit on insert
-            });
-            this.add('GunControls, gunControls');
-            this.on('hit');
-            Q.input.on('fire', this, "fireGun");
-            // Die Kanone soll die ersten 2 Sekunden unverletzbar sein.
-            setTimeout(function() {
-                self.p.hittable = true;
-            }, 2000);
-        },
-
-        fireGun: function() {
-            if (this.p.cannonReady) {
-                var p = this.p;
-                p.cannonReady = false;
-                setTimeout(function() {
-                    p.cannonReady = true;
-                }, p.cadence);
-                var cannonShot = new Q.CannonShot({
-                    x: this.p.x,
-                    y: this.p.y - 40
-                });
-                this.stage.insert(cannonShot);
-                Q.audio.play("fire2.mp3");
-            }
-
-        },
-        hit: function() {
-            var self = this;
-            if (this.p.hittable) {
-                this.off('hit');
-                Q.audio.play("explosion.mp3");
-                Q.state.dec("lives", 1);
-                this.destroy();
-                if (Q.state.get('lives') <= 0) {
-                    alert("Game over");
-                } else {
-                    setTimeout(function() {
-                        self.stage.insert(new Q.Cannon());
-                    }, 1000);
-                }
-            }
-
-        }
-    });
 
     Q.Sprite.extend("AlienTracker", {
         init: function(p) {
@@ -253,7 +259,6 @@ Quintus.SpaceInvadersModels = function(Q) {
                 scale: 0.5,
                 sprite: "alien"
             });
-            //   this.add('GunControls, gunControls');
             this.on('fire', this, "fireGun");
             this.on('hit.sprite', this, 'collide');
             this.add('animation');
@@ -282,8 +287,8 @@ Quintus.SpaceInvadersModels = function(Q) {
 
     Q.Sprite.extend("AlienShot", {
         init: function(p) {
-            this._super(p, {
-                asset: 'shoot.png', // image
+            this._super(p,{
+               asset: 'alienShot.png', // image
                 w: 11,
                 h: 10,
                 sprite: 'shot',
@@ -291,12 +296,13 @@ Quintus.SpaceInvadersModels = function(Q) {
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
             });
             this.on('hit.sprite', this, 'collide');
+            this.on('destroy', this, 'destroy');
         },
 
-        step: function(dt) {
-
-            this.p.y = this.p.y + 4;
-            if (this.p.y > 700) this.destroy();
+        step: function(dt){
+            
+            this.p.y = this.p.y+6;
+            if(this.p.y > 700) this.destroy();
             this.stage.collide(this);
         },
 

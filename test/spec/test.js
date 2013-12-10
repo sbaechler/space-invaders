@@ -3,10 +3,10 @@
 /**
  * Test aller Game-Objekte
  */
-(function () {
-    describe('Sprites Test', function () {
-        var Q, canvas, stage;
-        beforeEach(function() {
+(function() {
+	describe('Sprites Test', function() {
+		var Q, canvas, stage;
+		beforeEach(function() {
             canvas = document.createElement("canvas");
             canvas.width = 200;
             canvas.height = 200;
@@ -23,17 +23,16 @@
 			Q.stageScene("dummy_scene");
 			stage = Q.stage();
             Q.state.reset({ score: 0, lives: 3, level: 1 });
-
             SpriteFixtures.loadSprites(Q);
-            waitsFor(SpriteFixtures.doneLoaded,400);
+            waitsFor(SpriteFixtures.doneLoaded, 400);
             window.Q = Q;
         });
-
 
         // Don't forget the loop needs to be killed if it exists
         afterEach(function() {
             cancelAnimationFrame(Q.loop);
         });
+
         describe('Cannon', function () {
             it('should have the right asset', function(){
                 runs(function(){        // wait for Quintus to have finished initialization.
@@ -94,7 +93,51 @@
                     runs(function(){
                         expect(shield.children.length).toBe(69);
                     });
+                });
+            });
+        });
+        describe('Aliens', function(){
+            it('should be able to shoot', function() {
+                runs(function() {
+                    var alien = new Q.Alien();
+                    alien.p.parent = {x: 100}; // mock
+                    stage.insert(alien);
+                    alien.trigger('fire');
+                    expect(Q('AlienShot').items.length).toBe(1);
+                });
+            });
+            it('should destroy one shot', function() {
+                runs(function() {
+                    var cannonShot = new Q.CannonShot();
+                    stage.insert(cannonShot);
 
+                    var alienShot = new Q.AlienShot();
+                    stage.insert(alienShot);
+
+                    alienShot.trigger('collide', 'CannonShot');
+                    waits(100);
+                    runs(function(){
+                        var shotCounter = Q('CannonShot').items.length
+                            + Q('AlienShot').items.length;
+
+                        expect(shotCounter).toBe(1);
+                    });
+                });
+            });
+
+            it('should show a game over screen if no lives are left', function() {
+                runs(function() {
+
+                    var cannon = new Q.Cannon({
+                        hittable : true
+                    });
+                    stage.insert(cannon);
+                    Q.state.set('lives', 1);
+                    cannon.trigger('hit');
+                    waits(100);
+                    runs(function(){
+                       expect(Q.stage().items[0].p.label).toEqual('Game Over');
+                    });
                 });
             });
         });
