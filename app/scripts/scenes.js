@@ -34,7 +34,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
     /**Game Over Scene**/
     Q.scene("gameOver",function(stage) {
-    	Q.stage(1).destroy();
+    	Q.stageScene(null,1);
     	
         stage.insert(new Q.UI.Text({
           label: "Game Over",
