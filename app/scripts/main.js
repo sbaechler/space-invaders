@@ -18,6 +18,10 @@ window.addEventListener('load',function() {
 //     Q.debug = true;
     window.Q = Q;
 
+    Q.animations('alien', {
+        hampelmann: { frames: [0,1], rate:1/1}
+    });
+
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
 
 
@@ -27,13 +31,13 @@ window.addEventListener('load',function() {
              "ufo_shot.mp3",
              // only mp3 needs to be specified. Alternate formats loaded accordingly.
              "sprites.json"],
+
         function() {
-            Q.compileSheets("invaders.png","sprites.json");
+            Q.compileSheets("invaders2.png","sprites.json");
             Q.sheet("shield", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:0, frames:5 });
-          //  Q.sheet("alien", "invaders.png", {tilew: 110, tileh: 110, sx:10, sy:10, frames:2 });
+            Q.sheet("shield-hit", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:10, frames:5 });
 
-
-            // Start level 1
+        // Start level 1
         Q.stageScene("level1");
     });
 

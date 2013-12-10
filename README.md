@@ -15,3 +15,12 @@ Zum aufsetzen benötigst du [Ruby](https://www.ruby-lang.org/de/downloads/),
 ##Testen
 
     grunt test
+
+##Deployen
+
+    grunt build
+    git subtree push --prefix dist heroku master
+
+
+
+http://html5-space-invaders.herokuapp.com/
