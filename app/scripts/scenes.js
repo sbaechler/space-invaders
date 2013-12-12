@@ -5,6 +5,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
     function setupLevel(levelAsset, stage) {
 
         var cannon = stage.insert(new Q.Cannon());
+        //var ufo = stage.insert(new Q.Ufo());
         var shieldPos = [60, 171, 282, 393];
         Q._each(shieldPos, function(pos, i) {
             stage.insert(new Q.Shield({
@@ -33,18 +34,18 @@ Quintus.SpaceInvadersScenes = function(Q) {
             var columns = Q.assets[levelAsset][0].length;
             var column = Math.floor((Math.random() * columns));
             // makes the lowest alien shoot
-            var ufocreator = Math.floor((Math.random() * 10));
+           /* var ufocreator = Math.floor((Math.random() * 10));
             console.log(ufocreator);
-            if (ufocreator === 3) stage.insert(new Q.UfoTracker({
+           *//* if (ufocreator === 3) stage.insert(new Q.Ufo({
                 y: 40,
                 x: -200,
                 step: 2
             }));
-            if (ufocreator === 8) stage.insert(new Q.UfoTracker({
+            if (ufocreator === 8) stage.insert(new Q.Ufo({
                 y: 40,
                 x: 1200,
                 step: -2
-            }));
+            }));*/
             var alien = Q.assets.invaders[column].slice(-1).pop();
             if (alien !== undefined) alien.trigger('fire');
         }, 2000);

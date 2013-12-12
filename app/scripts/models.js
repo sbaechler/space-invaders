@@ -479,8 +479,6 @@ Q.Sprite.extend("Cannon", {
             this.on('fire', this, "fireGun");
             this.on('hit');
          
-
-
         },
 
         fireGun: function() {
@@ -491,12 +489,7 @@ Q.Sprite.extend("Cannon", {
             console.log('alienshotttt');
             this.stage.insert(alienshot);
         },
-        hit: function() {
-            this.off('hit'); // event is fired multiple times
-            Q.assets.invaders[this.p.column].pop();
-            Q.audio.play('fire1.mp3');
-            Q.state.inc('score', this.p.score);
-
+    
         inserted: function() {
                    Q.audio.play('ufo.lowpitch.mp3');
         },
