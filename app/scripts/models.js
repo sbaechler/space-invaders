@@ -353,7 +353,7 @@ Quintus.SpaceInvadersModels = function(Q) {
         }
     });
 
- 
+ /*
     Q.Sprite.extend("UfoTracker", {
         init: function(p) {
             this._super({
@@ -420,8 +420,7 @@ Quintus.SpaceInvadersModels = function(Q) {
                                 x:x,
                                 y:  y,
                                 ufovorhanden : true
-                                /*x: 55 * x + this.p.x,
-                                y: 80 * y + this.p.y*/
+                               
                             }), this)
                         );
                         console.log(this.p.x);
@@ -436,7 +435,7 @@ Quintus.SpaceInvadersModels = function(Q) {
         
 
     });
-
+*/
 
 
     Q.Sprite.extend("Ufo", {
@@ -460,6 +459,7 @@ Quintus.SpaceInvadersModels = function(Q) {
                 x: this.p.x + this.p.parent.x,
                 y: this.p.y + this.p.parent.y + this.p.cy
             });
+            console.log('alienshotttt');
             this.stage.insert(alienshot);
         },
         hit: function() {

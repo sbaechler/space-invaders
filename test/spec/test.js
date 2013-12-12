@@ -68,12 +68,6 @@
                 });
             });
         });
-        describe('Ufo',function(){
-            runs(function(){
-                var ufo = new Q.Ufo();
-                expect(ufo.p.asset).toEqual('invaders2.png');
-                expect(ufo.p.sprite).toEqual('ufo');
-            })
-        });
+       
     });
 })();
