@@ -1,114 +1,120 @@
 'use-strict';
 
 Quintus.SpaceInvadersModels = function(Q) {
-    Q.gravityY = 0;
-    Q.gravityX = 0;
-    // define the sprite masks
-    var SPRITE_FRIENDLY = 1,
-        SPRITE_ENEMY = 2,
-        SPRITE_NEUTRAL = 4,
-        SPRITE_NONE = 8;
+  Q.gravityY = 0;
+  Q.gravityX = 0;
+  // define the sprite masks
+  var SPRITE_FRIENDLY = 1,
+      SPRITE_ENEMY = 2,
+      SPRITE_NEUTRAL = 4,
+      SPRITE_NONE = 8;
 
 
 
-    /**
-     * Der Kanonenschuss
-     */
-    Q.Sprite.extend("CannonShot", {
-        init: function(p) {
-            this._super(p, {
-                asset: 'shoot.png', // image
-                w: 11,
-                h: 10,
-                sprite: 'shot',
-                type: SPRITE_FRIENDLY,
-                collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
-            });
-            this.on('hit.sprite', this, 'collide');
-        },
+/**
+* Der Kanonenschuss
+*/
+Q.Sprite.extend("CannonShot",{
+    init: function(p) {
+        this._super(p,{
+           asset: 'shoot.png', // image
+            w: 11,
+            h: 10,
+            sprite: 'shot',
+            type: SPRITE_FRIENDLY,
+            collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
+        });
+        this.on('hit.sprite', this, 'collide');
+    },
 
-        step: function(dt) {
-            this.p.y = this.p.y - 6;
-            //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
-            if (this.p.y < 0) this.destroy();
-            this.stage.collide(this);
-        },
+    step: function(dt){
+        this.p.y = this.p.y-6;
+        //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
+        if(this.p.y < 0) this.destroy();
+        this.stage.collide(this);
+    },
 
-        collide: function(col) {
-            if (col.obj.isA("ShieldElement")) {
-                col.obj.destroy(); // destroy the element
-                this.destroy(); // destroy the shot
-            } else if (col.obj.isA("Alien")) {
-                col.obj.trigger('hit');
+    collide: function(col) {
+        if(col.obj.isA("ShieldElement")) {
+            col.obj.destroy(); // destroy the element
+            this.destroy(); // destroy the shot
+        } else if(col.obj.isA("Alien")) {
+            col.obj.trigger('hit');
+            this.destroy();
+        }else if(col.obj.isA("AlienShot")) {
+        	this.off("collide");
+        	var decide = Math.random();
+        	if(decide<0.5){
                 this.destroy();
+        	}else{
+                col.obj.trigger('destroy');
+            	this.on("collide");
+        	}
+        }
+    }
+});
+
+
+/**
+* The Cannon class which is at the bottom of the page.
+*/
+Q.Sprite.extend("Cannon", {
+    init: function(p){
+        var self = this;
+        this._super(p, {
+            asset: 'cannon.png', // image
+            w: 110, // width
+            h: 68, // height
+            y: 680, // position
+            x: 512,
+            sprite: 'cannon',
+            stepDistance: 50, // moving speed
+            cannonReady: true,
+            cadence: 680,  // in ms
+            hittable: false,
+            type: SPRITE_FRIENDLY,
+            collisionMask: SPRITE_ENEMY // will be changed. Prevent hit on insert
+        });
+        this.add('GunControls, gunControls');
+        this.on('hit');
+        Q.input.on('fire', this, "fireGun");
+        // Die Kanone soll die ersten 2 Sekunden unverletzbar sein.
+        setTimeout(function(){
+            self.p.hittable = true;
+        },2000);
+    },
+
+    fireGun: function(){
+        if(this.p.cannonReady){
+            var p = this.p;
+            p.cannonReady = false;
+            setTimeout(function(){
+                p.cannonReady = true;
+            }, p.cadence);
+            var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
+            this.stage.insert(cannonShot);
+            Q.audio.play("fire2.mp3");
+        }
+
+    },
+    hit: function(){
+        var self = this;
+        if(this.p.hittable){
+            this.off('hit');
+            Q.audio.play("explosion.mp3");
+            Q.state.dec("lives",1);
+            this.destroy();
+            if(Q.state.get('lives') <= 0) {
+                Q.stageScene("gameOver");
+            } else {
+                setTimeout(function(){
+                    self.stage.insert(new Q.Cannon());
+                }, 1000);
             }
         }
-    });
+    }
+});
 
-
-    /**
-     * The Cannon class which is at the bottom of the page.
-     */
-    Q.Sprite.extend("Cannon", {
-        init: function(p) {
-            var self = this;
-            this._super(p, {
-                asset: 'cannon.png', // image
-                w: 110, // width
-                h: 68, // height
-                y: 680, // position
-                x: 512,
-                sprite: 'cannon',
-                stepDistance: 50, // moving speed
-                cannonReady: true,
-                cadence: 680, // in ms
-                hittable: false,
-                type: SPRITE_FRIENDLY,
-                collisionMask: SPRITE_ENEMY // will be changed. Prevent hit on insert
-            });
-            this.add('GunControls, gunControls');
-            this.on('hit');
-            Q.input.on('fire', this, "fireGun");
-            // Die Kanone soll die ersten 2 Sekunden unverletzbar sein.
-            setTimeout(function() {
-                self.p.hittable = true;
-            }, 2000);
-        },
-
-        fireGun: function() {
-            if (this.p.cannonReady) {
-                var p = this.p;
-                p.cannonReady = false;
-                setTimeout(function() {
-                    p.cannonReady = true;
-                }, p.cadence);
-                var cannonShot = new Q.CannonShot({
-                    x: this.p.x,
-                    y: this.p.y - 40
-                });
-                this.stage.insert(cannonShot);
-                Q.audio.play("fire2.mp3");
-            }
-
-        },
-        hit: function() {
-            var self = this;
-            if (this.p.hittable) {
-                this.off('hit');
-                Q.audio.play("explosion.mp3");
-                Q.state.dec("lives", 1);
-                this.destroy();
-                if (Q.state.get('lives') <= 0) {
-                    alert("Game over");
-                } else {
-                    setTimeout(function() {
-                        self.stage.insert(new Q.Cannon());
-                    }, 1000);
-                }
-            }
-
-        }
-    });
 
     Q.Sprite.extend("AlienTracker", {
         init: function(p) {
@@ -129,7 +135,7 @@ Quintus.SpaceInvadersModels = function(Q) {
             this.on('move');
             this.on("inserted", this, "setupAlien");
 
-            this.beep = function() { // Factory method
+            this.beep = function() { // closure pattern
                 var i = 0; // closure
                 return function() {
                     var sample = i % 4 + 1; // 0-4
@@ -152,10 +158,8 @@ Quintus.SpaceInvadersModels = function(Q) {
 
         },
         move: function() {
-            console.log('moving');
             var ystep = false;
             // this.beep();   // NOT YET.
-            console.log(this.p.x);
             if (Q.width - this.p.w > this.p.x + 100 && this.p.x < 100 && this.p.x < 320 && this.p.direction == 'left') {
                 this.p.y = this.p.y + 10;
                 ystep = true;
@@ -170,9 +174,14 @@ Quintus.SpaceInvadersModels = function(Q) {
 
             if (ystep == false) {
                 this.p.x = this.p.x + this.direction(this.p.direction);
-            };
+            }
             ystep = false;
 
+            if(this.p.y > 240){
+                Q._each(this.children, function(alien){
+                    alien.stage.collide(alien);
+                });
+            }
             this.getWidth();
             //max rechts = 340
             //min links = 100
@@ -208,7 +217,6 @@ Quintus.SpaceInvadersModels = function(Q) {
                                 y: 80 * y + this.p.y*/
                             }), this)
                         );
-                        console.log(this.p.x);
                     }
                 }, this);
             }, this);
@@ -231,8 +239,6 @@ Quintus.SpaceInvadersModels = function(Q) {
                 //  var breite = 
                 //console.log(alien);
             });
-            console.log("max: " + maxx_pos);
-            console.log("min: " + minx_pos);
             this.p.w = maxx_pos - minx_pos;
             this.p.h = 100;
 
@@ -252,13 +258,10 @@ Quintus.SpaceInvadersModels = function(Q) {
                 scale: 0.5,
                 sprite: "alien"
             });
-            //   this.add('GunControls, gunControls');
             this.on('fire', this, "fireGun");
-            this.on('hit');
+            this.on('hit.sprite', this, 'collide');
             this.add('animation');
             this.play('hampelmann');
-
-
         },
 
         fireGun: function() {
@@ -268,20 +271,23 @@ Quintus.SpaceInvadersModels = function(Q) {
             });
             this.stage.insert(alienshot);
         },
-        hit: function() {
-            this.off('hit'); // event is fired multiple times
-            Q.assets.invaders[this.p.column].pop();
-            Q.audio.play('fire1.mp3');
-            Q.state.inc('score', this.p.score);
-            this.destroy();
+        collide: function(col){
+            if (col.obj.isA("ShieldElement")) {
+                col.obj.trigger('hit'); // destroy the element
+            } else {
+                this.off('hit'); // event is fired multiple times
+                Q.assets.invaders[this.p.column].pop();
+                Q.audio.play('fire1.mp3');
+                Q.state.inc('score', this.p.score);
+                this.destroy();
+            }
         }
-
     });
 
     Q.Sprite.extend("AlienShot", {
         init: function(p) {
-            this._super(p, {
-                asset: 'shoot.png', // image
+            this._super(p,{
+               asset: 'alienShot.png', // image
                 w: 11,
                 h: 10,
                 sprite: 'shot',
@@ -289,18 +295,19 @@ Quintus.SpaceInvadersModels = function(Q) {
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL
             });
             this.on('hit.sprite', this, 'collide');
+            this.on('destroy', this, 'destroy');
         },
 
-        step: function(dt) {
-
-            this.p.y = this.p.y + 4;
-            if (this.p.y > 700) this.destroy();
+        step: function(dt){
+            
+            this.p.y = this.p.y+6;
+            if(this.p.y > 700) this.destroy();
             this.stage.collide(this);
         },
 
         collide: function(col) {
             if (col.obj.isA("ShieldElement") || col.obj.isA("Cannon")) {
-                col.obj.trigger('hit'); // destroy the element
+                col.obj.trigger('hit', 'AlienShot'); // destroy the element
                 this.destroy(); // destroy the shot
             }
         }
@@ -314,13 +321,25 @@ Quintus.SpaceInvadersModels = function(Q) {
                 sprite: 'shieldElement',
                 w: 10,
                 h: 10,
+                strength: 1,
                 type: SPRITE_NEUTRAL,
                 collisionMask: SPRITE_ENEMY | SPRITE_FRIENDLY
             }, p);
             this.on('hit');
         },
-        hit: function() {
-            this.destroy();
+        hit: function(evt) {
+            this.off('hit');
+            // Bei einem Alientreffer das Schild erst beschädigen, dann zerstören.
+            if (this.p.strength && evt === 'AlienShot'){
+                this.p.sheet = 'shield-hit';
+                this.p.strength -= 1;
+                var self = this;
+                setTimeout(function(){
+                    self.on('hit', self, 'hit');
+                }, 100);
+            } else {
+                this.destroy();
+            }
         }
 
 
@@ -356,6 +375,7 @@ Quintus.SpaceInvadersModels = function(Q) {
  /*
     Q.Sprite.extend("UfoTracker", {
         init: function(p) {
+<<<<<<< HEAD
             this._super({
                 sprite: 'ufoTracker',
                 w: 1,
@@ -381,6 +401,14 @@ Quintus.SpaceInvadersModels = function(Q) {
                     i++;
                 };
             }();
+=======
+            this._super(p, {
+                type: SPRITE_ENEMY,
+                sprite: "UFO",
+                sheet: 'ufo'
+            });
+            this.on('inserted');  // ruft this.insterted() auf.
+>>>>>>> master
 
         },
         hit: function() {
@@ -391,6 +419,7 @@ Quintus.SpaceInvadersModels = function(Q) {
                 this.trigger('move');
              
 
+<<<<<<< HEAD
         },
         move: function() {
             console.log('moving ufo');
@@ -467,6 +496,13 @@ Quintus.SpaceInvadersModels = function(Q) {
             Q.assets.invaders[this.p.column].pop();
             Q.audio.play('fire1.mp3');
             Q.state.inc('score', this.p.score);
+
+        inserted: function() {
+                   Q.audio.play('ufo.lowpitch.mp3');
+        },
+        hit: function() {
+                   Q.audio.play('ufo_shot.mp3');
+
             this.destroy();
         }
 

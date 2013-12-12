@@ -3752,7 +3752,9 @@ Quintus.Scenes = function(Q) {
           for(var ix=gridX1; ix<=gridX2; ix++) {
             if((gridBlock = gridRow[ix])) {
               for(var id in gridBlock) {
-                this.index[id].mark = time;
+                  try {
+                      this.index[id].mark = time;
+                  } catch(err) {}
               }
             }
           }
