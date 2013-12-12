@@ -35,6 +35,7 @@ window.addEventListener('load',function() {
         function() {
             Q.compileSheets("invaders2.png","sprites.json");
             Q.sheet("shield", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:0, frames:5 });
+            Q.sheet("shield-hit", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:10, frames:5 });
 
         // Start level 1
         Q.stageScene("level1");

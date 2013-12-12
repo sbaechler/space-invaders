@@ -14,7 +14,6 @@ Quintus.SpaceInvadersScenes = function(Q) {
         var alien = stage.insert(new Q.AlienTracker({y:20}));
         makeAliensShoot(levelAsset, stage);
 
-        var ufo = stage.insert(new Q.UFO());
         // cleanup
         stage.on("destroy",function() {
             cannon.destroy();
@@ -33,6 +32,22 @@ Quintus.SpaceInvadersScenes = function(Q) {
         }, 2000);
     };
 
+    /**Game Over Scene**/
+    Q.scene("gameOver",function(stage) {
+    	Q.stageScene(null,1);
+    	
+        stage.insert(new Q.UI.Text({
+          label: "Game Over",
+          align: 'center',
+          color: 'white',
+          x: Q.width/2,
+          y: 350,
+          weight: "normal",
+          size: 100
+        }));
+
+      });
+    
     /**
      * The HUD displays score and level
      */
