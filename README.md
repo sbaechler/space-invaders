@@ -1,5 +1,7 @@
 #A Web version of SpaceInvaders
 
+[![Build Status](https://travis-ci.org/sbaechler/space-invaders.png?branch=master)](https://travis-ci.org/sbaechler/space-invaders)
+
 Zum aufsetzen benötigst du [Ruby](https://www.ruby-lang.org/de/downloads/),
 [node js](http://nodejs.org/) und [Yeoman](http://yeoman.io/).
 
