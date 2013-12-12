@@ -19,7 +19,8 @@ Zum aufsetzen benötigst du [Ruby](https://www.ruby-lang.org/de/downloads/),
 ##Deployen
 
     grunt build
-    git subtree push --prefix dist heroku master
+    cd dist
+    git push heroku master
 
 
 

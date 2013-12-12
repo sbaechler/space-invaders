@@ -2,7 +2,8 @@
   "name": "spaceinvaders",
   "version": "0.1.0",
   "dependencies": {
-      "statik": "~1.2.5"
+      "statik": "~1.2.5",
+      "grunt-cli": "~0.1.11"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
