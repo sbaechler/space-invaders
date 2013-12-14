@@ -1,6 +1,6 @@
 'use strict';
 
-Quintus.SpaceInvadersScenes = function(Q) {
+Quintus.SpaceInvadersScenes = function (Q) {
 
 	function setupLevel(level, stage) {
         Q.clearStage(stage);
@@ -51,6 +51,25 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			var alien = Q.assets.invaders[column].slice(-1).pop();
 			if (alien !== undefined)
 				alien.trigger('fire');
+            // show the UFO?
+            // TODO:  needs refactoring. This cadence increases in higher levels. Create your own timeout.
+            if (Q("UFO").length === 0) {
+                var ufoRandom = Math.floor((Math.random() * 10) + 1);
+                if (ufoRandom === 3) {
+                    var ufo = stage.insert(new Q.UFO({
+                        y: 50,
+                        x: -100,
+                        speed: 1.5
+                    }));
+                } else if (ufoRandom === 8) {
+                    var ufo = stage.insert(new Q.UFO({
+                        y: 50,
+                        x: 1500,
+                        speed: -1.5
+                    }));
+                }
+
+            }
 		}, 2000 - (level*CADENCE_FACTOR));
 	}
 	;

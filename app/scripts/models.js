@@ -352,7 +352,7 @@ Q.UI.Container.extend("AlienTracker", {
             });
             this.stage.insert(alienshot);
         },
-        
+
         collide: function(col){
             var parent = this.p.parent;
             if (col.obj.isA("ShieldElement")) {
@@ -372,8 +372,8 @@ Q.UI.Container.extend("AlienTracker", {
 
     Q.Sprite.extend("AlienShot", {
         init: function(p) {
-            this._super(p,{
-               asset: 'alienShot.png', // image
+            this._super(p, {
+                asset: 'alienShot.png', // image
                 w: 11,
                 h: 10,
                 sprite: 'shot',
@@ -384,10 +384,10 @@ Q.UI.Container.extend("AlienTracker", {
             this.on('destroy', this, 'destroy');
         },
 
-        step: function(dt){
-            
-            this.p.y = this.p.y+6;
-            if(this.p.y > 700) this.destroy();
+        step: function(dt) {
+
+            this.p.y = this.p.y + 6;
+            if (this.p.y > 700) this.destroy();
             this.stage.collide(this);
         },
 
@@ -416,11 +416,11 @@ Q.UI.Container.extend("AlienTracker", {
         hit: function(evt) {
             this.off('hit');
             // Bei einem Alientreffer das Schild erst beschädigen, dann zerstören.
-            if (this.p.strength && evt === 'AlienShot'){
+            if (this.p.strength && evt === 'AlienShot') {
                 this.p.sheet = 'shield-hit';
                 this.p.strength -= 1;
                 var self = this;
-                setTimeout(function(){
+                setTimeout(function() {
                     self.on('hit', self, 'hit');
                 }, 100);
             } else {
@@ -463,7 +463,8 @@ Q.UI.Container.extend("AlienTracker", {
             this._super(p, {
                 type: SPRITE_ENEMY,
                 sprite: "UFO",
-                sheet: 'ufo'
+                sheet: 'ufo',
+                scale: 0.5
             });
             this.on('inserted'); // ruft this.insterted() auf.
 
@@ -472,12 +473,20 @@ Q.UI.Container.extend("AlienTracker", {
 
 
         inserted: function() {
-                   Q.audio.play('ufo.lowpitch.mp3');
+            Q.audio.play('ufo.lowpitch.mp3');
         },
         hit: function() {
-                   Q.audio.play('ufo_shot.mp3');
+            Q.audio.play('ufo_shot.mp3');
             this.destroy();
-            // TODO: add points
+            var ufoPoints = Math.floor((Math.random() * 500) + 200);
+               
+          Q.state.inc('score', ufoPoints);
+           
+        },
+        step: function() {
+                 this.p.x = this.p.x + this.p.speed;
+             if (this.p.x < -200) this.destroy();
+             if (this.p.x > 1500) this.destroy();  // TODO: magic number use width
         }
     });
 
