@@ -478,8 +478,8 @@ Q.UI.Container.extend("AlienTracker", {
         hit: function() {
             Q.audio.play('ufo_shot.mp3');
             this.destroy();
-            var ufoPoints = Math.floor((Math.random() * 500) + 200);
-               
+            var ufoPoints = Math.floor((Math.random() * 300) + 150);
+
           Q.state.inc('score', ufoPoints);
            
         },
