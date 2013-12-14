@@ -9,6 +9,19 @@ Quintus.SpaceInvadersModels = function(Q) {
       SPRITE_NEUTRAL = 4,
       SPRITE_NONE = 8;
 
+  /**
+  * Der Startpage
+  */
+  Q.Sprite.extend("Logo",{
+    init: function(p) {
+      this._super({
+        y: 250,
+        x: Q.width/2,
+        asset: "logo1.png"
+      });
+
+    }
+  });
 
 
 /**

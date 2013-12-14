@@ -25,7 +25,7 @@ window.addEventListener('load',function() {
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
 
 
-    Q.load([ "cannon.png", "invaders.png",  "alienShot.png", "shoot.png",  "shield.png",
+    Q.load([ "logo1.png", "cannon.png", "invaders2.png",  "alienShot.png", "shoot.png",  "shield.png",
              "fire2.mp3", "explosion.mp3", "fastinvader1.mp3", "fastinvader2.mp3",
              "fastinvader3.mp3", "fastinvader4.mp3", "fire1.mp3", "ufo_lowpitch.mp3",
              "ufo_shot.mp3",
@@ -37,8 +37,8 @@ window.addEventListener('load',function() {
             Q.sheet("shield", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:0, frames:5 });
             Q.sheet("shield-hit", "shield.png", {tilew: 10, tileh: 10, sx:0, sy:10, frames:5 });
 
-        // Start level 1
-        Q.stageScene("level1");
+        // show startpage
+        Q.stageScene("startpage");
     });
 
 });

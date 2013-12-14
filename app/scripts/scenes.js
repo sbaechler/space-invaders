@@ -58,6 +58,14 @@ Quintus.SpaceInvadersScenes = function(Q) {
     }, { stage: 1 });
 
     /**
+     *  The startpage
+     */
+    Q.scene("startpage",function(stage) {
+    	var logo = new Q.Logo();
+        stage.insert(logo);
+    });
+    
+    /**
      *  The first level.
      */
     Q.scene("level1",function(stage) {
