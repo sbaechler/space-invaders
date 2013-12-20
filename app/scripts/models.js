@@ -8,22 +8,59 @@ Quintus.SpaceInvadersModels = function(Q) {
       SPRITE_ENEMY = 2,
       SPRITE_NEUTRAL = 4,
       SPRITE_NONE = 8;
-
+  
+  
   /**
-  * Der Startpage
+   * Simple red Square
+   */
+  Q.Sprite.extend("Square",{
+	  init: function(p) {
+	    this._super(p,{
+	      color: "red",
+			h : 75,
+			w : 250
+	    });
+	  },
+
+	  draw: function(ctx) {
+	    ctx.fillStyle = this.p.color;
+	    ctx.fillRect(-this.p.cx,
+	                 -this.p.cy,
+	                 this.p.w,
+	                 this.p.h);
+
+	  }
+	});
+  
+  /**
+  * Das Logo
   */
   Q.Sprite.extend("Logo",{
     init: function(p) {
       this._super({
         y: 250,
         x: Q.width/2,
-        asset: "logo1.png"
+        asset: "logo.png"
       });
 
     }
   });
 
+  /**
+   * Image
+   */
+  Q.Sprite.extend("ColourfullInvaders",{
+	    init: function(p) {
+	      this._super({
+	        y: 550,
+	        x: Q.width/2,
+	        asset: "colourfullInvaders.png"
+	      });
 
+	    }
+	  });
+  
+  
 /**
 * Der Kanonenschuss
 */
