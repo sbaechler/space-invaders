@@ -3,9 +3,15 @@
 Quintus.SpaceInvadersScenes = function(Q) {
 
 	function setupLevel(levelAsset, stage) {
+		
+		//must be here
+		stage.insert(new Q.CannonLive({x: 60}));
+		stage.insert(new Q.CannonLive({x: 120}));
+		stage.insert(new Q.CannonLive({x: 180}));
 
 		var cannon = stage.insert(new Q.Cannon());
 		var shieldPos = [ 60, 171, 282, 393 ];
+		
 		Q._each(shieldPos, function(pos, i) {
 			stage.insert(new Q.Shield({
 				x : pos,
@@ -27,6 +33,11 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	}
 	;
 
+	
+	function removeCannonLive(id){
+		cannonLives.remove(id);
+	}
+	
 	function makeAliensShoot(levelAsset, stage) {
 		setInterval(function() {
 			// TODO: This just takes the length of the first row of aliens.
@@ -45,7 +56,11 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	Q.scene("gameOver", function(stage) {
 		Q.stageScene(null, 1);
 
+		document.body.style.background="rgba(0, 0, 0, 1)";
+	    document.getElementById("quintus_container").style.background="#000000";
+
 		stage.insert(new Q.UI.Text({
+        	family: "Courier New",
 			label : "Game Over",
 			align : 'center',
 			color : 'white',
@@ -55,6 +70,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			size : 100
 		}));
 
+		setTimeout(function(){Q.stageScene('startpage');},2000);
 	});
 
 	/**
@@ -62,7 +78,6 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	 */
 	Q.scene("hud", function(stage) {
 		stage.insert(new Q.Score());
-		stage.insert(new Q.Lives());
 		stage.insert(new Q.Level());
 	}, {
 		stage : 1
@@ -78,25 +93,29 @@ Quintus.SpaceInvadersScenes = function(Q) {
 		stage.insert(new Q.Logo());
 		stage.insert(new Q.ColourfullInvaders());
 
-		stage.insert(new Q.Square({
+		stage.insert(new Q.UI.Button({
 			x : Q.width / 2,
-			y : 775,
-			h : 75,
-			w : 270,
-		}));
-
+			y : 670,
+			h : 20,
+			w : 230,
+			border : 5,
+			fill : "red",
+		}))
+		
 		var button = stage.insert(new Q.UI.Button({
 			x : Q.width / 2,
-			y : 790,
+			y : 720,
 			h : 75,
 			w : 250,
 			border : 7,
 			fill : "#ffe744",
 			label : "Play Game",
 		}))
+		
+		document.body.style.background="rgba(0, 0, 0, 1)";
+	    document.getElementById("quintus_container").style.background="#000000";
 
 		button.on("click", function() {
-			console.log('play2');
 			Q.clearStages();
 			Q.stageScene('level1');
 		});
@@ -113,9 +132,12 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			level : 1
 		}); // removes all event listeners
 
+		document.body.style.backgroundImage = "url('../images/background.png')";  
+	    document.getElementById('quintus_container').style.background = "rgba(0, 0, 0, 0.5)";  
+	    
 		// Add the hud in
 		Q.stageScene("hud");
-
+		
 		setupLevel("level1", stage);
 		// Set up the game state
 		stage.on("complete", function() {

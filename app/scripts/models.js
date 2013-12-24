@@ -9,36 +9,13 @@ Quintus.SpaceInvadersModels = function(Q) {
       SPRITE_NEUTRAL = 4,
       SPRITE_NONE = 8;
   
-  
-  /**
-   * Simple red Square
-   */
-  Q.Sprite.extend("Square",{
-	  init: function(p) {
-	    this._super(p,{
-	      color: "red",
-			h : 75,
-			w : 250
-	    });
-	  },
-
-	  draw: function(ctx) {
-	    ctx.fillStyle = this.p.color;
-	    ctx.fillRect(-this.p.cx,
-	                 -this.p.cy,
-	                 this.p.w,
-	                 this.p.h);
-
-	  }
-	});
-  
   /**
   * Das Logo
   */
   Q.Sprite.extend("Logo",{
     init: function(p) {
       this._super({
-        y: 250,
+        y: 200,
         x: Q.width/2,
         asset: "logo.png"
       });
@@ -52,7 +29,7 @@ Quintus.SpaceInvadersModels = function(Q) {
   Q.Sprite.extend("ColourfullInvaders",{
 	    init: function(p) {
 	      this._super({
-	        y: 550,
+	        y: 470,
 	        x: Q.width/2,
 	        asset: "colourfullInvaders.png"
 	      });
@@ -147,8 +124,8 @@ Q.Sprite.extend("Cannon", {
             this.stage.insert(cannonShot);
             Q.audio.play("fire2.mp3");
         }
-
     },
+    
     hit: function(){
         var self = this;
         if(this.p.hittable){
@@ -164,6 +141,9 @@ Q.Sprite.extend("Cannon", {
                     Q.stageScene("gameOver");
                 }, 1000);
             } else {
+
+            	Q.stage(0).lists.CannonLive[lives].destroy();
+            	
                 setTimeout(function(){
                     self.stage.insert(new Q.Cannon());
                 }, 1000);
@@ -177,137 +157,137 @@ Q.Sprite.extend("Cannon", {
 });
 
 
-    Q.Sprite.extend("AlienTracker", {
-        init: function(p) {
-            this._super({
-                sprite: 'alienTracker',
-                w: 1,
-                h: 1,
-                x: 100,
-                y: p.y + 40,
-                direction: 'right',
-                data: Q.assets['level1'],
-                type: SPRITE_NONE,
-                cadence: 80,
-                step: 0, // step counter (ca 50-60 steps/s)
-                move: 50 // alle 50 steps ein Move.
-            }, p);
-            this.on('hit');
-            this.on('move');
-            this.on("inserted", this, "setupAlien");
+Q.Sprite.extend("AlienTracker", {
+    init: function(p) {
+        this._super({
+            sprite: 'alienTracker',
+            w: 1,
+            h: 1,
+            x: 100,
+            y: p.y + 40,
+            direction: 'right',
+            data: Q.assets['level1'],
+            type: SPRITE_NONE,
+            cadence: 80,
+            step: 0, // step counter (ca 50-60 steps/s)
+            move: 50 // alle 50 steps ein Move.
+        }, p);
+        this.on('hit');
+        this.on('move');
+        this.on("inserted", this, "setupAlien");
 
-            this.beep = function() { // closure pattern
-                var i = 0; // closure
-                return function() {
-                    var sample = i % 4 + 1; // 0-4
-                    Q.audio.play('fastinvader' + sample + '.mp3');
-                    i++;
-                };
-            }();
+        this.beep = function() { // closure pattern
+            var i = 0; // closure
+            return function() {
+                var sample = i % 4 + 1; // 0-4
+                Q.audio.play('fastinvader' + sample + '.mp3');
+                i++;
+            };
+        }();
 
-        },
-        hit: function() {
-            this.destroy();
-        },
-        step: function(dt) {
-            if (this.p.step < this.p.move) {
-                this.p.step++;
-            } else {
-                this.trigger('move');
-                this.p.step = 0;
-            }
-
-        },
-        move: function() {
-            var ystep = false;
-            // this.beep(); // NOT YET.
-            if (Q.width - this.p.w > this.p.x + 100 && this.p.x < 100 && this.p.x < 320 && this.p.direction == 'left') {
-                this.p.y = this.p.y + 10;
-                ystep = true;
-                this.p.direction = 'right';
-
-                // this.p.x = this.p.x + this.direction('right');
-            } else if (Q.width - this.p.w < this.p.x + 100 && this.p.x > 100 && this.p.direction == 'right') {
-                this.p.y = this.p.y + 10;
-                ystep = true;
-                this.p.direction = 'left';
-            }
-
-            if (ystep == false) {
-                this.p.x = this.p.x + this.direction(this.p.direction);
-            }
-            ystep = false;
-
-            if(this.p.y > 240){
-                Q._each(this.children, function(alien){
-                    alien.stage.collide(alien);
-                });
-            }
-            this.getWidth();
-            //max rechts = 340
-            //min links = 100
-
-            //1024-600>340
-        },
-
-        direction: function(richtung) {
-
-            if (richtung == 'left') {
-                return -20;
-            } else {
-                return 20;
-            }
-        },
-
-        setupAlien: function() {
-            var alienScore = [0, 40, 20, 10];
-            Q.assets.invaders = {}; // Store a reference to the aliens
-            Q._each(this.p.data, function(row, y) {
-                Q._each(row, function(type, x) {
-                    if (type > 0) {
-                        Q.assets.invaders[x] = Q.assets.invaders[x] || []; // Create a stack per column
-                        Q.assets.invaders[x].push(
-                            this.stage.insert(new Q.Alien({
-                                sheet: "alien" + type,
-                                score: alienScore[type],
-                                column: x,
-                                parent: this.p,
-                                x: 60 * x,
-                                y: 60 * y
-                                /*x: 55 * x + this.p.x,
-y: 80 * y + this.p.y*/
-                            }), this)
-                        );
-                    }
-                }, this);
-            }, this);
-            this.getWidth();
-        },
-
-        getWidth: function() {
-            var maxx_pos = 0;
-            var minx_pos = 500;
-            Q._each(this.children, function(alien, i) {
-
-                if (alien.p.x > maxx_pos) {
-                    maxx_pos = alien.p.x;
-                };
-                if (alien.p.x < minx_pos) {
-                    minx_pos = alien.p.x;
-                };
-
-
-                // var breite =
-                //console.log(alien);
-            });
-            this.p.w = maxx_pos - minx_pos;
-            this.p.h = 100;
-
-            // Q.width
-
+    },
+    hit: function() {
+        this.destroy();
+    },
+    step: function(dt) {
+        if (this.p.step < this.p.move) {
+            this.p.step++;
+        } else {
+            this.trigger('move');
+            this.p.step = 0;
         }
 
-    });
+    },
+    move: function() {
+        var ystep = false;
+        // this.beep(); // NOT YET.
+        if (Q.width - this.p.w > this.p.x + 100 && this.p.x < 100 && this.p.x < 320 && this.p.direction == 'left') {
+            this.p.y = this.p.y + 10;
+            ystep = true;
+            this.p.direction = 'right';
+
+            // this.p.x = this.p.x + this.direction('right');
+        } else if (Q.width - this.p.w < this.p.x + 100 && this.p.x > 100 && this.p.direction == 'right') {
+            this.p.y = this.p.y + 10;
+            ystep = true;
+            this.p.direction = 'left';
+        }
+
+        if (ystep == false) {
+            this.p.x = this.p.x + this.direction(this.p.direction);
+        }
+        ystep = false;
+
+        if(this.p.y > 240){
+            Q._each(this.children, function(alien){
+                alien.stage.collide(alien);
+            });
+        }
+        this.getWidth();
+        //max rechts = 340
+        //min links = 100
+
+        //1024-600>340
+    },
+
+    direction: function(richtung) {
+
+        if (richtung == 'left') {
+            return -20;
+        } else {
+            return 20;
+        }
+    },
+
+    setupAlien: function() {
+        var alienScore = [0, 40, 20, 10];
+        Q.assets.invaders = {}; // Store a reference to the aliens
+        Q._each(this.p.data, function(row, y) {
+            Q._each(row, function(type, x) {
+                if (type > 0) {
+                    Q.assets.invaders[x] = Q.assets.invaders[x] || []; // Create a stack per column
+                    Q.assets.invaders[x].push(
+                        this.stage.insert(new Q.Alien({
+                            sheet: "alien" + type,
+                            score: alienScore[type],
+                            column: x,
+                            parent: this.p,
+                            x: 60 * x,
+                            y: 60 * y
+                            /*x: 55 * x + this.p.x,
+y: 80 * y + this.p.y*/
+                        }), this)
+                    );
+                }
+            }, this);
+        }, this);
+        this.getWidth();
+    },
+
+    getWidth: function() {
+        var maxx_pos = 0;
+        var minx_pos = 500;
+        Q._each(this.children, function(alien, i) {
+
+            if (alien.p.x > maxx_pos) {
+                maxx_pos = alien.p.x;
+            };
+            if (alien.p.x < minx_pos) {
+                minx_pos = alien.p.x;
+            };
+
+
+            // var breite =
+            //console.log(alien);
+        });
+        this.p.w = maxx_pos - minx_pos;
+        this.p.h = 100;
+
+        // Q.width
+
+    }
+
+});
 
 
 
@@ -332,6 +312,7 @@ y: 80 * y + this.p.y*/
             });
             this.stage.insert(alienshot);
         },
+        
         collide: function(col){
             if (col.obj.isA("ShieldElement")) {
                 col.obj.trigger('hit'); // destroy the element
@@ -463,6 +444,7 @@ y: 80 * y + this.p.y*/
     Q.UI.Text.extend("Score", {
         init: function(p) {
             this._super({
+            	family: "Courier New",
                 label: "score: 0",
                 align: "right",
                 color: 'white',
@@ -486,6 +468,7 @@ y: 80 * y + this.p.y*/
     Q.UI.Text.extend("Level", {
         init: function() {
             this._super({
+            	family: "Courier New",
                 label: "level: 1",
                 align: "right",
                 color: 'white',
@@ -493,7 +476,6 @@ y: 80 * y + this.p.y*/
                 x: Q.width - 70,
                 y: Q.height - 10,
                 weight: "normal",
-                size: 18
             });
 
             Q.state.on("change.level", this, "level");
@@ -504,26 +486,21 @@ y: 80 * y + this.p.y*/
         }
     });
 
-    Q.UI.Text.extend("Lives", {
-        init: function() {
-            this._super({
-                label: "lives: 3",
-                align: "left",
-                color: 'white',
+
+    Q.Sprite.extend("CannonLive", {
+        init: function(p){
+            var self = this;
+            this._super(p, {
+                asset: 'cannonlive.png', // image
+                w: 110, // width
+                h: 68, // height
                 x: 70,
-                y: Q.height - 10,
-                weight: "normal",
-                size: 18
+                y: Q.height - 20
             });
-
-            Q.state.on("change.lives", this, "lives");
-        },
-
-        lives: function(lives) {
-            this.p.label = "lives: " + lives;
+           
         }
+        
     });
 
-
-
+    
 }
