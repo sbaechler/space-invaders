@@ -1,0 +1,5 @@
+{
+  "explosion1":{"sx":0,"sy":0,"tilew":130,"tileh":130, "cols":17},
+  "explosion2":{"sx":0,"sy":130,"tilew":130,"tileh":130, "cols":17},
+  "explosion3":{"sx":0,"sy":260,"tilew":130,"tileh":130, "cols":17}
+}

@@ -60,7 +60,7 @@
                     // wait 0.1s
                     waits(100);
                     runs(function(){
-                        expect(Q('Cannon').items.length).toBe(0);
+                        expect(cannon.p.sheet).toEqual("explosion1");
                         expect(Q.state.get('lives')).toBe(2);
                         }
                     );
@@ -134,7 +134,7 @@
                     stage.insert(cannon);
                     Q.state.set('lives', 1);
                     cannon.trigger('hit');
-                    waits(100);
+                    waits(1000);
                     runs(function(){
                        expect(Q.stage().items[0].p.label).toEqual('Game Over');
                     });
