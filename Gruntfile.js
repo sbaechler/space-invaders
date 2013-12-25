@@ -325,6 +325,10 @@ module.exports = function (grunt) {
         'connect:test',
         'jasmine'
     ]);
+    grunt.registerTask('travis', [
+        'connect:test',
+        'jasmine'
+    ]);
 
     grunt.registerTask('build', [
         'clean:dist',
