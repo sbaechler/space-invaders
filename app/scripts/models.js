@@ -467,26 +467,26 @@ Q.UI.Container.extend("AlienTracker", {
                 scale: 0.5
             });
             this.on('inserted'); // ruft this.insterted() auf.
-
             this.on('hit');
         },
 
 
         inserted: function() {
             Q.audio.play('ufo.lowpitch.mp3');
+            console.log("haloo ufo");
+            var ufoPoints = Math.floor((Math.random() * 30) + 15);
+            console.log(ufoPoints);
         },
         hit: function() {
             Q.audio.play('ufo_shot.mp3');
             this.destroy();
-            var ufoPoints = Math.floor((Math.random() * 300) + 150);
-
-          Q.state.inc('score', ufoPoints);
-           
+            var ufoPoints = Math.floor((Math.random() * 30) + 15);
+            Q.state.inc('score', ufoPoints * 10);
         },
         step: function() {
-                 this.p.x = this.p.x + this.p.speed;
-             if (this.p.x < -200) this.destroy();
-             if (this.p.x > 1500) this.destroy();  // TODO: magic number use width
+            this.p.x = this.p.x + this.p.speed;
+            if (this.p.x < -200) this.destroy();
+            if (this.p.x > 1500) this.destroy();
         }
     });
 
