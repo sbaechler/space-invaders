@@ -543,7 +543,7 @@ Q.Sprite.extend("AlienTracker", {
     			w : 250,
     			border : 7,
     			fill : "#ffe744",
-    			label : "Play Game",
+    			label : "Play Game"
             });
 
             this.on('click');
@@ -552,6 +552,7 @@ Q.Sprite.extend("AlienTracker", {
         click: function(){
 			Q.clearStages();
 			Q.stageScene('level1');
+            isPaused = 1;
        }
     });
     
