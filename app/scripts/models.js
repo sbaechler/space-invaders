@@ -185,9 +185,7 @@ Q.Sprite.extend("CannonLiveTracker", {
         var row = [0, 1, 2];
         
         Q._each(row, function(id) {
-               
-        	 Q.assets.lives[id] =
-                    this.stage.insert(new Q.CannonLive({
+        	 Q.assets.lives[id] = this.stage.insert(new Q.CannonLive({
                         x: 60 * (id+1),
                     }), this)
         }, this);
