@@ -3,6 +3,9 @@
 Quintus.SpaceInvadersScenes = function(Q) {
 
 	function setupLevel(levelAsset, stage) {
+        var canvas = document.getElementById('quintus');
+        canvas.style['background-image']="url('../images/background.png')"
+
 		var cannon = stage.insert(new Q.Cannon());
 		var shieldPos = [ 60, 171, 282, 393 ];
 		
@@ -23,6 +26,8 @@ Quintus.SpaceInvadersScenes = function(Q) {
 		stage.on("destroy", function() {
 			cannon.destroy();
 			shield1.destroy();
+            isPaused = 1;
+            canvas.style['background']="black";
 		});
 	}
 	;
@@ -43,6 +48,8 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
 	/** Game Over Scene* */
 	Q.scene("gameOver", function(stage) {
+        var canvas = document.getElementById('quintus');
+        canvas.style['background']="black";
 		Q.stageScene(null, 1);
 
 		document.body.style.background="rgba(0, 0, 0, 1)";
@@ -89,13 +96,12 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			h : 20,
 			w : 230,
 			border : 5,
-			fill : "red",
+			fill : "red"
 		}))
 		
 	    stage.insert(new Q.Startbutton());
-		
-		document.body.style.background="rgba(0, 0, 0, 1)";
-//	    document.getElementById("quintus_container").style.background="#000000";
+
+        Q.sid.load("Super_Space_Invaders.sid");
 
 	});
 
@@ -109,9 +115,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			level : 1
 		}); // removes all event listeners
 
-//		document.body.style.backgroundImage = "url('../images/background.png')";  
-//	    document.getElementById('quintus_container').style.background = "rgba(0, 0, 0, 0.5)";  
-	    
+
 		// Add the hud in
 		Q.stageScene("hud");
 		

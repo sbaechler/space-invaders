@@ -1,6 +1,5 @@
 body {
     background: #000000;
-	background-image:url('../images/background.png');
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #333;
 }
@@ -12,6 +11,8 @@ body {
     padding: 0.2em 0;
 }
 
-#quintus_container {
+#quintus {
+    background-repeat: repeat-x;
+    background-size: cover;
 }
 
