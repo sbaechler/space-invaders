@@ -115,6 +115,7 @@ Q.Sprite.extend("Cannon", {
         if(this.p.cannonReady){
             var p = this.p;
             p.cannonReady = false;
+            
             setTimeout(function(){
                 p.cannonReady = true;
             }, p.cadence);
@@ -137,8 +138,8 @@ Q.Sprite.extend("Cannon", {
                 Q.stageScene("gameOver");
             } else {
 
-            	Q.stage(0).lists.CannonLive[lives].destroy();
-            	
+//            	Q.stage(0).lists.CannonLive[lives].destroy();
+            	console.log(Q.stage(0).scene);
                 setTimeout(function(){
                     self.stage.insert(new Q.Cannon());
                 }, 1000);
@@ -279,8 +280,6 @@ y: 80 * y + this.p.y*/
     }
 
 });
-
-
 
     Q.Sprite.extend("Alien", {
         init: function(p) {
@@ -493,5 +492,26 @@ y: 80 * y + this.p.y*/
         
     });
 
+    
+    Q.UI.Button.extend("Startbutton", {
+        init: function() {
+            this._super({
+    			x : Q.width / 2,
+    			y : 720,
+    			h : 75,
+    			w : 250,
+    			border : 7,
+    			fill : "#ffe744",
+    			label : "Play Game",
+            });
+
+            this.on('click');
+        },
+        
+        click: function(){
+			Q.clearStages();
+			Q.stageScene('level1');
+       }
+    });
     
 }

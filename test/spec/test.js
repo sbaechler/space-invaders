@@ -140,6 +140,33 @@
                     });
                 });
             });
+         
         });
     });
+	
+    describe('Startpage', function () {
+     
+        it('should show startpage elements', function(){
+            runs(function(){
+                Q.stageScene("startpage");
+                expect(Q('Startbutton').items.length).toBe(1);
+                expect(Q('Logo').items.length).toBe(1);
+            });
+        });
+        
+        it('after pushed the button should show level 1', function(){
+            runs(function(){
+                Q.stageScene("startpage");
+
+                expect(Q('Startbutton').items.length).toBe(1);
+                expect(Q('Logo').items.length).toBe(1);
+                
+                Q('Startbutton').trigger('click');
+                expect(Q('Startbutton').items.length).toBe(0);
+                
+            });
+        });
+        
+    });
+	
 })();
