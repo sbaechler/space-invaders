@@ -57,7 +57,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 		Q.stageScene(null, 1);
 
 		document.body.style.background="rgba(0, 0, 0, 1)";
-	    document.getElementById("quintus_container").style.background="#000000";
+//	    document.getElementById("quintus_container").style.background="#000000";
 
 		stage.insert(new Q.UI.Text({
         	family: "Courier New",
@@ -102,23 +102,10 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			fill : "red",
 		}))
 		
-		var button = stage.insert(new Q.UI.Button({
-			x : Q.width / 2,
-			y : 720,
-			h : 75,
-			w : 250,
-			border : 7,
-			fill : "#ffe744",
-			label : "Play Game",
-		}))
+	    stage.insert(new Q.Startbutton());
 		
 		document.body.style.background="rgba(0, 0, 0, 1)";
-	    document.getElementById("quintus_container").style.background="#000000";
-
-		button.on("click", function() {
-			Q.clearStages();
-			Q.stageScene('level1');
-		});
+//	    document.getElementById("quintus_container").style.background="#000000";
 
 	});
 
@@ -132,8 +119,8 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			level : 1
 		}); // removes all event listeners
 
-		document.body.style.backgroundImage = "url('../images/background.png')";  
-	    document.getElementById('quintus_container').style.background = "rgba(0, 0, 0, 0.5)";  
+//		document.body.style.backgroundImage = "url('../images/background.png')";  
+//	    document.getElementById('quintus_container').style.background = "rgba(0, 0, 0, 0.5)";  
 	    
 		// Add the hud in
 		Q.stageScene("hud");
