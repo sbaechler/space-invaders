@@ -103,7 +103,9 @@ Q.Sprite.extend("Cannon", {
             collisionMask: SPRITE_ENEMY // will be changed. Prevent hit on insert
         });
         this.add('GunControls, gunControls');
+        this.add('animation');
         this.on('hit');
+        this.on('kill');
         Q.input.on('fire', this, "fireGun");
         // Die Kanone soll die ersten 2 Sekunden unverletzbar sein.
         setTimeout(function(){
@@ -129,8 +131,13 @@ Q.Sprite.extend("Cannon", {
         var self = this;
         if(this.p.hittable){
             this.off('hit');
+            this.p.sheet = "explosion1";
+            this.p.scale = 1.5;
+            this.p.y = this.p.y - 50;
+            this.play('explode', 1);
             Q.audio.play("explosion.mp3");
             Q.state.dec("lives",1);
+
             this.destroy();
             var lives = Q.state.get('lives');
 
@@ -145,7 +152,11 @@ Q.Sprite.extend("Cannon", {
                 }, 1000);
             }
         }
+    },
+    kill: function(){
+        this.destroy();
     }
+
 });
 
 
@@ -488,7 +499,7 @@ y: 80 * y + this.p.y*/
                 y: Q.height - 20,
             });
            
-        },
+        }
         
     });
 
