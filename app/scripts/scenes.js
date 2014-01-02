@@ -26,11 +26,6 @@ Quintus.SpaceInvadersScenes = function(Q) {
 		});
 	}
 	;
-
-	
-	function removeCannonLive(id){
-		cannonLives.remove(id);
-	}
 	
 	function makeAliensShoot(levelAsset, stage) {
 		setInterval(function() {
