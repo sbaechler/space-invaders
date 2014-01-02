@@ -3,12 +3,6 @@
 Quintus.SpaceInvadersScenes = function(Q) {
 
 	function setupLevel(levelAsset, stage) {
-		
-		//must be here
-		stage.insert(new Q.CannonLive({x: 60}));
-		stage.insert(new Q.CannonLive({x: 120}));
-		stage.insert(new Q.CannonLive({x: 180}));
-
 		var cannon = stage.insert(new Q.Cannon());
 		var shieldPos = [ 60, 171, 282, 393 ];
 		
@@ -79,6 +73,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	Q.scene("hud", function(stage) {
 		stage.insert(new Q.Score());
 		stage.insert(new Q.Level());
+		stage.insert(new Q.CannonLiveTracker());
 	}, {
 		stage : 1
 	});

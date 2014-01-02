@@ -145,18 +145,75 @@ Q.Sprite.extend("Cannon", {
                 Q.stageScene("gameOver");
             } else {
 
-//            	Q.stage(0).lists.CannonLive[lives].destroy();
-            	console.log(Q.stage(0).scene);
+                Q.state.inc('cannonLive', lives);
+            	
                 setTimeout(function(){
                     self.stage.insert(new Q.Cannon());
                 }, 1000);
             }
         }
     },
+    
     kill: function(){
         this.destroy();
     }
 
+});
+
+Q.Sprite.extend("CannonLiveTracker", {
+    init: function(p){
+        var self = this;
+        this._super({
+            sprite: 'cannonLiveTracker',
+            asset: 'cannonlive.png', // image
+            w: 110, // width
+            h: 68, // height
+            x: 70,
+            y: Q.height - 20,
+        }, p);
+
+        this.on("inserted", this, "setupCannonLives");
+        Q.state.on("change.cannonLive", this, "cannonLive");
+    },
+
+    cannonLive: function(id) {
+    	Q.assets.lives[id].destroy();
+    },
+    
+    setupCannonLives: function() {
+        Q.assets.lives =[]; // Store a reference to the aliens
+        var row = [0, 1, 2];
+        console.log("setupCannonLives");
+        
+        Q._each(row, function(x) {
+        	console.log("x="+x);
+               
+        	 Q.assets.lives[x] =
+                    this.stage.insert(new Q.CannonLive({
+                        sheet: "live"+x ,
+                        parent: this.p,
+                        x: 60 * x,
+                    }), this)
+                
+                
+        }, this);
+    }
+
+});
+
+
+Q.Sprite.extend("CannonLive", {
+    init: function(p){
+        var self = this;
+        this._super(p, {
+            asset: 'cannonlive.png', // image
+            w: 110, // width
+            h: 68, // height
+            x: 70,
+            y: Q.height - 20,
+        });
+    }
+    
 });
 
 
@@ -258,7 +315,7 @@ Q.Sprite.extend("AlienTracker", {
                             x: 60 * x,
                             y: 60 * y
                             /*x: 55 * x + this.p.x,
-y: 80 * y + this.p.y*/
+								y: 80 * y + this.p.y*/
                         }), this)
                     );
                 }
@@ -488,22 +545,6 @@ y: 80 * y + this.p.y*/
     });
 
 
-    Q.Sprite.extend("CannonLive", {
-        init: function(p){
-            var self = this;
-            this._super(p, {
-                asset: 'cannonlive.png', // image
-                w: 110, // width
-                h: 68, // height
-                x: 70,
-                y: Q.height - 20,
-            });
-           
-        }
-        
-    });
-
-    
     Q.UI.Button.extend("Startbutton", {
         init: function() {
             this._super({
