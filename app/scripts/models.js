@@ -511,7 +511,7 @@ y: 80 * y + this.p.y*/
     			w : 250,
     			border : 7,
     			fill : "#ffe744",
-    			label : "Play Game",
+    			label : "Play Game"
             });
 
             this.on('click');
@@ -520,6 +520,7 @@ y: 80 * y + this.p.y*/
         click: function(){
 			Q.clearStages();
 			Q.stageScene('level1');
+            isPaused = 1;
        }
     });
     

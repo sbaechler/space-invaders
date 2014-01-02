@@ -54,7 +54,6 @@ Quintus.SID = function(Q) {
                 return this;
         }
         Q.sid.load = function(song){
-            var self = this;
             var xhr = new XMLHttpRequest();
             xhr.open("GET", 'audio/' + song, true);
             xhr.responseType = "arraybuffer";
@@ -63,8 +62,8 @@ Quintus.SID = function(Q) {
                 isPaused = 1;
                 tinyRSID_loadData(xhr.response);
                 tinyRSID_playSong(actualSubsong);
-                isPaused = 0;
                 initialAudioSetup();
+                isPaused = 0;
             };
             xhr.send(null);
         }
