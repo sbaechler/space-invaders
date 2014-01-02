@@ -162,34 +162,33 @@ Q.Sprite.extend("Cannon", {
 
 Q.Sprite.extend("CannonLiveTracker", {
     init: function(p){
-        var self = this;
         this._super({
-            sprite: 'cannonLiveTracker',
-            asset: 'cannonlive.png', // image
-            w: 110, // width
-            h: 68, // height
-            x: 68, // height
+            x: 20,
             y: Q.height - 20,
+            w: 1,
+            h: 1,
+            type: SPRITE_NONE
         }, p);
 
         this.on("inserted", this, "setupCannonLives");
-        Q.state.on("change.cannonLive", this, "cannonLive");
+        Q.state.on("change.lives", this, "cannonLive");
     },
 
     cannonLive: function(id) {
+        console.log(this);
     	this.children[Q.state.get('lives')].destroy();
     },
     
     setupCannonLives: function() {
         Q.assets.lives =[]; // Store a reference to the aliens
-        var row = [0, 1, 2];
-        
-        Q._each(row, function(id) {
-               
-        	 Q.assets.lives[id] =
-                    this.stage.insert(new Q.CannonLive({
-                        x: 60 * (id+1),
-                    }), this)
+        var pos = [60, 120, 180];
+        var self = this;
+        Q._each(pos, function(pos, id) {
+        	 Q.assets.lives.push(
+                self.stage.insert(new Q.CannonLive({
+                    x: pos
+                }), self)
+             )
         }, this);
     }
 
@@ -199,7 +198,10 @@ Q.Sprite.extend("CannonLiveTracker", {
 Q.Sprite.extend("CannonLive", {
     init: function(p){
     	  this._super(p, {
-              y: Q.height - 20,
+            asset: 'cannonlive.png', // image
+            w: 110, // width
+            h: 68, // height
+            y: 0
           });
     }
     

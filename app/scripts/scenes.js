@@ -3,17 +3,9 @@
 Quintus.SpaceInvadersScenes = function(Q) {
 
 	function setupLevel(levelAsset, stage) {
-<<<<<<< HEAD
-=======
         var canvas = document.getElementById('quintus');
         canvas.style['background-image']="url('../images/background.png')"
-		
-		//must be here
-		stage.insert(new Q.CannonLive({x: 60}));
-		stage.insert(new Q.CannonLive({x: 120}));
-		stage.insert(new Q.CannonLive({x: 180}));
 
->>>>>>> sid
 		var cannon = stage.insert(new Q.Cannon());
 		var shieldPos = [ 60, 171, 282, 393 ];
 		
@@ -123,9 +115,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			level : 1
 		}); // removes all event listeners
 
-//		document.body.style.backgroundImage = "url('../images/background.png')";  
-//	    document.getElementById('quintus_container').style.background = "rgba(0, 0, 0, 0.5)";  
-	    
+
 		// Add the hud in
 		Q.stageScene("hud");
 		
