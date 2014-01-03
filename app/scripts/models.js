@@ -175,7 +175,7 @@ Q.Sprite.extend("CannonLiveTracker", {
     },
 
     cannonLive: function(id) {
-    	this.children[Q.state.get('lives')].destroy();
+    	this.children[id].destroy();
     },
     
     setupCannonLives: function() {
@@ -198,10 +198,11 @@ Q.Sprite.extend("CannonLiveTracker", {
 Q.Sprite.extend("CannonLive", {
     init: function(p){
     	  this._super(p, {
-            asset: 'cannonlive.png', // image
+            asset: 'cannon.png', // image
             w: 110, // width
             h: 68, // height
-            y: 0
+            y: 0,
+            scale: 0.4
           });
     }
     

@@ -142,7 +142,6 @@
             });
          
     describe('Startpage', function () {
-     
         it('should show startpage elements', function(){
             runs(function(){
                 Q.stageScene("startpage");
@@ -160,6 +159,7 @@
                 
                 Q('Startbutton').trigger('click');
                 expect(Q('Startbutton').items.length).toBe(0);
+                expect(Q('Cannon').items.length).toBe(1);
                 
             });
         });
