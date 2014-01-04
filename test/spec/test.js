@@ -173,7 +173,7 @@
         });
     });
     describe('Level', function(){
-        it('should have 6 levels', function(){
+        it('should have 6 levels and the title screens', function(){
             runs(function(){
                 expect(Q.scenes.hud).toBeTruthy();
                 expect(Q.scenes.startpage).toBeTruthy();
@@ -187,6 +187,7 @@
                 expect(Q.scenes.level7).toBeFalsy();
             });
         });
+
     });
     
   });

@@ -4,6 +4,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
 	function setupLevel(level, stage) {
         Q.clearStage(stage);
+        var levelAsset = 'level1'  // only one asset for now.
         var canvas = document.getElementById('quintus');
         var github = document.getElementById('github');
         if (canvas) {
@@ -24,9 +25,11 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
 		// TODO: use levelAsset
 		stage.insert(new Q.AlienTracker({
-			y : 20
+			y : 20,
+            level: level,
+            assetMap: 'level1'
 		}));
-		makeAliensShoot('level1', stage);
+		makeAliensShoot(level, levelAsset);
 
 		// cleanup
 		stage.on("destroy", function() {
@@ -38,7 +41,8 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	}
 	;
 	
-	function makeAliensShoot(levelAsset, stage) {
+	function makeAliensShoot(level, levelAsset) {
+        var CADENCE_FACTOR = 150  // ms for each level
 		setInterval(function() {
 			// TODO: This just takes the length of the first row of aliens.
 			// Should use max.
@@ -48,7 +52,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			var alien = Q.assets.invaders[column].slice(-1).pop();
 			if (alien !== undefined)
 				alien.trigger('fire');
-		}, 2000);
+		}, 2000 - (level*CADENCE_FACTOR));
 	}
 	;
 

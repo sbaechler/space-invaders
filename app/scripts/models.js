@@ -139,15 +139,13 @@ Q.Sprite.extend("Cannon", {
             Q.audio.play("explosion.mp3");
             Q.state.dec("lives",1);
 
-            this.destroy();
             var lives = Q.state.get('lives');
 
             if(lives <= 0) {
-                Q.stageScene("gameOver");
+                setTimeout(function(){
+                    Q.stageScene("gameOver");
+                }, 1000);
             } else {
-
-                Q.state.inc('cannonLive', lives);
-            	
                 setTimeout(function(){
                     self.stage.insert(new Q.Cannon());
                 }, 1000);
@@ -219,11 +217,10 @@ Q.Sprite.extend("AlienTracker", {
             x: 100,
             y: p.y + 40,
             direction: 'right',
-            data: Q.assets['level1'],
+            data: Q.assets[p.assetMap],
             type: SPRITE_NONE,
-            cadence: 80,
             step: 0, // step counter (ca 50-60 steps/s)
-            move: 50 // alle 50 steps ein Move.
+            move: 40 - (p.level*4) // alle 40 steps ein Move.
         }, p);
         this.on('hit');
         this.on('move');
@@ -255,15 +252,14 @@ Q.Sprite.extend("AlienTracker", {
         var ystep = false;
         this.beep();
         if (Q.width - this.p.w > this.p.x + 100 && this.p.x < 100 && this.p.x < 320 && this.p.direction == 'left') {
-            this.p.y = this.p.y + 10;
+            this.moveDown();
             ystep = true;
-            this.p.direction = 'right';
+
 
             // this.p.x = this.p.x + this.direction('right');
         } else if (Q.width - this.p.w < this.p.x + 100 && this.p.x > 100 && this.p.direction === 'right') {
-            this.p.y = this.p.y + 10;
+            this.moveDown();
             ystep = true;
-            this.p.direction = 'left';
         }
 
         if (ystep == false) {
@@ -271,6 +267,7 @@ Q.Sprite.extend("AlienTracker", {
         }
         ystep = false;
 
+        // start collision test with shields
         if(this.p.y > 240){
             Q._each(this.children, function(alien){
                 alien.stage.collide(alien);
@@ -284,6 +281,17 @@ Q.Sprite.extend("AlienTracker", {
         }
 
         //1024-600>340
+    },
+    moveDown: function(){
+        this.p.y = this.p.y + 20;
+        if ( this.p.y >= 480) {
+            Q.stageScene('gameOver');
+        }
+        // switch direction
+        this.p.direction = this.p.direction === 'right' ? 'left': 'right';
+        if(this.p.move > 10) {
+            this.p.move -= 5;
+        }
     },
 
     direction: function(richtung) {
