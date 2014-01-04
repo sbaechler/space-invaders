@@ -5,6 +5,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	function setupLevel(levelAsset, stage) {
         var canvas = document.getElementById('quintus');
         canvas.style['background'] = "rgba(0, 0, 0, 0.5)";  
+        
         document.body.style.backgroundImage = "url('../images/background.png')";  
 
 		var cannon = stage.insert(new Q.Cannon());

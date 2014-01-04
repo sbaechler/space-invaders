@@ -140,6 +140,7 @@
                     });
                 });
             });
+        });
          
     describe('Startpage', function () {
         it('should show startpage elements', function(){
@@ -156,13 +157,14 @@
 
                 expect(Q('Startbutton').items.length).toBe(1);
                 expect(Q('Logo').items.length).toBe(1);
-                
                 Q('Startbutton').trigger('click');
+                
                 expect(Q('Startbutton').items.length).toBe(0);
                 expect(Q('Cannon').items.length).toBe(1);
                 
             });
         });
-        
     });
+    
+  });
 })();
