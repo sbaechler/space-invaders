@@ -143,7 +143,7 @@
                     cannon.trigger('hit');
                     waits(1000);
                     runs(function(){
-                       expect(Q.stage().items[0].p.label).toEqual('Game Over');
+                       expect(Q.stage().items[0].p.label).toEqual('GAME OVER');
                     });
                 });
             });
