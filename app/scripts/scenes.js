@@ -20,7 +20,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 		});
 
 		// TODO: use levelAsset
-		var alien = stage.insert(new Q.AlienTracker({
+		stage.insert(new Q.AlienTracker({
 			y : 20
 		}));
 		makeAliensShoot(levelAsset, stage);
@@ -60,17 +60,27 @@ Quintus.SpaceInvadersScenes = function(Q) {
 		document.body.style.background="rgba(0, 0, 0, 1)";
 
 		stage.insert(new Q.UI.Text({
-        	family: "Courier New",
-			label : "Game Over",
+        	family: "'Press Start 2P'",
+			label : "GAME OVER",
 			align : 'center',
 			color : 'white',
 			x : Q.width / 2,
 			y : 350,
 			weight : "normal",
-			size : 100
+			size : 80
+		}));
+        stage.insert(new Q.UI.Text({
+        	family: "'Press Start 2P'",
+			label : "YOUR SCORE: " + Q.state.get('score'),
+			align : 'center',
+			color : '#ddd',
+			x : Q.width / 2,
+			y : 450,
+			weight : "normal",
+			size : 24
 		}));
 
-		setTimeout(function(){Q.stageScene('startpage');},2000);
+		setTimeout(function(){Q.stageScene('startpage');}, 4000);
 	});
 
 	/**

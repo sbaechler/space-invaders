@@ -494,11 +494,12 @@ Q.Sprite.extend("AlienTracker", {
     Q.UI.Text.extend("Score", {
         init: function(p) {
             this._super({
-            	family: "Courier New",
-                label: "score: 0",
+            	family: "'Press Start 2P'",
+                label: "SCORE: 0",
                 align: "right",
                 color: 'white',
-                x: Q.width - 100,
+                size: 20,
+                x: Q.width - 150,
                 y: 20,
                 nextLife: 1500
             });
@@ -507,7 +508,7 @@ Q.Sprite.extend("AlienTracker", {
         },
 
         score: function(score) {
-            this.p.label = "score: " + score;
+            this.p.label = "SCORE: " + score;
             if (score >= this.p.nextLife) {
                 this.p.nextLife += this.p.nextLife;
                 Q.state.inc('lives', 1);
@@ -518,21 +519,22 @@ Q.Sprite.extend("AlienTracker", {
     Q.UI.Text.extend("Level", {
         init: function() {
             this._super({
-            	family: "Courier New",
-                label: "level: 1",
+            	family: "'Press Start 2P'",
+                label: "LEVEL: 1",
                 align: "right",
                 color: 'white',
                 level: 1,
-                x: Q.width - 70,
-                y: Q.height - 10,
-                weight: "normal",
+                size: 20,
+                x: Q.width - 100,
+                y: Q.height - 20,
+                weight: "normal"
             });
 
             Q.state.on("change.level", this, "level");
         },
 
         level: function(lvl) {
-            this.p.label = "level: " + lvl;
+            this.p.label = "LEVEL: " + lvl;
         }
     });
 
@@ -543,10 +545,13 @@ Q.Sprite.extend("AlienTracker", {
     			x : Q.width / 2,
     			y : 720,
     			h : 75,
-    			w : 250,
+    			w : 320,
     			border : 7,
+                size: 40,
+                color: 'red',
+                font: '400 24px "Press Start 2P"',
     			fill : "#ffe744",
-    			label : "Play Game"
+    			label : "INSERT COIN"
             });
 
             this.on('click');
