@@ -4,9 +4,11 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
 	function setupLevel(levelAsset, stage) {
         var canvas = document.getElementById('quintus');
+        var github = document.getElementById('github');
         if (canvas) {
             canvas.style['background'] = "rgba(0, 0, 0, 0.5)";
             document.body.style.backgroundImage = "url('../images/background.png')";
+            github.style['display'] = 'none';
         }
 
 		var cannon = stage.insert(new Q.Cannon());
@@ -52,8 +54,10 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	/** Game Over Scene* */
 	Q.scene("gameOver", function(stage) {
         var canvas = document.getElementById('quintus');
+        var github = document.getElementById('github');
         if (canvas != null) {
-            canvas.style['background']="black";
+            canvas.style['background'] = "black";
+            github.style['display'] = 'block';
         }
 		Q.stageScene(null, 1);
 
@@ -108,7 +112,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			x : Q.width / 2,
 			y : 670,
 			h : 20,
-			w : 230,
+			w : 320,
 			border : 5,
 			fill : "red"
 		}))

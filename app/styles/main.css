@@ -15,4 +15,9 @@ body {
     background-repeat: repeat-x;
     background-size: cover;
 }
-
+#github {
+    display: none;
+}
+#github > img {
+    z-index: 10;
+}
