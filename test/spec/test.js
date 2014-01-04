@@ -172,6 +172,22 @@
             });
         });
     });
+    describe('Level', function(){
+        it('should have 6 levels', function(){
+            runs(function(){
+                expect(Q.scenes.hud).toBeTruthy();
+                expect(Q.scenes.startpage).toBeTruthy();
+                expect(Q.scenes.gameOver).toBeTruthy();
+                expect(Q.scenes.level1).toBeTruthy();
+                expect(Q.scenes.level2).toBeTruthy();
+                expect(Q.scenes.level3).toBeTruthy();
+                expect(Q.scenes.level4).toBeTruthy();
+                expect(Q.scenes.level5).toBeTruthy();
+                expect(Q.scenes.level6).toBeTruthy();
+                expect(Q.scenes.level7).toBeFalsy();
+            });
+        });
+    });
     
   });
 })();

@@ -95,6 +95,7 @@ Q.Sprite.extend("Cannon", {
             y: 680, // position
             x: 512,
             sprite: 'cannon',
+            scale: 0.8,
             stepDistance: 50, // moving speed
             cannonReady: true,
             cadence: 680, // in ms
@@ -252,14 +253,14 @@ Q.Sprite.extend("AlienTracker", {
     },
     move: function() {
         var ystep = false;
-        // this.beep(); // NOT YET.
+        this.beep();
         if (Q.width - this.p.w > this.p.x + 100 && this.p.x < 100 && this.p.x < 320 && this.p.direction == 'left') {
             this.p.y = this.p.y + 10;
             ystep = true;
             this.p.direction = 'right';
 
             // this.p.x = this.p.x + this.direction('right');
-        } else if (Q.width - this.p.w < this.p.x + 100 && this.p.x > 100 && this.p.direction == 'right') {
+        } else if (Q.width - this.p.w < this.p.x + 100 && this.p.x > 100 && this.p.direction === 'right') {
             this.p.y = this.p.y + 10;
             ystep = true;
             this.p.direction = 'left';
@@ -278,13 +279,16 @@ Q.Sprite.extend("AlienTracker", {
         this.getWidth();
         //max rechts = 340
         //min links = 100
+        if (this.children.length == 0) {
+            this.stage.trigger('complete');
+        }
 
         //1024-600>340
     },
 
     direction: function(richtung) {
 
-        if (richtung == 'left') {
+        if (richtung === 'left') {
             return -20;
         } else {
             return 20;

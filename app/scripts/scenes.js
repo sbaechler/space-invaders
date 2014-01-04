@@ -2,7 +2,8 @@
 
 Quintus.SpaceInvadersScenes = function(Q) {
 
-	function setupLevel(levelAsset, stage) {
+	function setupLevel(level, stage) {
+        Q.clearStage(stage);
         var canvas = document.getElementById('quintus');
         var github = document.getElementById('github');
         if (canvas) {
@@ -25,7 +26,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 		stage.insert(new Q.AlienTracker({
 			y : 20
 		}));
-		makeAliensShoot(levelAsset, stage);
+		makeAliensShoot('level1', stage);
 
 		// cleanup
 		stage.on("destroy", function() {
@@ -105,6 +106,12 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
 		Q.clearStage(1);
 
+        Q.state.reset({
+            score : 0,
+            lives : 3,
+            level : 1
+        }); // removes all event listeners
+
 		stage.insert(new Q.Logo());
 		stage.insert(new Q.ColourfullInvaders());
 
@@ -126,22 +133,30 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	});
 
 	/**
-	 * The first level.
+	 * The level factory
 	 */
-	Q.scene("level1", function(stage) {
-		Q.state.reset({
-			score : 0,
-			lives : 3,
-			level : 1
-		}); // removes all event listeners
+    function createLevel(level){
+        Q.scene("level" + level , function(stage) {
+            if(level==1){
+                // Add the hud in
+                Q.stageScene("hud");
+            }
 
-		// Add the hud in
-		Q.stageScene("hud");
-		
-		setupLevel("level1", stage);
-		// Set up the game state
-		stage.on("complete", function() {
-			Q.stageScene("level2");
-		});
-	});
+            setupLevel(level, stage);
+            // Set up the game state
+            if (level <= 5){
+                stage.on("complete", function() {
+                    Q.stageScene("level"+(level+1));
+                    Q.state.inc("level",1);
+                });
+            } else {
+                stage.on("complete", function() {
+                    Q.stageScene("gameOver");
+                });
+            }
+        });
+    }
+    for (var i=1; i<=6; i++){
+        createLevel(i);
+    }
 }
