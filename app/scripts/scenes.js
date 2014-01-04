@@ -4,9 +4,10 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
 	function setupLevel(levelAsset, stage) {
         var canvas = document.getElementById('quintus');
-        canvas.style['background'] = "rgba(0, 0, 0, 0.5)";  
-        
-        document.body.style.backgroundImage = "url('../images/background.png')";  
+        if (canvas) {
+            canvas.style['background'] = "rgba(0, 0, 0, 0.5)";
+            document.body.style.backgroundImage = "url('../images/background.png')";
+        }
 
 		var cannon = stage.insert(new Q.Cannon());
 		var shieldPos = [ 60, 171, 282, 393 ];
@@ -51,7 +52,9 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	/** Game Over Scene* */
 	Q.scene("gameOver", function(stage) {
         var canvas = document.getElementById('quintus');
-        canvas.style['background']="black";
+        if (canvas != null) {
+            canvas.style['background']="black";
+        }
 		Q.stageScene(null, 1);
 
 		document.body.style.background="rgba(0, 0, 0, 1)";
@@ -101,8 +104,10 @@ Quintus.SpaceInvadersScenes = function(Q) {
 		}))
 		
 	    stage.insert(new Q.Startbutton());
+        if (Q.sid !== undefined) {
+            Q.sid.load("Super_Space_Invaders.sid");
+        }
 
-        Q.sid.load("Super_Space_Invaders.sid");
 
 	});
 

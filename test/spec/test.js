@@ -25,6 +25,13 @@
             Q.state.reset({ score: 0, lives: 3, level: 1 });
             SpriteFixtures.loadSprites(Q);
             waitsFor(SpriteFixtures.doneLoaded, 400);
+            Q.animations('alien', {
+                hampelmann: { frames: [0,1], rate:1/1}
+            });
+            Q.animations('cannon', {
+                explode: { frames: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], rate: 1/15,
+                    loop: false, trigger: 'kill' }
+            });
             window.Q = Q;
         });
 
