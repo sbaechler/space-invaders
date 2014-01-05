@@ -122,6 +122,7 @@ Q.Sprite.extend("Cannon", {
             setTimeout(function(){
                 p.cannonReady = true;
             }, p.cadence);
+            
             var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
             this.stage.insert(cannonShot);
             Q.audio.play("fire2.mp3");
@@ -136,12 +137,11 @@ Q.Sprite.extend("Cannon", {
             this.p.scale = 1.5;
             this.p.y = this.p.y - 50;
             this.play('explode', 1);
+            
             Q.audio.play("explosion.mp3");
             Q.state.dec("lives",1);
 
-            var lives = Q.state.get('lives');
-
-            if(lives <= 0) {
+            if(Q.state.get('lives') <= 0) {
                 setTimeout(function(){
                     Q.stageScene("gameOver");
                 }, 1000);
@@ -159,6 +159,9 @@ Q.Sprite.extend("Cannon", {
 
 });
 
+/**
+ * This class draws the little canon icons at the bottom of the page.
+ */
 Q.Sprite.extend("CannonLiveTracker", {
     init: function(p){
         this._super({
@@ -166,29 +169,39 @@ Q.Sprite.extend("CannonLiveTracker", {
             y: Q.height - 20,
             w: 1,
             h: 1,
-            type: SPRITE_NONE
+            type: SPRITE_NONE,
+            xPos: 60
         }, p);
 
-        this.on("inserted", this, "setupCannonLives");
-        Q.state.on("change.lives", this, "cannonLive");
+        this.on("inserted", this, "renderIcons");
+        Q.state.on("change.lives", this, "renderIcons");
     },
 
-    cannonLive: function(id) {
-    	this.children[id].destroy();
+    removeIcon : function() {
+    	this.children.pop().destroy();
+        this.p.xPos =  this.p.xPos- 60;
     },
     
-    setupCannonLives: function() {
-        Q.assets.lives =[]; // Store a reference to the aliens
+    addIcon : function() {
+	        var self = this;
 
-        var pos = [60, 120, 180];
-        var self = this;
-        Q._each(pos, function(pos, id) {
-        	 Q.assets.lives.push(
-                self.stage.insert(new Q.CannonLive({
-                    x: pos
-                }), self)
-             )
-        }, this);
+	        self.stage.insert(new Q.CannonLive({
+	            x: this.p.xPos
+	        }), this);
+	        
+	        this.p.xPos =  this.p.xPos+ 60;
+    },
+    
+    renderIcons: function() {
+
+    	while(Q.state.get('lives')!=this.children.length){
+        	if(Q.state.get('lives')<this.children.length){
+        		this.removeIcon();
+        	}else{
+        		this.addIcon();
+        	}
+		}
+
     }
 
 });
