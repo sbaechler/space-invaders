@@ -208,22 +208,20 @@ Q.Sprite.extend("CannonLive", {
 });
 
 
-Q.Sprite.extend("AlienTracker", {
+Q.UI.Container.extend("AlienTracker", {
     init: function(p) {
         this._super({
-            sprite: 'alienTracker',
             w: 1,
             h: 1,
             x: 100,
-            y: p.y + 40,
+            y: 60,
             direction: 'right',
             data: Q.assets[p.assetMap],
-            type: SPRITE_NONE,
             step: 0, // step counter (ca 50-60 steps/s)
             move: 40 - (p.level*4) // alle 40 steps ein Move.
         }, p);
-        this.on('hit');
         this.on('move');
+        this.on('resize', this, 'setSize');
         this.on("inserted", this, "setupAlien");
 
         this.beep = function() { // closure pattern
@@ -236,9 +234,6 @@ Q.Sprite.extend("AlienTracker", {
         }();
 
     },
-    hit: function() {
-        this.destroy();
-    },
     step: function(dt) {
         if (this.p.step < this.p.move) {
             this.p.step++;
@@ -249,23 +244,15 @@ Q.Sprite.extend("AlienTracker", {
 
     },
     move: function() {
-        var ystep = false;
         this.beep();
-        if (Q.width - this.p.w > this.p.x + 100 && this.p.x < 100 && this.p.x < 320 && this.p.direction == 'left') {
+        if ((this.p.x + this.p.w - this.p.cx) >= Q.width-10  && this.p.direction === 'right') {
             this.moveDown();
-            ystep = true;
-
-
-            // this.p.x = this.p.x + this.direction('right');
-        } else if (Q.width - this.p.w < this.p.x + 100 && this.p.x > 100 && this.p.direction === 'right') {
+        } else if (this.p.x - this.p.cx <=10 && this.p.direction === 'left') {
             this.moveDown();
-            ystep = true;
-        }
-
-        if (ystep == false) {
+        } else {
             this.p.x = this.p.x + this.direction(this.p.direction);
         }
-        ystep = false;
+        console.log(this.p.x);
 
         // start collision test with shields
         if(this.p.y > 240){
@@ -273,24 +260,20 @@ Q.Sprite.extend("AlienTracker", {
                 alien.stage.collide(alien);
             });
         }
-        this.getWidth();
-        //max rechts = 340
-        //min links = 100
+
         if (this.children.length == 0) {
             this.stage.trigger('complete');
         }
-
-        //1024-600>340
     },
     moveDown: function(){
-        this.p.y = this.p.y + 10;
-        if ( this.p.y >= 480) {
+        this.p.y = this.p.y + 16;
+        if ( this.p.y + this.p.h >= Q.height - 40) {
             Q.stageScene('gameOver');
         }
         // switch direction
         this.p.direction = this.p.direction === 'right' ? 'left': 'right';
         if(this.p.move > 10) {
-            this.p.move -= 4;
+            this.p.move -= 3;
         }
     },
 
@@ -315,40 +298,24 @@ Q.Sprite.extend("AlienTracker", {
                             sheet: "alien" + type,
                             score: alienScore[type],
                             column: x,
-                            parent: this.p,
+                            parent: this,
                             x: 60 * x,
                             y: 60 * y
-                            /*x: 55 * x + this.p.x,
-								y: 80 * y + this.p.y*/
                         }), this)
                     );
                 }
             }, this);
         }, this);
-        this.getWidth();
+        this.fit(10,10);
     },
 
-    getWidth: function() {
-        var maxx_pos = 0;
-        var minx_pos = 500;
-        Q._each(this.children, function(alien, i) {
-
-            if (alien.p.x > maxx_pos) {
-                maxx_pos = alien.p.x;
-            };
-            if (alien.p.x < minx_pos) {
-                minx_pos = alien.p.x;
-            };
-
-
-            // var breite =
-            //console.log(alien);
-        });
-        this.p.w = maxx_pos - minx_pos;
-        this.p.h = 100;
-
-        // Q.width
-
+    setSize: function() {
+        console.log('resizing...');
+        this.fit(10,10);
+        console.log([this.p.w, this.p.cx, this.p.x]);
+    },
+    render: function(ctx){
+        Q._invoke(this.children,"render",ctx);
     }
 
 });
@@ -359,6 +326,7 @@ Q.Sprite.extend("AlienTracker", {
                 type: SPRITE_ENEMY,
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL,
                 scale: 0.5,
+                hidden: false,
                 sprite: "alien"
             });
             this.on('fire', this, "fireGun");
@@ -369,13 +337,14 @@ Q.Sprite.extend("AlienTracker", {
 
         fireGun: function() {
             var alienshot = new Q.AlienShot({
-                x: this.p.x + this.p.parent.x,
-                y: this.p.y + this.p.parent.y + this.p.cy
+                x: this.p.x + this.p.parent.p.x,
+                y: this.p.y + this.p.parent.p.y + this.p.cy
             });
             this.stage.insert(alienshot);
         },
         
         collide: function(col){
+            var parent = this.p.parent;
             if (col.obj.isA("ShieldElement")) {
                 col.obj.trigger('hit'); // destroy the element
             } else {
@@ -383,6 +352,9 @@ Q.Sprite.extend("AlienTracker", {
                 Q.assets.invaders[this.p.column].pop();
                 Q.audio.play('fire1.mp3');
                 Q.state.inc('score', this.p.score);
+                setTimeout(function(){
+                    parent.trigger('resize');
+                }, 40);
                 this.destroy();
             }
         }

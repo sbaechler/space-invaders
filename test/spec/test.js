@@ -107,7 +107,7 @@
             it('should be able to shoot', function() {
                 runs(function() {
                     var alien = new Q.Alien();
-                    alien.p.parent = {x: 100}; // mock
+                    alien.p.parent = {p: {x: 100}}; // mock
                     stage.insert(alien);
                     alien.trigger('fire');
                     expect(Q('AlienShot').items.length).toBe(1);

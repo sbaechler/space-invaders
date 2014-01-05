@@ -17,7 +17,7 @@ window.addEventListener('load',function() {
 
 
     Q.state.reset({ score: 0, lives: 3 });
-//     Q.debug = true;
+    // Q.debug = true;
     window.Q = Q;
 
     Q.animations('alien', {

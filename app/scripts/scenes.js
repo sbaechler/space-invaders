@@ -25,7 +25,6 @@ Quintus.SpaceInvadersScenes = function(Q) {
 
 		// TODO: use levelAsset
 		stage.insert(new Q.AlienTracker({
-			y : 20,
             level: level,
             assetMap: 'level1'
 		}));
