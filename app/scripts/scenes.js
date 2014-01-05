@@ -1,12 +1,13 @@
 'use strict';
 
-Quintus.SpaceInvadersScenes = function(Q) {
+Quintus.SpaceInvadersScenes = function (Q) {
 
 	function setupLevel(level, stage) {
         Q.clearStage(stage);
         var levelAsset = 'level1'  // only one asset for now.
         var canvas = document.getElementById('quintus');
         var github = document.getElementById('github');
+        var fire;
         if (canvas) {
             canvas.style['background'] = "rgba(0, 0, 0, 0.5)";
             document.body.style.backgroundImage = "url('../images/background.png')";
@@ -28,13 +29,18 @@ Quintus.SpaceInvadersScenes = function(Q) {
             level: level,
             assetMap: 'level1'
 		}));
-		makeAliensShoot(level, levelAsset);
+		fire = makeAliensShoot(level, levelAsset);
+
+        displayUfo(stage);
 
 		// cleanup
+        stage.on('destroyed', function(){
+            clearInterval(fire);
+            clearTimeout(Q.assets.ufoTimeout);
+        });
 		stage.on("destroy", function() {
-			cannon.destroy();
-			shield1.destroy();
             isPaused = 1;
+			cannon.destroy();
             canvas.style['background']="black";
 		});
 	}
@@ -42,7 +48,7 @@ Quintus.SpaceInvadersScenes = function(Q) {
 	
 	function makeAliensShoot(level, levelAsset) {
         var CADENCE_FACTOR = 150  // ms for each level
-		setInterval(function() {
+        var interval = setInterval(function() {
 			// TODO: This just takes the length of the first row of aliens.
 			// Should use max.
 			var columns = Q.assets[levelAsset][0].length;
@@ -52,8 +58,32 @@ Quintus.SpaceInvadersScenes = function(Q) {
 			if (alien !== undefined)
 				alien.trigger('fire');
 		}, 2000 - (level*CADENCE_FACTOR));
-	}
-	;
+        return interval;
+	};
+
+    function displayUfo(stage) {
+        var stage = stage;
+        // the next Ufo appears within 10-25 s.
+        var nextUfo = (Math.floor(Math.random()*15) * 1000) + 15000;
+
+        Q.assets.ufoTimeout = setTimeout(function(){
+            // The UFO appears from the left or the right.
+            if (Math.random() >= 0.5) {
+                stage.insert(new Q.UFO({
+                    y: 50,
+                    x: -100,
+                    speed: 2
+                }));
+            } else  {
+                stage.insert(new Q.UFO({
+                    y: 50,
+                    x: Q.width+100,
+                    speed: -2
+                }));
+            }
+            displayUfo(stage);
+        }, nextUfo);
+    };
 
 	/** Game Over Scene* */
 	Q.scene("gameOver", function(stage) {
