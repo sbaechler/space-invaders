@@ -211,10 +211,11 @@ Q.Sprite.extend("CannonLive", {
 Q.UI.Container.extend("AlienTracker", {
     init: function(p) {
         this._super({
-            w: 1,
-            h: 1,
+            w: 500,
+            h: 100,
             x: 100,
             y: 60,
+            type: SPRITE_NONE,
             direction: 'right',
             data: Q.assets[p.assetMap],
             step: 0, // step counter (ca 50-60 steps/s)
@@ -232,7 +233,7 @@ Q.UI.Container.extend("AlienTracker", {
                 i++;
             };
         }();
-
+        this.setSize();
     },
     step: function(dt) {
         if (this.p.step < this.p.move) {
@@ -252,7 +253,6 @@ Q.UI.Container.extend("AlienTracker", {
         } else {
             this.p.x = this.p.x + this.direction(this.p.direction);
         }
-        console.log(this.p.x);
 
         // start collision test with shields
         if(this.p.y > 240){
@@ -310,9 +310,7 @@ Q.UI.Container.extend("AlienTracker", {
     },
 
     setSize: function() {
-        console.log('resizing...');
         this.fit(10,10);
-        console.log([this.p.w, this.p.cx, this.p.x]);
     },
     render: function(ctx){
         Q._invoke(this.children,"render",ctx);
@@ -326,7 +324,6 @@ Q.UI.Container.extend("AlienTracker", {
                 type: SPRITE_ENEMY,
                 collisionMask: SPRITE_FRIENDLY | SPRITE_NEUTRAL,
                 scale: 0.5,
-                hidden: false,
                 sprite: "alien"
             });
             this.on('fire', this, "fireGun");
