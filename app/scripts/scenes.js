@@ -42,10 +42,12 @@ Quintus.SpaceInvadersScenes = function (Q) {
 	
 	function makeAliensShoot(level, levelAsset) {
         var CADENCE_FACTOR = 150  // ms for each level
+        var ufospeed = level + 0.5;
 		setInterval(function() {
 			// TODO: This just takes the length of the first row of aliens.
 			// Should use max.
 			var columns = Q.assets[levelAsset][0].length;
+			console.log("levelasset " + levelAsset);
 			var column = Math.floor((Math.random() * columns));
 			// makes the lowest alien shoot
 			var alien = Q.assets.invaders[column].slice(-1).pop();
@@ -53,20 +55,20 @@ Quintus.SpaceInvadersScenes = function (Q) {
 				alien.trigger('fire');
             // show the UFO?
 
-            // TODO:  needs refactoring. This cadence increases in higher levels. Create your own timeout.
+            
             if (Q("UFO").length === 0) {
                 var ufoRandom = Math.floor((Math.random() * 10) + 1);
                 if (ufoRandom === 3) {
                     var ufo = Q.stage().insert(new Q.UFO({
                         y: 50,
                         x: -100,
-                        speed: 1.5
+                        speed: ufospeed
                     }));
                 } else if (ufoRandom === 8) {
                     var ufo = Q.stage().insert(new Q.UFO({
                         y: 50,
                         x: Q.width+100,
-                        speed: -1.5
+                        speed: -ufospeed
                     }));
                 }
 
