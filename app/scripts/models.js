@@ -198,13 +198,13 @@ Q.Sprite.extend("CannonLiveTracker", {
     
     setup: function() {
     	//TODO Q.state.get('lives') ist nach removeIcon immer kleiner als this.children.length -> endlosschleife
-//    	while(Q.state.get('lives')!=this.children.length){
+    	while(Q.state.get('lives')!=this.children.length){
         	if(Q.state.get('lives')<this.children.length){
         		this.removeIcon(this.children.length);
         	}else{
         		this.addIcon();
         	}
-//		}
+		}
     	
     	console.log("-setup--");
     	console.log("Q.state.get('lives') " +Q.state.get('lives'));
@@ -216,13 +216,13 @@ Q.Sprite.extend("CannonLiveTracker", {
     
     renderIcons: function() {
 
-    	while(Q.state.get('lives')!=this.children.length){
+//    	while(Q.state.get('lives')!=this.children.length){
         	if(Q.state.get('lives')<this.children.length){
         		this.removeIcon(this.children.length-1);
         	}else{
         		this.addIcon();
         	}
-		}
+//		}
 
     	console.log("-renderIcons--");
     	console.log("Q.state.get('lives') " +Q.state.get('lives'));
