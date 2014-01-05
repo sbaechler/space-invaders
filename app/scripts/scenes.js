@@ -7,6 +7,7 @@ Quintus.SpaceInvadersScenes = function (Q) {
         var levelAsset = 'level1'  // only one asset for now.
         var canvas = document.getElementById('quintus');
         var github = document.getElementById('github');
+        var fire;
         if (canvas) {
             canvas.style['background'] = "rgba(0, 0, 0, 0.5)";
             document.body.style.backgroundImage = "url('../images/background.png')";
@@ -28,13 +29,15 @@ Quintus.SpaceInvadersScenes = function (Q) {
             level: level,
             assetMap: 'level1'
 		}));
-		makeAliensShoot(level, levelAsset);
+		fire = makeAliensShoot(level, levelAsset);
 
 		// cleanup
+        stage.on('destroyed', function(){
+            clearInterval(fire);
+        });
 		stage.on("destroy", function() {
-			cannon.destroy();
-			shield1.destroy();
             isPaused = 1;
+			cannon.destroy();
             canvas.style['background']="black";
 		});
 	}
@@ -42,12 +45,10 @@ Quintus.SpaceInvadersScenes = function (Q) {
 	
 	function makeAliensShoot(level, levelAsset) {
         var CADENCE_FACTOR = 150  // ms for each level
-        var ufospeed = level + 0.5;
-		setInterval(function() {
+        var interval = setInterval(function() {
 			// TODO: This just takes the length of the first row of aliens.
 			// Should use max.
 			var columns = Q.assets[levelAsset][0].length;
-			console.log("levelasset " + levelAsset);
 			var column = Math.floor((Math.random() * columns));
 			// makes the lowest alien shoot
 			var alien = Q.assets.invaders[column].slice(-1).pop();
@@ -74,6 +75,7 @@ Quintus.SpaceInvadersScenes = function (Q) {
 
             }
 		}, 2000 - (level*CADENCE_FACTOR));
+        return interval;
 	}
 	;
 
