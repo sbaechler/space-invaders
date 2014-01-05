@@ -64,10 +64,9 @@ Quintus.SpaceInvadersScenes = function (Q) {
     function displayUfo(stage) {
         var stage = stage;
         // the next Ufo appears within 10-25 s.
-        var nextUfo = (Math.floor(Math.random()*15) * 1000) + 10000;
+        var nextUfo = (Math.floor(Math.random()*15) * 1000) + 15000;
 
         Q.assets.ufoTimeout = setTimeout(function(){
-            console.log('new ufo: ');
             // The UFO appears from the left or the right.
             if (Math.random() >= 0.5) {
                 stage.insert(new Q.UFO({
