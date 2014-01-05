@@ -1,0 +1,9 @@
+Zürcher Hochschule für Angewandte Wissenschaften zhaw
+
+Studiengang Informatik
+Methoden der Programmierung Herbst 2013 (Beat Seeliger / Patrick Baumgartner)
+
+
+Simon Bächler (https://github.com/sbaechler)
+Milijana Tomic (https://github.com/miltom)
+Pascal Haller (https://github.com/hallepas)
