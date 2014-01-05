@@ -1,80 +1,80 @@
 'use-strict';
 
 Quintus.SpaceInvadersModels = function(Q) {
-  Q.gravityY = 0;
-  Q.gravityX = 0;
-  // define the sprite masks
-  var SPRITE_FRIENDLY = 1,
-      SPRITE_ENEMY = 2,
-      SPRITE_NEUTRAL = 4,
-      SPRITE_NONE = 8;
-  
-  /**
-  * Das Logo
-  */
-  Q.Sprite.extend("Logo",{
-    init: function(p) {
-      this._super({
-        y: 200,
-        x: Q.width/2,
-        asset: "logo.png"
-      });
+    Q.gravityY = 0;
+    Q.gravityX = 0;
+    // define the sprite masks
+    var SPRITE_FRIENDLY = 1,
+        SPRITE_ENEMY = 2,
+        SPRITE_NEUTRAL = 4,
+        SPRITE_NONE = 8;
 
-    }
-  });
+    /**
+     * Das Logo
+     */
+    Q.Sprite.extend("Logo", {
+        init: function(p) {
+            this._super({
+                y: 200,
+                x: Q.width / 2,
+                asset: "logo.png"
+            });
 
-  /**
-   * Image
-   */
-  Q.Sprite.extend("ColourfullInvaders",{
-	    init: function(p) {
-	      this._super({
-	        y: 470,
-	        x: Q.width/2,
-	        asset: "colourfullInvaders.png"
-	      });
+        }
+    });
 
-	    }
-	  });
-  
-  
-/**
-* Der Kanonenschuss
-*/
-Q.Sprite.extend("CannonShot",{
-    init: function(p) {
-        this._super(p,{
-           asset: 'shoot.png', // image
-            w: 11,
-            h: 10,
-            sprite: 'shot',
-            type: SPRITE_FRIENDLY,
-            collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
-        });
-        this.on('hit.sprite', this, 'collide');
-    },
+    /**
+     * Image
+     */
+    Q.Sprite.extend("ColourfullInvaders", {
+        init: function(p) {
+            this._super({
+                y: 470,
+                x: Q.width / 2,
+                asset: "colourfullInvaders.png"
+            });
 
-    step: function(dt){
-        this.p.y = this.p.y-6;
-        //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
-        if(this.p.y < 0) this.destroy();
-        this.stage.collide(this);
-    },
+        }
+    });
 
-    collide: function(col) {
-        if(col.obj.isA("ShieldElement")) {
-            col.obj.destroy(); // destroy the element
-            this.destroy(); // destroy the shot
-        } else if(col.obj.isA("Alien")) {
-            col.obj.trigger('hit');
-            this.destroy();
-        }else if(col.obj.isA("AlienShot")) {
+
+    /**
+     * Der Kanonenschuss
+     */
+    Q.Sprite.extend("CannonShot", {
+        init: function(p) {
+            this._super(p, {
+                asset: 'shoot.png', // image
+                w: 11,
+                h: 10,
+                sprite: 'shot',
+                type: SPRITE_FRIENDLY,
+                collisionMask: SPRITE_ENEMY | SPRITE_NEUTRAL
+            });
+            this.on('hit.sprite', this, 'collide');
+        },
+
+        step: function(dt) {
+            this.p.y = this.p.y - 6;
+            //Wenn es ausserhalb des Bereiches erreicht, sollte es entfernt werden
+            if (this.p.y < 0) this.destroy();
+            this.stage.collide(this);
+        },
+
+        collide: function(col) {
+            if (col.obj.isA("ShieldElement")) {
+                col.obj.destroy(); // destroy the element
+                this.destroy(); // destroy the shot
+            } else if (col.obj.isA("Alien")) {
+                col.obj.trigger('hit');
+                this.destroy();
+            } else if (col.obj.isA("AlienShot")) {
                 this.off("collide");
                 var decide = Math.random();
-                if(decide<0.5){
-                this.destroy();
-                }else{
-                col.obj.trigger('destroy');
+                if (decide < 0.5) {
+                    this.destroy();
+                } else {
+                    col.obj.trigger('destroy');
                     this.on("collide");
                 }
         }
@@ -473,14 +473,22 @@ Q.UI.Container.extend("AlienTracker", {
 
         inserted: function() {
             Q.audio.play('ufo.lowpitch.mp3');
-            console.log("haloo ufo");
             var ufoPoints = Math.floor((Math.random() * 30) + 15);
             console.log(ufoPoints);
         },
         hit: function() {
             Q.audio.play('ufo_shot.mp3');
             this.destroy();
+
             var ufoPoints = Math.floor((Math.random() * 30) + 15);
+
+            Q.stage().insert(new Q.UfoScore({
+                x: this.p.x,
+                punkte: ufoPoints * 10
+            }));
+
+
+
             Q.state.inc('score', ufoPoints * 10);
         },
         step: function() {
@@ -490,14 +498,38 @@ Q.UI.Container.extend("AlienTracker", {
         }
     });
 
+    /*Scores beim Abschuss des Ufos*/
+    Q.UI.Text.extend("UfoScore", {
+
+        init: function(p) {
+            console.log("test");
+            this._super({
+                label: " " + p.punkte,
+                align: "left",
+                color: 'red',
+                size: 30,
+                x: p.x,
+                y: 50
+            });
+            var self = this;
+            setTimeout(function() {
+                self.destroy()
+            }, 2000);
+
+
+
+        }
+
+    });
+
 
     /**
-* Add the score Class and UI components
-*/
+     * Add the score Class and UI components
+     */
     Q.UI.Text.extend("Score", {
         init: function(p) {
             this._super({
-            	family: "'Press Start 2P'",
+                family: "'Press Start 2P'",
                 label: "SCORE: 0",
                 align: "right",
                 color: 'white',
@@ -522,7 +554,7 @@ Q.UI.Container.extend("AlienTracker", {
     Q.UI.Text.extend("Level", {
         init: function() {
             this._super({
-            	family: "'Press Start 2P'",
+                family: "'Press Start 2P'",
                 label: "LEVEL: 1",
                 align: "right",
                 color: 'white',
@@ -545,26 +577,26 @@ Q.UI.Container.extend("AlienTracker", {
     Q.UI.Button.extend("Startbutton", {
         init: function() {
             this._super({
-    			x : Q.width / 2,
-    			y : 720,
-    			h : 75,
-    			w : 320,
-    			border : 7,
+                x: Q.width / 2,
+                y: 720,
+                h: 75,
+                w: 320,
+                border: 7,
                 size: 40,
                 color: 'red',
                 font: '400 24px "Press Start 2P"',
-    			fill : "#ffe744",
-    			label : "INSERT COIN"
+                fill: "#ffe744",
+                label: "INSERT COIN"
             });
 
             this.on('click');
         },
-        
-        click: function(){
-			Q.clearStages();
-			Q.stageScene('level1');
+
+        click: function() {
+            Q.clearStages();
+            Q.stageScene('level1');
             isPaused = 1;
-       }
+        }
     });
-    
+
 }
