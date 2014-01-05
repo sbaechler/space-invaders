@@ -190,5 +190,30 @@
 
     });
     
+    
+    describe('Lives', function(){
+        it('should be 3 lives', function(){
+            runs(function(){
+            	   Q.stageScene("startpage");
+                   Q('Startbutton').trigger('click');
+                   expect(Q.state.get('lives')).toBe(3);
+            });
+        });
+        
+        it('dec and inc lives should work', function(){
+            runs(function(){
+            	   Q.stageScene("startpage");
+                   Q('Startbutton').trigger('click');
+                   expect(Q.state.get('lives')).toBe(3);
+                   
+                   Q.state.dec("lives",1);
+                   expect(Q.state.get('lives')).toBe(2);
+
+                   Q.state.inc('score', 1500);
+                   expect(Q.state.get('lives')).toBe(3);
+            });
+        });
+    });
+    
   });
 })();
