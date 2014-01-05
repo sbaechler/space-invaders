@@ -472,7 +472,7 @@ Q.UI.Container.extend("AlienTracker", {
 
 
         inserted: function() {
-            Q.audio.play('ufo.lowpitch.mp3');
+            Q.audio.play('ufo_lowpitch.mp3');
             var ufoPoints = Math.floor((Math.random() * 30) + 15);
             console.log(ufoPoints);
         },
@@ -504,9 +504,10 @@ Q.UI.Container.extend("AlienTracker", {
         init: function(p) {
             console.log("test");
             this._super({
-                label: " " + p.punkte,
+                label: p.punkte.toString(),
                 align: "left",
                 color: 'red',
+                family: "'Press Start 2P'",
                 size: 30,
                 x: p.x,
                 y: 50

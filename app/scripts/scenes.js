@@ -65,7 +65,7 @@ Quintus.SpaceInvadersScenes = function (Q) {
                 } else if (ufoRandom === 8) {
                     var ufo = Q.stage().insert(new Q.UFO({
                         y: 50,
-                        x: 1500,
+                        x: Q.width+100,
                         speed: -1.5
                     }));
                 }
