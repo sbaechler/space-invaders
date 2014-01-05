@@ -171,33 +171,25 @@ Q.Sprite.extend("CannonLiveTracker", {
             type: SPRITE_NONE
         }, p);
 
-        this.on("inserted", this, "setupCannonLives");
-        Q.state.on("change.lives", this, "cannonLive");
-        Q.state.on("change.score", this, "addLive");
+        this.on("inserted", this, "renderIcons");
+        Q.state.on("change.lives", this, "removeIcon");
     },
 
-    cannonLive: function(id) {
+    removeIcon : function(id) {
     	this.children[id].destroy();
     },
     
-    addLive: function() {
-        var score = Q.state.get('score');
-        
-        //TODO zum testen 10 nehmen, danach 1500 
-        if(score%10==0){
+    addIcon : function() {
 	        var lives = Q.state.get('lives')-1;
-	        
 	    	var pos = this.children[lives].p.x+60;
 	        var self = this;
-	    	console.log("create live: "+pos)
-	        
+
 	        self.stage.insert(new Q.CannonLive({
 	            x: pos
 	        }), this);
-        }
     },
     
-    setupCannonLives: function() {
+    renderIcons: function() {
         Q.assets.lives =[]; // Store a reference to the aliens
 
         var pos = [60, 120, 180];
