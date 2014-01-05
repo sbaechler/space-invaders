@@ -122,6 +122,7 @@ Q.Sprite.extend("Cannon", {
             setTimeout(function(){
                 p.cannonReady = true;
             }, p.cadence);
+            
             var cannonShot = new Q.CannonShot({x: this.p.x, y: this.p.y-40 });
             this.stage.insert(cannonShot);
             Q.audio.play("fire2.mp3");
@@ -136,6 +137,7 @@ Q.Sprite.extend("Cannon", {
             this.p.scale = 1.5;
             this.p.y = this.p.y - 50;
             this.play('explode', 1);
+            
             Q.audio.play("explosion.mp3");
             Q.state.dec("lives",1);
 
@@ -175,6 +177,20 @@ Q.Sprite.extend("CannonLiveTracker", {
 
     cannonLive: function(id) {
     	this.children[id].destroy();
+    },
+    
+    addLive: function() {
+
+        var lives = Q.state.get('lives');
+        Q.state.inc("lives",1);
+        
+    	var lastPos = this.children[lives].x+60;
+        var self = this;
+        
+        self.stage.insert(new Q.CannonLive({
+            x: lastPos
+        }), self)
+    	
     },
     
     setupCannonLives: function() {
