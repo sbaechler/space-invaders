@@ -57,29 +57,6 @@ Quintus.SpaceInvadersScenes = function (Q) {
 			var alien = Q.assets.invaders[column].slice(-1).pop();
 			if (alien !== undefined)
 				alien.trigger('fire');
-<<<<<<< HEAD
-            // show the UFO?
-
-            
-            if (Q("UFO").length === 0) {
-                var ufoRandom = Math.floor((Math.random() * 10) + 1);
-                if (ufoRandom === 3) {
-                    var ufo = Q.stage().insert(new Q.UFO({
-                        y: 50,
-                        x: -100,
-                        speed: ufospeed
-                    }));
-                } else if (ufoRandom === 8) {
-                    var ufo = Q.stage().insert(new Q.UFO({
-                        y: 50,
-                        x: Q.width+100,
-                        speed: -ufospeed
-                    }));
-                }
-
-            }
-=======
->>>>>>> refactor ufo creation
 		}, 2000 - (level*CADENCE_FACTOR));
         return interval;
 	};
