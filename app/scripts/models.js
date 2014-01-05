@@ -173,6 +173,7 @@ Q.Sprite.extend("CannonLiveTracker", {
 
         this.on("inserted", this, "setupCannonLives");
         Q.state.on("change.lives", this, "cannonLive");
+        Q.state.on("change.score", this, "addLive");
     },
 
     cannonLive: function(id) {
@@ -180,17 +181,20 @@ Q.Sprite.extend("CannonLiveTracker", {
     },
     
     addLive: function() {
-
-        var lives = Q.state.get('lives');
-        Q.state.inc("lives",1);
+        var score = Q.state.get('score');
         
-    	var lastPos = this.children[lives].x+60;
-        var self = this;
-        
-        self.stage.insert(new Q.CannonLive({
-            x: lastPos
-        }), self)
-    	
+        //TODO zum testen 10 nehmen, danach 1500 
+        if(score%10==0){
+	        var lives = Q.state.get('lives')-1;
+	        
+	    	var pos = this.children[lives].p.x+60;
+	        var self = this;
+	    	console.log("create live: "+pos)
+	        
+	        self.stage.insert(new Q.CannonLive({
+	            x: pos
+	        }), this);
+        }
     },
     
     setupCannonLives: function() {
