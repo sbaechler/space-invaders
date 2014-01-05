@@ -31,9 +31,12 @@ Quintus.SpaceInvadersScenes = function (Q) {
 		}));
 		fire = makeAliensShoot(level, levelAsset);
 
+        displayUfo(stage);
+
 		// cleanup
         stage.on('destroyed', function(){
             clearInterval(fire);
+            clearTimeout(Q.assets.ufoTimeout);
         });
 		stage.on("destroy", function() {
             isPaused = 1;
@@ -54,6 +57,7 @@ Quintus.SpaceInvadersScenes = function (Q) {
 			var alien = Q.assets.invaders[column].slice(-1).pop();
 			if (alien !== undefined)
 				alien.trigger('fire');
+<<<<<<< HEAD
             // show the UFO?
 
             
@@ -74,10 +78,36 @@ Quintus.SpaceInvadersScenes = function (Q) {
                 }
 
             }
+=======
+>>>>>>> refactor ufo creation
 		}, 2000 - (level*CADENCE_FACTOR));
         return interval;
-	}
-	;
+	};
+
+    function displayUfo(stage) {
+        var stage = stage;
+        // the next Ufo appears within 10-25 s.
+        var nextUfo = (Math.floor(Math.random()*15) * 1000) + 10000;
+
+        Q.assets.ufoTimeout = setTimeout(function(){
+            console.log('new ufo: ');
+            // The UFO appears from the left or the right.
+            if (Math.random() >= 0.5) {
+                stage.insert(new Q.UFO({
+                    y: 50,
+                    x: -100,
+                    speed: 2
+                }));
+            } else  {
+                stage.insert(new Q.UFO({
+                    y: 50,
+                    x: Q.width+100,
+                    speed: -2
+                }));
+            }
+            displayUfo(stage);
+        }, nextUfo);
+    };
 
 	/** Game Over Scene* */
 	Q.scene("gameOver", function(stage) {

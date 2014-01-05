@@ -494,7 +494,7 @@ Q.UI.Container.extend("AlienTracker", {
         step: function() {
             this.p.x = this.p.x + this.p.speed;
             if (this.p.x < -200) this.destroy();
-            if (this.p.x > Q.width) this.destroy();
+            if (this.p.x > Q.width+120) this.destroy();
         }
     });
 
