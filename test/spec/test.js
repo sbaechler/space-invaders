@@ -149,6 +149,55 @@
             });
         });
          
+    /*UFO*/
+    describe('Ufo', function(){
+            it('there should be an ufo', function() {
+                runs(function() {
+                    var ufo = new Q.UFO();
+                    ufo.p.parent = {x: 100}; // mock
+                    stage.insert(ufo);
+                   
+                    expect(Q('UFO').items.length).toBe(1);
+                });
+            });
+            it('ufo should have speed', function() {
+                runs(function() {
+                    var ufo = new Q.UFO();
+                    ufo.p = {x: -100, y:50, speed: 1.5}; // mock
+                    stage.insert(ufo);
+                   ufo.trigger('step');
+                    expect(Q('UFO').items[0].p.speed).toBe(1.5);
+                });
+            });
+            it('ufo should fly from left to right', function() {
+                runs(function() {
+                    var ufo = new Q.UFO();
+                    ufo.p = {x: -100, y:50, speed: 1.5}; // mock
+                    stage.insert(ufo);
+                    ufo.p.x=ufo.p.x + ufo.p.speed;
+
+                      expect(Q('UFO').items[0].p.x).toBe(-98.5);
+                });
+            });
+             it('ufo should fly from right to left', function() {
+                runs(function() {
+                    var ufo = new Q.UFO();
+                    ufo.p = {x: Q.width+100, y:50, speed: 1.5}; // mock
+                    stage.insert(ufo);
+                    ufo.p.x=ufo.p.x - ufo.p.speed;
+
+                      expect(Q('UFO').items[0].p.x).toBe(Q.width+98.5);
+                });
+            });
+             it('ufoscore by shot', function() {
+                runs(function() {
+                   var ufoscore = new Q.UfoScore({punkte:300});
+                   
+                      expect(ufoscore.p.label).toBe('300');
+                });
+            });
+    });
+
     describe('Startpage', function () {
         it('should show startpage elements', function(){
             runs(function(){
