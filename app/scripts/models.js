@@ -173,21 +173,13 @@ Q.Sprite.extend("CannonLiveTracker", {
             xPos: 60
         }, p);
 
-        this.on("inserted", this, "setup");
+        this.on("inserted", this, "renderIcons");
         Q.state.on("change.lives", this, "renderIcons");
     },
 
     removeIcon : function() {
-    	// console.log("this.children[id] " +this.children[id]);
     	this.children.pop().destroy();
         this.p.xPos =  this.p.xPos- 60;
-
-//		setTimeout(function(){
-//
-//	    	console.log("-removeIcon--");
-//	    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
-//	    	console.log("this.children.length "+this.children.length);
-//	    	console.log("---");}, 400);
     },
     
     addIcon : function() {
@@ -196,43 +188,20 @@ Q.Sprite.extend("CannonLiveTracker", {
 	        self.stage.insert(new Q.CannonLive({
 	            x: this.p.xPos
 	        }), this);
+	        
 	        this.p.xPos =  this.p.xPos+ 60;
     },
     
-    setup: function() {
-        var lives = Q.state.get('lives');
-    	//TODO Q.state.get('lives') ist nach removeIcon immer kleiner als this.children.length -> endlosschleife
-    	while(lives != this.children.length){
+    renderIcons: function() {
+
+    	while(Q.state.get('lives')!=this.children.length){
         	if(Q.state.get('lives')<this.children.length){
         		this.removeIcon();
         	}else{
         		this.addIcon();
         	}
 		}
-    	
-    	console.log("-setup--");
-    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
-    	console.log("this.children.length "+this.children.length);
-    	console.log("---");
 
-    },
-
-    
-    renderIcons: function() {
-
-//    	while(Q.state.get('lives')!=this.children.length){
-        	if(Q.state.get('lives')<this.children.length){
-        		this.removeIcon();
-        	}else{
-        		this.addIcon();
-        	}
-//		}
-
-//    	console.log("-renderIcons--");
-//    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
-//    	console.log("this.children.length "+this.children.length);
-//
-//    	console.log("---");
     }
 
 });
@@ -529,7 +498,7 @@ Q.UI.Container.extend("AlienTracker", {
                 size: 20,
                 x: Q.width - 150,
                 y: 20,
-                nextLife: 10
+                nextLife: 1500
             });
 
             Q.state.on("change.score", this, "score");
