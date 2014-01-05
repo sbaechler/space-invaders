@@ -159,6 +159,9 @@ Q.Sprite.extend("Cannon", {
 
 });
 
+/**
+ * This class draws the little canon icons at the bottom of the page.
+ */
 Q.Sprite.extend("CannonLiveTracker", {
     init: function(p){
         this._super({
@@ -174,17 +177,17 @@ Q.Sprite.extend("CannonLiveTracker", {
         Q.state.on("change.lives", this, "renderIcons");
     },
 
-    removeIcon : function(id) {
-    	console.log("this.children[id] " +this.children[id]);
-    	this.children[id].destroy();
+    removeIcon : function() {
+    	// console.log("this.children[id] " +this.children[id]);
+    	this.children.pop().destroy();
         this.p.xPos =  this.p.xPos- 60;
 
-		setTimeout(function(){
-
-	    	console.log("-removeIcon--");
-	    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
-	    	console.log("this.children.length "+this.children.length);
-	    	console.log("---");}, 40000);
+//		setTimeout(function(){
+//
+//	    	console.log("-removeIcon--");
+//	    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
+//	    	console.log("this.children.length "+this.children.length);
+//	    	console.log("---");}, 400);
     },
     
     addIcon : function() {
@@ -197,10 +200,11 @@ Q.Sprite.extend("CannonLiveTracker", {
     },
     
     setup: function() {
+        var lives = Q.state.get('lives');
     	//TODO Q.state.get('lives') ist nach removeIcon immer kleiner als this.children.length -> endlosschleife
-    	while(Q.state.get('lives')!=this.children.length){
+    	while(lives != this.children.length){
         	if(Q.state.get('lives')<this.children.length){
-        		this.removeIcon(this.children.length);
+        		this.removeIcon();
         	}else{
         		this.addIcon();
         	}
@@ -218,17 +222,17 @@ Q.Sprite.extend("CannonLiveTracker", {
 
 //    	while(Q.state.get('lives')!=this.children.length){
         	if(Q.state.get('lives')<this.children.length){
-        		this.removeIcon(this.children.length-1);
+        		this.removeIcon();
         	}else{
         		this.addIcon();
         	}
 //		}
 
-    	console.log("-renderIcons--");
-    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
-    	console.log("this.children.length "+this.children.length);
-
-    	console.log("---");
+//    	console.log("-renderIcons--");
+//    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
+//    	console.log("this.children.length "+this.children.length);
+//
+//    	console.log("---");
     }
 
 });
@@ -323,7 +327,7 @@ Q.Sprite.extend("AlienTracker", {
         //1024-600>340
     },
     moveDown: function(){
-        this.p.y = this.p.y + 20;
+        this.p.y = this.p.y + 2;
         if ( this.p.y >= 480) {
             Q.stageScene('gameOver');
         }
