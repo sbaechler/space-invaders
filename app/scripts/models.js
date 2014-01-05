@@ -141,9 +141,7 @@ Q.Sprite.extend("Cannon", {
             Q.audio.play("explosion.mp3");
             Q.state.dec("lives",1);
 
-            var lives = Q.state.get('lives');
-
-            if(lives <= 0) {
+            if(Q.state.get('lives') <= 0) {
                 setTimeout(function(){
                     Q.stageScene("gameOver");
                 }, 1000);
@@ -168,39 +166,69 @@ Q.Sprite.extend("CannonLiveTracker", {
             y: Q.height - 20,
             w: 1,
             h: 1,
-            type: SPRITE_NONE
+            type: SPRITE_NONE,
+            xPos: 60
         }, p);
 
-        this.on("inserted", this, "renderIcons");
-        Q.state.on("change.lives", this, "removeIcon");
+        this.on("inserted", this, "setup");
+        Q.state.on("change.lives", this, "renderIcons");
     },
 
     removeIcon : function(id) {
+    	console.log("this.children[id] " +this.children[id]);
     	this.children[id].destroy();
+        this.p.xPos =  this.p.xPos- 60;
+
+		setTimeout(function(){
+
+	    	console.log("-removeIcon--");
+	    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
+	    	console.log("this.children.length "+this.children.length);
+	    	console.log("---");}, 40000);
     },
     
     addIcon : function() {
-	        var lives = Q.state.get('lives')-1;
-	    	var pos = this.children[lives].p.x+60;
 	        var self = this;
 
 	        self.stage.insert(new Q.CannonLive({
-	            x: pos
+	            x: this.p.xPos
 	        }), this);
+	        this.p.xPos =  this.p.xPos+ 60;
     },
     
-    renderIcons: function() {
-        Q.assets.lives =[]; // Store a reference to the aliens
+    setup: function() {
+    	//TODO Q.state.get('lives') ist nach removeIcon immer kleiner als this.children.length -> endlosschleife
+//    	while(Q.state.get('lives')!=this.children.length){
+        	if(Q.state.get('lives')<this.children.length){
+        		this.removeIcon(this.children.length);
+        	}else{
+        		this.addIcon();
+        	}
+//		}
+    	
+    	console.log("-setup--");
+    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
+    	console.log("this.children.length "+this.children.length);
+    	console.log("---");
 
-        var pos = [60, 120, 180];
-        var self = this;
-        Q._each(pos, function(pos, id) {
-        	 Q.assets.lives.push(
-                self.stage.insert(new Q.CannonLive({
-                    x: pos
-                }), self)
-             )
-        }, this);
+    },
+
+    
+    renderIcons: function() {
+
+    	while(Q.state.get('lives')!=this.children.length){
+        	if(Q.state.get('lives')<this.children.length){
+        		this.removeIcon(this.children.length-1);
+        	}else{
+        		this.addIcon();
+        	}
+		}
+
+    	console.log("-renderIcons--");
+    	console.log("Q.state.get('lives') " +Q.state.get('lives'));
+    	console.log("this.children.length "+this.children.length);
+
+    	console.log("---");
     }
 
 });
@@ -497,7 +525,7 @@ Q.UI.Container.extend("AlienTracker", {
                 size: 20,
                 x: Q.width - 150,
                 y: 20,
-                nextLife: 1500
+                nextLife: 10
             });
 
             Q.state.on("change.score", this, "score");
