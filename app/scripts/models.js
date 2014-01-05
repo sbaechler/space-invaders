@@ -283,14 +283,14 @@ Q.Sprite.extend("AlienTracker", {
         //1024-600>340
     },
     moveDown: function(){
-        this.p.y = this.p.y + 20;
+        this.p.y = this.p.y + 10;
         if ( this.p.y >= 480) {
             Q.stageScene('gameOver');
         }
         // switch direction
         this.p.direction = this.p.direction === 'right' ? 'left': 'right';
         if(this.p.move > 10) {
-            this.p.move -= 5;
+            this.p.move -= 4;
         }
     },
 
