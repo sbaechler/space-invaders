@@ -10,13 +10,21 @@ window.addEventListener('load',function() {
           .include("SpaceInvadersScenes, SpaceInvadersModels, GunControls, SpaceInvadersAssets")
           .setup({ width: 1024, height: 768, downsampleWidth: 640, downsampleHeight: 480 })
           
-          .controls()                        // Add in default controls (keyboard, buttons)
+          //.controls()                        // Add in default controls (keyboard, buttons)
           .enableSound()
           .enableSid()
           .touch();                          // Add in touch support (for the UI)
 
 
     Q.state.reset({ score: 0, lives: 3 });
+    Q.input.touchControls({
+      controls:  [ ['left','<' ],
+                   ['right','>' ],
+                   [],
+                   [],
+                   ['fire', 'fire' ]]
+    });
+    Q.controls();
     // Q.debug = true;
     window.Q = Q;
 
