@@ -467,6 +467,7 @@ Q.UI.Container.extend("AlienTracker", {
                 score: Math.floor(Math.random()*21)+10,
                 scale: 0.4
             });
+            this.add('animation');
             this.on('inserted'); // ruft this.insterted() auf.
             this.on('hit');
         },
@@ -476,13 +477,19 @@ Q.UI.Container.extend("AlienTracker", {
             Q.audio.play('ufo_lowpitch.mp3');
         },
         hit: function() {
+            var self = this;
+            this.off('hit');
+            this.p.sheet = "explosion2";
+            this.p.scale = 1.4;
+            this.p.y = this.p.y - 20;
+            this.play('explode', 1);
             Q.audio.play('ufo_shot.mp3');
             Q.stage().insert(new Q.UfoScore({
                 x: this.p.x,
                 punkte: this.p.score * 10
             }));
             Q.state.inc('score', this.p.score * 10);
-            this.destroy();
+            setTimeout(function(){ self.destroy(); }, 500);
         },
         step: function() {
             this.p.x = this.p.x + this.p.speed;
