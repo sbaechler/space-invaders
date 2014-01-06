@@ -232,7 +232,7 @@ Q.UI.Container.extend("AlienTracker", {
             direction: 'right',
             data: Q.assets[p.assetMap],
             step: 0, // step counter (ca 50-60 steps/s)
-            move: 40 - (p.level*4) // alle 40 steps ein Move.
+            move: 36 - (p.level*4) // alle 40 steps ein Move.
         }, p);
         this.on('move');
         this.on('resize', this, 'setSize');
@@ -465,7 +465,7 @@ Q.UI.Container.extend("AlienTracker", {
                 sprite: "UFO",
                 sheet: 'ufo',
                 score: Math.floor(Math.random()*21)+10,
-                scale: 0.5
+                scale: 0.4
             });
             this.on('inserted'); // ruft this.insterted() auf.
             this.on('hit');
@@ -474,8 +474,6 @@ Q.UI.Container.extend("AlienTracker", {
 
         inserted: function() {
             Q.audio.play('ufo_lowpitch.mp3');
-            var ufoPoints = Math.floor((Math.random() * 30) + 15);
-            console.log(ufoPoints);
         },
         hit: function() {
             Q.audio.play('ufo_shot.mp3');
@@ -497,7 +495,6 @@ Q.UI.Container.extend("AlienTracker", {
     Q.UI.Text.extend("UfoScore", {
 
         init: function(p) {
-            console.log("test");
             this._super({
                 label: p.punkte.toString(),
                 align: "left",
@@ -511,11 +508,7 @@ Q.UI.Container.extend("AlienTracker", {
             setTimeout(function() {
                 self.destroy()
             }, 2000);
-
-
-
         }
-
     });
 
 

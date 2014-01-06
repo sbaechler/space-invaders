@@ -9,8 +9,7 @@ Quintus.SpaceInvadersScenes = function (Q) {
         var github = document.getElementById('github');
         var fire;
         if (canvas) {
-            canvas.style['background'] = "rgba(0, 0, 0, 0.5)";
-            document.body.style.backgroundImage = "url('../images/background.png')";
+            canvas.style['background-image'] = "url('../images/background.png')";
             github.style['display'] = 'none';
         }
 
@@ -64,7 +63,7 @@ Quintus.SpaceInvadersScenes = function (Q) {
     function displayUfo(stage) {
         var stage = stage;
         // the next Ufo appears within 10-25 s.
-        var nextUfo = (Math.floor(Math.random()*15) * 1000) + 15000;
+        var nextUfo = (Math.floor(Math.random()*25) * 1000) + 20000;
 
         Q.assets.ufoTimeout = setTimeout(function(){
             // The UFO appears from the left or the right.
@@ -72,13 +71,13 @@ Quintus.SpaceInvadersScenes = function (Q) {
                 stage.insert(new Q.UFO({
                     y: 50,
                     x: -100,
-                    speed: 2
+                    speed: 3
                 }));
             } else  {
                 stage.insert(new Q.UFO({
                     y: 50,
                     x: Q.width+100,
-                    speed: -2
+                    speed: -3
                 }));
             }
             displayUfo(stage);
