@@ -9,7 +9,7 @@ Quintus.SpaceInvadersScenes = function (Q) {
         var github = document.getElementById('github');
         var fire;
         if (canvas) {
-            canvas.style['background-image'] = "url('../images/background.png')";
+            canvas.style['background-image'] = "url('images/background.png')";
             github.style['display'] = 'none';
         }
 

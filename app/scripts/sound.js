@@ -5,7 +5,7 @@
  */
 
 Quintus.SID = function(Q) {
-    const SAMPLES_PER_BUFFER = 8192;	// allowed: buffer sizes: 256, 512, 1024, 2048, 4096, 8192, 16384
+    var SAMPLES_PER_BUFFER = 8192;	// allowed: buffer sizes: 256, 512, 1024, 2048, 4096, 8192, 16384
     var audioCtx;
     var bufferSource;
     var gainNode;

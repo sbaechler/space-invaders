@@ -269,8 +269,9 @@ module.exports = function (grunt) {
                         'package.json',
                         'images/{,*/}*.{png,gif}',
                         'data/{,*/}*.json',
-                        'audio/{,*/}*.{mp3,ogg}',
+                        'audio/{,*/}*.{mp3,ogg,sid}',
                         'styles/fonts/{,*/}*.*',
+                        'libs/TinyJSid*.*',
                         'server.js',
                         'Procfile'
                     ]
