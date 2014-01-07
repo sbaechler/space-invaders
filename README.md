@@ -26,4 +26,13 @@ Zum aufsetzen benötigst du [Ruby](https://www.ruby-lang.org/de/downloads/),
 
 
 
+## Live Version
+
 http://html5-space-invaders.herokuapp.com/
+
+
+## Benutzte externe Bibliotheken
+
+[Quintus HTML5 game engine](http://html5quintus.com/)
+[TinyJsSid library](http://www.wothke.ch/experimental/TinyJsSid.html) (C64 SID emulator)
+[High Voltage SID Collection](http://hvsc.c64.org/) (Musik)

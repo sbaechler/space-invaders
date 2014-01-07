@@ -25,6 +25,13 @@
             Q.state.reset({ score: 0, lives: 3, level: 1 });
             SpriteFixtures.loadSprites(Q);
             waitsFor(SpriteFixtures.doneLoaded, 400);
+            Q.animations('alien', {
+                hampelmann: { frames: [0,1], rate:1/1}
+            });
+            Q.animations('cannon', {
+                explode: { frames: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], rate: 1/15,
+                    loop: false, trigger: 'kill' }
+            });
             window.Q = Q;
         });
 
@@ -60,7 +67,7 @@
                     // wait 0.1s
                     waits(100);
                     runs(function(){
-                        expect(Q('Cannon').items.length).toBe(0);
+                        expect(cannon.p.sheet).toEqual("explosion1");
                         expect(Q.state.get('lives')).toBe(2);
                         }
                     );
@@ -100,7 +107,7 @@
             it('should be able to shoot', function() {
                 runs(function() {
                     var alien = new Q.Alien();
-                    alien.p.parent = {x: 100}; // mock
+                    alien.p.parent = {p: {x: 100}}; // mock
                     stage.insert(alien);
                     alien.trigger('fire');
                     expect(Q('AlienShot').items.length).toBe(1);
@@ -134,12 +141,128 @@
                     stage.insert(cannon);
                     Q.state.set('lives', 1);
                     cannon.trigger('hit');
-                    waits(100);
+                    waits(1000);
                     runs(function(){
-                       expect(Q.stage().items[0].p.label).toEqual('Game Over');
+                       expect(Q.stage().items[0].p.label).toEqual('GAME OVER');
                     });
                 });
             });
         });
+         
+    /*UFO*/
+    describe('Ufo', function(){
+            it('there should be an ufo', function() {
+                runs(function() {
+                    var ufo = new Q.UFO();
+                    ufo.p.parent = {x: 100}; // mock
+                    stage.insert(ufo);
+                   
+                    expect(Q('UFO').items.length).toBe(1);
+                });
+            });
+            it('ufo should have speed', function() {
+                runs(function() {
+                    var ufo = new Q.UFO();
+                    ufo.p = {x: -100, y:50, speed: 1.5}; // mock
+                    stage.insert(ufo);
+                   ufo.trigger('step');
+                    expect(Q('UFO').items[0].p.speed).toBe(1.5);
+                });
+            });
+            it('ufo should fly from left to right', function() {
+                runs(function() {
+                    var ufo = new Q.UFO();
+                    ufo.p = {x: -100, y:50, speed: 1.5}; // mock
+                    stage.insert(ufo);
+                    ufo.p.x=ufo.p.x + ufo.p.speed;
+
+                      expect(Q('UFO').items[0].p.x).toBe(-98.5);
+                });
+            });
+             it('ufo should fly from right to left', function() {
+                runs(function() {
+                    var ufo = new Q.UFO();
+                    ufo.p = {x: Q.width+100, y:50, speed: 1.5}; // mock
+                    stage.insert(ufo);
+                    ufo.p.x=ufo.p.x - ufo.p.speed;
+
+                      expect(Q('UFO').items[0].p.x).toBe(Q.width+98.5);
+                });
+            });
+             it('ufoscore by shot', function() {
+                runs(function() {
+                   var ufoscore = new Q.UfoScore({punkte:300});
+                   
+                      expect(ufoscore.p.label).toBe('300');
+                });
+            });
     });
+
+    describe('Startpage', function () {
+        it('should show startpage elements', function(){
+            runs(function(){
+                Q.stageScene("startpage");
+                expect(Q('Startbutton').items.length).toBe(1);
+                expect(Q('Logo').items.length).toBe(1);
+            });
+        });
+        
+        it('after pushed the button should show level 1', function(){
+            runs(function(){
+                Q.stageScene("startpage");
+
+                expect(Q('Startbutton').items.length).toBe(1);
+                expect(Q('Logo').items.length).toBe(1);
+                Q('Startbutton').trigger('click');
+                
+                expect(Q('Startbutton').items.length).toBe(0);
+                expect(Q('Cannon').items.length).toBe(1);
+                
+            });
+        });
+    });
+    describe('Level', function(){
+        it('should have 6 levels and the title screens', function(){
+            runs(function(){
+                expect(Q.scenes.hud).toBeTruthy();
+                expect(Q.scenes.startpage).toBeTruthy();
+                expect(Q.scenes.gameOver).toBeTruthy();
+                expect(Q.scenes.level1).toBeTruthy();
+                expect(Q.scenes.level2).toBeTruthy();
+                expect(Q.scenes.level3).toBeTruthy();
+                expect(Q.scenes.level4).toBeTruthy();
+                expect(Q.scenes.level5).toBeTruthy();
+                expect(Q.scenes.level6).toBeTruthy();
+                expect(Q.scenes.level7).toBeFalsy();
+            });
+        });
+
+    });
+    
+    
+    describe('Lives', function(){
+        it('should be 3 lives', function(){
+            runs(function(){
+            	   Q.stageScene("startpage");
+                   Q('Startbutton').trigger('click');
+                   expect(Q.state.get('lives')).toBe(3);
+            });
+        });
+        
+        it('dec and inc lives should work', function(){
+            runs(function(){
+            	   Q.stageScene("startpage");
+                   Q('Startbutton').trigger('click');
+                   expect(Q.state.get('lives')).toBe(3);
+                   
+                   Q.state.dec("lives",1);
+                   expect(Q.state.get('lives')).toBe(2);
+
+                   Q.state.inc('score', 1500);
+                   expect(Q.state.get('lives')).toBe(3);
+            });
+        });
+    });
+    
+  });
 })();
