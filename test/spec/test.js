@@ -10,6 +10,7 @@
             canvas = document.createElement("canvas");
             canvas.width = 200;
             canvas.height = 200;
+            window.gaq = function(){};
 
             Q = Quintus()
             .include("Sprites, Scenes, Input, 2D, Touch, UI, Audio, Anim")

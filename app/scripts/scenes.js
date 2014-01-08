@@ -178,6 +178,7 @@ Quintus.SpaceInvadersScenes = function (Q) {
             // Set up the game state
             if (level <= 5){
                 stage.on("complete", function() {
+                    gaq('send', 'event', 'complete', 'level-' + level);
                     Q.stageScene("level"+(level+1));
                     Q.state.inc("level",1);
                 });

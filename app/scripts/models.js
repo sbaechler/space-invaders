@@ -280,7 +280,7 @@ Q.UI.Container.extend("AlienTracker", {
     },
     moveDown: function(){
         this.p.y = this.p.y + 16;
-        if ( this.p.y + this.p.h >= Q.height - 40) {
+        if ( this.p.y + this.p.h >= Q.height - 60) {
             Q.stageScene('gameOver');
         }
         // switch direction
@@ -590,6 +590,7 @@ Q.UI.Container.extend("AlienTracker", {
 
         click: function() {
             Q.clearStages();
+            gaq('send', 'event', 'game', 'start');
             Q.stageScene('level1');
             isPaused = 1;
         }
