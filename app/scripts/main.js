@@ -43,7 +43,7 @@ window.addEventListener('load',function() {
     // images are loaded from 'images', audio from 'audio' and anything else from 'data'
 
 
-    Q.load([ "cannonlive.png", "background.png", "colourfullInvaders.png", "logo.png",
+    Q.load([ "background.png", "colourfullInvaders.png", "logo.png",
              "cannon.png", "invaders2.png",  "alienShot.png", "shoot.png",  "shield.png",
              "fire2.mp3", "explosion.mp3", "fastinvader1.mp3", "fastinvader2.mp3",
              "fastinvader3.mp3", "fastinvader4.mp3", "fire1.mp3", "ufo_lowpitch.mp3",

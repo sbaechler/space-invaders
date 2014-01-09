@@ -590,7 +590,7 @@ Q.UI.Container.extend("AlienTracker", {
 
         click: function() {
             Q.clearStages();
-            gaq('send', 'event', 'game', 'start');
+            gaq('send', 'event', 'start', 'game');
             Q.stageScene('level1');
             isPaused = 1;
         }
