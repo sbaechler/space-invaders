@@ -1,6 +1,10 @@
 {
   "name": "spaceinvaders",
   "version": "1.0.1",
+  "repository": {
+      "type" : "git",
+      "url": "https://github.com/sbaechler/space-invaders.git"
+  },
   "dependencies": {
       "statik": "~1.2.5",
       "grunt-cli": "~0.1.11"
