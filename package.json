@@ -34,6 +34,6 @@
     "grunt-contrib-jasmine": "^0.5.2"
   },
   "engines": {
-    "node": ">=6.11.1"
+    "node": ">=10.0"
   }
 }

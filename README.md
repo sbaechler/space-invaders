@@ -20,15 +20,12 @@ Zum aufsetzen benötigst du [Ruby](https://www.ruby-lang.org/de/downloads/),
 
 ##Deployen
 
-    grunt build
-    cd dist
-    git push heroku master
-
-
+    Automatischer Deploy auf Netlify per Github Hook bei Push auf master.
+    
 
 ## Live Version
 
-http://html5-space-invaders.herokuapp.com/
+https://cocky-heisenberg-289cfb.netlify.com
 
 
 ## Benutzte externe Bibliotheken
